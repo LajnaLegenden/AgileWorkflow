@@ -13,19 +13,29 @@ nav>ul {
 
 .taskViewGrid {
     display: grid;
-    grid-template-columns: repeat(6, auto);
+    grid-template-columns: repeat(6, minmax(auto, 16.6%));
     grid-template-rows: auto;
-    width: 80%;
-    margin:auto;
-    gap:1%;
+    gap:0.3em;
 }
 
 .taskHolder {
-    border-radius: 10px;
     border: 2px solid black;
+    padding: 0.5em;
+    transition: 100ms ease-in-out;
+}
+
+.taskHolder:hover {
+    background-color: lightgray;
 }
 
 .tasks {
     border-radius: 10px;
     border: 2px solid black;
+    width: 90%;
+    margin:auto;
+    padding: 2em;
 }
+.center {
+    text-align: center;
+}
+

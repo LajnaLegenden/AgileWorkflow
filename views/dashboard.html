@@ -37,16 +37,18 @@
     <main>
         <div class="tasks">
             <div id="taskViewHeader" class="taskViewGrid">
-                <p>BACKLOG</p>
-                <p>TODO</p>
-                <p>In Progress</p>
-                <p>To Verify</p>
-                <p>Inprediments</p>
-                <p>DONE</p>
+                <p class="center">BACKLOG</p>
+                <p class="center">TODO</p>
+                <p class="center">In Progress</p>
+                <p class="center">To Verify</p>
+                <p class="center">Inprediments</p>
+                <p class="center">DONE</p>
             </div>
             <div class="taskViewGrid" id="taskView">
                 <div id="backlog" class="taskHolder">
-                    <p>asdasd</p>
+                    <div class="item">
+                        <h4 class="center">Fixa cssasasdjHASDKJHqslkjdhadsdads</h4>
+                    </div>
                 </div>
                 <div id="todo" class="taskHolder">
                     <p>asdasd</p>
@@ -75,22 +77,25 @@
                         <p></p>
                         <p></p>
                     </div>
+                    <!-- INPUT -->
                     <div id="taskForm">
                         <div id="form">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" >Task Name</span>
+                                    <span class="input-group-text">Task Name</span>
                                 </div>
-                                <input type="text" class="form-control" id="taskNameInput" placeholder="Task Name" aria-label="Task Name"
-                                    aria-describedby="basic-addon1">
+                                <input type="text" class="form-control" id="taskNameInput" placeholder="Task Name"
+                                    aria-label="Task Name" aria-describedby="basic-addon1">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" >Task Description</span>
+                                    <span class="input-group-text">Task Description</span>
                                 </div>
                                 <input type="text" class="form-control" placeholder="Task Description"
-                                    aria-label="Task Description" id="taskDescriptionInput" aria-describedby="basic-addon1">
+                                    aria-label="Task Description" id="taskDescriptionInput"
+                                    aria-describedby="basic-addon1">
                             </div>
+                            <button type="button" id="submitTask" class="btn btn-outline-primary">Primary</button>
                         </div>
                     </div>
                 </div>
@@ -98,14 +103,14 @@
             </div>
             <div id="log">
             </div>
-    </div>
+        </div>
     </main>
     <footer>
         <div class="bar"></div>
     </footer>
     <script src="./public/js/jquery/jquery.js"></script>
     <script src="./public/js/socket.io/socket.io.js"></script>
-<script src="./public/js/socket.io.js"></script>
+    <script src="./public/js/socket.io.js"></script>
 </body>
 
 </html>
