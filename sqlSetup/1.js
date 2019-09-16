@@ -1,11 +1,13 @@
 const connection = require("../mysql");
 
 async function doStuff() {
-    await connection.queryP("drop table if exists item");
+    await connection.queryP("drop table if exists Projects");
     await connection.queryP(`
-    CREATE TABLE Procjets (
+    CREATE TABLE Projects (
         name varchar(255),
         creator varchar(255),
+        admins varchar(255),
+        users varchar(255),
         id varchar(255)
     );`, (error, results, fields) => {
         if(error) {
