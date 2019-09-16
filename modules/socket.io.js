@@ -10,6 +10,8 @@ module.exports = (app) => {
 function socketIO() {
     io.on('connection', (socket) => {
         //Check auth
-
+socket.on('newTask', (data) => {
+    console.log(data);
+})
     });
 }

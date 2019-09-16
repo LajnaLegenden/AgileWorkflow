@@ -79,17 +79,17 @@
                         <div id="form">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="taskNameInput">Task Name</span>
+                                    <span class="input-group-text" >Task Name</span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Task Name" aria-label="Task Name"
+                                <input type="text" class="form-control" id="taskNameInput" placeholder="Task Name" aria-label="Task Name"
                                     aria-describedby="basic-addon1">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="taskDescriptionInput">Task Description</span>
+                                    <span class="input-group-text" >Task Description</span>
                                 </div>
                                 <input type="text" class="form-control" placeholder="Task Description"
-                                    aria-label="Task Description" aria-describedby="basic-addon1">
+                                    aria-label="Task Description" id="taskDescriptionInput" aria-describedby="basic-addon1">
                             </div>
                         </div>
                     </div>
@@ -103,6 +103,8 @@
     <footer>
         <div class="bar"></div>
     </footer>
+    <script src="./public/js/jquery/jquery.js"></script>
+    <script src="./public/js/socket.io/socket.io.js"></script>
 <script src="./public/js/socket.io.js"></script>
 </body>
 
