@@ -3,7 +3,7 @@ const util = require("util");
 
 const connection = mysql.createConnection({
     host: "85.24.194.27",
-    user: "code",
+    user: "ag_code",
     password: "ag_userPass60",
     database: "AG_TASKS"
 });
