@@ -1,14 +1,14 @@
-const connection = require("../mysql");
+const connection = require("../modules/mysql");
 
 async function doStuff() {
-    await connection.queryP("drop table if exists Projects");
+    await connection.queryP("drop table if exists user");
     await connection.queryP(`
-    CREATE TABLE Projects (
+    CREATE TABLE user (
+        username varchar(255),
+        password varchar(255),
         name varchar(255),
-        creator varchar(255),
-        admins varchar(255),
-        users varchar(255),
-        id varchar(255)
+        lastname varchar(255),
+        projects varchar(255)
     );`, (error, results, fields) => {
         if(error) {
             console.log("error creating table topics ", error);

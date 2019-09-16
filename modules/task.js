@@ -1,8 +1,10 @@
 class Task{
-    constructor(name, desc, procjetID){
+    constructor(name, desc,state, procjetID){
         this.name = name;
         this.desc = desc;
         this.comments = [];
+        this.state = state;
+        this.postDate = new Date();
         this.id = this.getNewId();
         this.procjetID  = procjetID;
     }
