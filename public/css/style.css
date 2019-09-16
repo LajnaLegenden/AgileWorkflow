@@ -6,10 +6,6 @@ nav>ul {
     padding: 0.3em;
     width: 100%;
 }
-<<<<<<< HEAD
-.right{
-    float: right;
-=======
 
 .right {
     float: right;
@@ -32,5 +28,4 @@ nav>ul {
 .tasks {
     border-radius: 10px;
     border: 2px solid black;
->>>>>>> f32b75e9639acd78e479acc0ab32656171af3218
 }
