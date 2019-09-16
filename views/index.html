@@ -1,141 +1,43 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/solid.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="/css/header.css">
-  <link rel="stylesheet" type="text/css" href="/css/main.css">
-  <link rel="stylesheet" type="text/css" href="/css/Foooter.css">
-
-  <title>To Do</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dimand</title>
+    <link rel="stylesheet" href="./public/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="./public/css/style.css">
 </head>
 
 <body>
-  <header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
-      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li class="nav-item active">
-            <h1>The Capable Ponies</h1>
-          </li>
-        </ul>
-        <p class="my-2 my-lg-0 icon"><i class="fas fa-info-circle fa-2x"></i></p>
-        <p class="my-2 my-lg-0 icon" id="add" data-toggle="modal" data-target="#myModal"><i
-            class="fas fa-plus fa-2x"></i></p>
-      </div>
-    </nav>
-  </header>
-<!-- Table Header -->
-  <main class="main-box supreme-container">
-    <table id="taskView" class="table table-hover">
-      <thead>
-        <tr>
-          <th scope="col">Number</th>
-          <th scope="col">Name</th>
-          <th scope="col">Due Date</th>
-          <th scope="col">Status</th>
-          <th class="col"></th>
-        </tr>
-      </thead>
-    </table>
-  </main>
-<!-- Add Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <form class="addNew">
-          <div class="form-group">
-            <label for="name">Task Name</label>
-            <input type="input" class="form-control" id="name" placeholder="Enter a task name">
-          </div>
-          <div class="form-group">
-            <label for="priority">Priority</label>
-            <select class="form-control" id="priority">
-              <option>High</option>
-              <option>None</option>
-              <option>Low</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="status">Priority</label>
-            <select class="form-control" id="status">
-              <option>TODO</option>
-              <option>In Progress</option>
-              <option>To Verify</option>
-              <option>Done</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="time">Time</label>
-            <input type="datetime-local" name="time" id="time">
-          </div>
-          <div class="form-group">
-            <label for="description">Task Description</label>
-            <textarea class="form-control" id="description" rows="3"></textarea>
-          </div>
-          <div class="from-group"><button class="btn btn-primary" id="submit">Add Task</button></div>
-        </form>
-      </div>
-    </div>
-  </div>
-<!-- Edit Modal -->
-  <div class="modal fade" id="myEditModal" role="dialog">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <form class="addNew">
-          <div class="form-group">
-            <label id="Ename" for="name">Task Name</label>
-          </div>
-          <div class="form-group">
-            <label for="priority">Priority</label>
-            <select class="form-control" id="Epriority">
-              <option>High</option>
-              <option>None</option>
-              <option>Low</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="status">Priority</label>
-            <select class="form-control" id="Estatus">
-              <option>TODO</option>
-              <option>In Progress</option>
-              <option>To Verify</option>
-              <option>Done</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="time">Time</label>
-            <input type="datetime-local" name="time" id="Etime">
-          </div>
-          <div class="form-group">
-            <label for="description">Task Description</label>
-            <textarea class="form-control" id="Edescription" rows="3"></textarea>
-          </div>
-          <div class="from-group"><button class="btn btn-primary" id="submitEdit">Edit Task</button></div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <footer>
-    <div class="footer">
-      <p>&copy; Copyrighted by The Capable Ponies</p>
-      <p id="users">Users online: </p>
-    </div>
-  </footer>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-    integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
-  <script src="/js/design.js"></script>
-  <script src="/js/tasks.js"></script>
+    <header>
+        <nav>
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Active</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+            </ul>
+            <ul class="nav nav-pills right" style="float: right">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Sign in</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Sign up</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+
+    </main>
+    <footer>
+
+    </footer>
+
 </body>
 
 </html>

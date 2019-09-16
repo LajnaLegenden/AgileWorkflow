@@ -1,0 +1,11 @@
+* {
+    box-sizing: border-box;
+}
+
+nav > ul {
+    padding:0.3em;
+    width: 100%;
+}
+.right{
+    float: right ;
+}
