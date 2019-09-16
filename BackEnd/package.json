@@ -1,24 +1,25 @@
 {
-  "name": "todo-list-backend",
-  "version": "1.0.0",
-  "description": "TodoManager Collab Tool",
-  "main": "app.js",
+  "name": "agilework",
+  "version": "0.1.0",
+  "description": "AgileWorkflow",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pouchdb": "^7.1.1",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LajnaLegenden/ToDo.git"
+    "url": "git+https://github.com/LajnaLegenden/AgileWorkflow.git"
   },
-  "author": "Lajna, MohammedAliAlhilo, OliverJam",
+  "author": "Lajna, Mattesick",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/LajnaLegenden/ToDo/issues"
+    "url": "https://github.com/LajnaLegenden/AgileWorkflow/issues"
   },
-  "homepage": "https://github.com/LajnaLegenden/ToDo#readme",
-  "dependencies": {
-    "express": "^4.17.1",
-    "pouchdb": "^7.1.1",
-    "socket.io": "^2.2.0"
-  }
+  "homepage": "https://github.com/LajnaLegenden/AgileWorkflow#readme"
 }
