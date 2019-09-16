@@ -1,11 +1,15 @@
 const sIO = require('socket.io');
 
+let io;
+
 module.exports = (app) => {
     io = sIO.listen(app);
+    socketIO();
 }
 
-io.on('connection', (socket) => {
-    //Check auth
-    
+function socketIO() {
+    io.on('connection', (socket) => {
+        //Check auth
 
-});
+    });
+}

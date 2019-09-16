@@ -1,27 +1,23 @@
 let express = require('express');
 let app = express();
 let http = require('http').createServer(app);
+let exphbs = require('express-handlebars');
 
 const socketIO = require('./modules/socket.io');
+const router = require('./modules/router.js');
 
-socketIO(https);
+socketIO(http);
+router(app);
 //Load env variablres
 require('dotenv').config();
  
 //Config
 const port = process.env.PORT || 3000;
 
-app.get('/', function (req, res) {
-  res.render('index');
-});
+
+app.use('/public', express.static('public'));
 
 
-app.use(express.static(__dirname + '/public'));
-
-//HBS
-app.engine('handlebars', exphbs());
-app.set('view engine', 'handlebars');
-
-app.listen(port,() => {
-  console.log(`Listening on port ${port}`);
+http.listen(port, () => {
+  console.log("Server opend on port " + port);
 });
