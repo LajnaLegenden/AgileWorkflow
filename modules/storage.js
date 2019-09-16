@@ -1,13 +1,13 @@
 
 const connection = require("../mysql");
 
-const getProject = "SELECT * FROM Project WHERE id = ?"
-const verifyProcjetID = "SELECT * FROM Projects WHERE id = ?";
-const addProject = "INSERT INTO Projects (name, creator, admins, users, id) VALUES (?, ?, ?, ?, ?)"
-const addUserToProjcet = "UPDATE Project SET users = ?";
+const getProject = "SELECT * FROM project WHERE id = ?"
+const verifyProcjetID = "SELECT * FROM project WHERE id = ?";
+const addProject = "INSERT INTO project (name, creator, admins, users, id) VALUES (?, ?, ?, ?, ?)"
+const addUserToProjcet = "UPDATE project SET users = ?";
 
 const getUser = "SELECT * FROM user WHERE username = ?"
-const addUser = "INSERT INTO user (username, password, name, lastname, procjects) VALUES (?, ?, ?, ?, ?)"
+const addUser = "INSERT INTO user (username, password, name, lastname, projects) VALUES (?, ?, ?, ?, ?)"
 const addProcjetToUser = "UPDATE user SET projects = ?";
 function storeArray(array, pushItem) {
     array = JSON.parse(array)
@@ -16,6 +16,9 @@ function storeArray(array, pushItem) {
     return array;
 }
 class Database {
+    async addTask(){
+
+    }
     /**Checks if and id for a procjet already exists*/
     async verifyProcjetID(id) {
         return await connection.queryP(verifyProcjetID, id).length == undefined;
