@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Project</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/solid.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./public/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="./public/css/style.css">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/dashboard">Dashboard</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav mt-2 mt-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logIn">Log In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/signUp">Sign Up</a>
+                    </li>
+                </ul>
+
+    </header>
+    <main>
+        <div class="tasks">
+            <div id="taskViewHeader" class="taskViewGrid">
+                <p>BACKLOG</p>
+                <p>TODO</p>
+                <p>In Progress</p>
+                <p>To Verify</p>
+                <p>Inprediments</p>
+                <p>DONE</p>
+            </div>
+            <div class="taskViewGrid" id="taskView">
+                <div id="backlog" class="taskHolder">
+                    <p>asdasd</p>
+                </div>
+                <div id="todo" class="taskHolder">
+                    <p>asdasd</p>
+                </div>
+                <div id="inProgress" class="taskHolder">
+                    <p>asdasd</p>
+                </div>
+                <div id="toVerify" class="taskHolder">
+                    <p>asdasd</p>
+                </div>
+                <div id="done" class="taskHolder">
+                    <p>asdasd</p>
+                </div>
+                <div id="impediments" class="taskHolder">
+                    <p>asdasd</p>
+                </div>
+            </div>
+        </div>
+        <div id="moreinfo">
+            <div class="taskInfo">
+                <div id="info">
+                    <div id="taskInfo">
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                    </div>
+                    <div id="taskForm">
+                        <div id="form">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Task Name</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Task Name" aria-label="Task Name"
+                                    aria-describedby="basic-addon1">
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Task Description</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Task Description"
+                                    aria-label="Task Description" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="comments"></div>
+            </div>
+            <div id="log">
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="bar"></div>
+    </footer>
+<script src="./public/js/socket.io.js"></script>
+</body>
+
+</html>

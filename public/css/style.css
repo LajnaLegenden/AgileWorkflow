@@ -2,10 +2,35 @@
     box-sizing: border-box;
 }
 
-nav > ul {
-    padding:0.3em;
+nav>ul {
+    padding: 0.3em;
     width: 100%;
 }
+<<<<<<< HEAD
 .right{
     float: right;
+=======
+
+.right {
+    float: right;
+}
+
+.taskViewGrid {
+    display: grid;
+    grid-template-columns: repeat(6, auto);
+    grid-template-rows: auto;
+    width: 80%;
+    margin:auto;
+    gap:1%;
+}
+
+.taskHolder {
+    border-radius: 10px;
+    border: 2px solid black;
+}
+
+.tasks {
+    border-radius: 10px;
+    border: 2px solid black;
+>>>>>>> f32b75e9639acd78e479acc0ab32656171af3218
 }
