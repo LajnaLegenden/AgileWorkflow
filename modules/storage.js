@@ -1,5 +1,7 @@
 
-const connection = require("../mysql");
+const connection = require("./mysql");
+
+const addTask = "INSERT INTO task (name, description, state, postDate, id, projectID) VALUES (?, ?, ?, ?, ?, ?)"
 
 const getProject = "SELECT * FROM project WHERE id = ?"
 const verifyProcjetID = "SELECT * FROM project WHERE id = ?";
@@ -16,25 +18,29 @@ function storeArray(array, pushItem) {
     return array;
 }
 class Database {
-    async addTask(){
-
+    /**Adds a task*/
+    async addTask(name, desc, procjetID) {
+        let id = await getNewId();
+        let postDate = new Date();
+        await connection.queryP(addTask, [name, desc, 'BACKLOG', postDate, id, procjetID])
     }
     /**Checks if and id for a procjet already exists*/
     async verifyProcjetID(id) {
         return await connection.queryP(verifyProcjetID, id).length == undefined;
     }
-    async getProject(id){
+    async getProject(id) {
         return await connection.queryP(getProject, id)[0];
     }
-    async addProject(name, creator){
+    async addProject(name, creator) {
         let id = await getNewId();
-        await connection.queryP(addProject,[name, creator, `[${creator}]`, `[${creator}]`, id]);
+        await connection.queryP(addProject, [name, creator, `[${creator}]`, `[${creator}]`, id]);
     }
-    async addUserToProjcet(username, projectID){
+    async addUserToProjcet(username, projectID) {
         let project = await getProject(projectID)[0];
         let users = storeArray(project.users, username);
         await connection.queryP(addUserToProjcet, users);
     }
+    /**Adds a user*/
     async addUser(username, password, name, lastname) {
         let testUsername = await getUser(username);
         if (testUsername == undefined || testUsername == "") {
@@ -54,6 +60,7 @@ class Database {
         await connection.queryP(addProcjetToUser, projects);
     }
 }
+let Storage = new Database();
 async function getNewId() {
     let a = "abcdefghijklmnopkqrtuvwxyzABCDEFGHIJKLMNOPKQRTUVWXYZ0123456789";
     let testId = "";
@@ -61,11 +68,10 @@ async function getNewId() {
         testId += a[Math.floor(Math.random() * a.length)];
     }
 
-    if (await storage.verifyProcjetID(testId)) {
+    if (await Storage.verifyProcjetID(testId)) {
 
         return testId;
     }
     return this.getNewId();
 }
-let Storage = new Database();
 module.exports = Storage;

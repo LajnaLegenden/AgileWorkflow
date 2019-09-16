@@ -8,7 +8,6 @@ async function doStuff() {
         description varchar(255),
         state varchar(255),
         postDate varchar(255),
-        comments varchar(255),
         projectID varchar(255),
         id varchar(255)
     );`, (error, results, fields) => {

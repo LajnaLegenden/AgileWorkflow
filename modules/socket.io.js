@@ -1,4 +1,5 @@
 const sIO = require('socket.io');
+const Storage = require("./storage.js");
 
 let io;
 
@@ -10,8 +11,8 @@ module.exports = (app) => {
 function socketIO() {
     io.on('connection', (socket) => {
         //Check auth
-socket.on('newTask', (data) => {
-    console.log(data);
-})
+        socket.on('newTask', (data) => {
+            Storage.addTask(data.name, data.description)
+        });
     });
 }
