@@ -1,12 +1,11 @@
 
 const connection = require("../mysql");
-const get = "SELECT * FROM mysql.user";
+const verifyID = "SELECT * FROM projects WHERE id = ?";
 
 class Database{
-    test(){
-        return await connection.queryP(get);
+    async verifyID(id){
+        return await connection.queryP(verifyID, id).length == 0;
     }
 }
-
 let Storage = new Database();
-Storage.test();
+module.exports = Storage;
