@@ -43,7 +43,8 @@ class Database {
     }
     /**Adds a user*/
     async addUser(username, password, name, lastname) {
-        let testUsername = await getUser(username);
+        let testUsername = await this.getUser(username);
+        console.log(testUsername);
         if (testUsername == undefined || testUsername == "") {
             await connection.queryP(addUser, [username, await bcryptjs.hash(password, 10), name, lastname, "[]"]);
             return "Added user";
@@ -52,7 +53,7 @@ class Database {
     }
     /**Gives user with the specified username*/
     async getUser(username) {
-        return await connection.queryP(getUser, username)[0];
+        return await connection.queryP(getUser, username);
     }
     async verifyUser(username, password) {
         let user = await getUser(username);
