@@ -1,5 +1,6 @@
 let inputs = [...document.querySelectorAll('input')];
 let btn = $('#submit');
+let alert = $('#alert');
 
 
 btn.on('click', () => {
@@ -16,7 +17,14 @@ btn.on('click', () => {
 
     $.ajax({
         type: "POST",
-        url: "/signup",
+        url: "/login",
         data: data
+      }).done((res) => {
+         alert.show();
+         alert.html(res);
+
+         setTimeout(() => {
+             alert.hide();
+         }, 10000);
       });
 });
