@@ -57,7 +57,7 @@ class Database {
     async verifyUser(username, password) {
         let user = await this.getUser(username);
         //här returnerar jag true eller false beroende på om jag har hittat ett resultat och det resultat's lösenord stämmer över med det lösenord man skrivit in.
-        return user && user.length > 0 && bcryptjs.compare(password, user.password);
+        return user && user.length > 0 && bcryptjs.compare(password, user[0].password);
     }
     /**Adds a procjetID to a user with a speceifed username*/
     async addProcjetToUser(projectID, username) {

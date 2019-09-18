@@ -2,6 +2,7 @@ const Storage = require("./storage.js");
 module.exports = (app) => {
     app.get('/', (req, res) => {
         res.sendFile(file('index.html'), { root: "./" });
+        
     });
 
     app.get('/dashboard', (req, res) => {
@@ -16,21 +17,19 @@ module.exports = (app) => {
         res.sendFile(file('login.html'), { root: "./", });
     });
 
-    app.post("/signup", async (req, res) => {
-        console.log(req.body);
+    app.post("/signup", async (req, res) =>{
         let user = req.body.user;
         let result = await Storage.addUser(user.uName, user.pass1, user.fName, user.lName);
         if (result == "Added user") {
-            req.session.user = user.username;
             res.redirect("/");
         } else {
             res.send(result);
-        }  
+        }
     });
     app.post("/login", async (req, res) => {
         let user = req.body.user;
-        if (await Storage.verifyUser(user.username, user.password)) {
-            req.session.user = user.username;
+        if (await Storage.verifyUser(user.uName, user.pass1)) {
+            req.session.user = user.uName;
             res.redirect("/");
         } else {
             res.send("Wrong username or password!");

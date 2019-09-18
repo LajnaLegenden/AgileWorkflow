@@ -11,6 +11,16 @@ nav>ul {
     float: right;
 }
 
+.hidden {
+    display: none;
+}
+
+.alert{
+    width: 90%;
+    margin: 1em auto;
+    
+}
+
 .taskViewGrid {
     display: grid;
     grid-template-columns: repeat(6, minmax(auto, 16.6%));
