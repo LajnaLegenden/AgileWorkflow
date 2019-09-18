@@ -19,7 +19,7 @@ module.exports = (app) => {
     app.post("/signup", async (req, res) => {
         console.log(req.body);
         let user = req.body.user;
-        let result = await Storage.addUser(user.uName, user.pass1, user.fName, user.lName));
+        let result = await Storage.addUser(user.uName, user.pass1, user.fName, user.lName);
         req.session.user = user.username;
         res.redirect("/");
     });
