@@ -4,8 +4,10 @@ let alert = $('#alert');
 
 
 let url = window.location.href;
-let urlArr = url.split('/');
-url = '/' + urlArr[urlArr.length-1];
+let urlArr = url.split('?');
+url = urlArr[0];
+url = url.split('/');
+url = '/' + url[url.length - 1];
 
 btn.on('click', () => {
     let data = {
@@ -22,12 +24,18 @@ btn.on('click', () => {
         type: "POST",
         url: url,
         data: data
-      }).done((res) => {
-          if()
-         alert.show();
-         alert.html(res);
-         setTimeout(() => {
-             alert.hide();
-         }, 10000);
-      });
+    }).done((res) => {
+        console.log(res + "asd");
+        if (res.includes("<head>")) {
+            var urlParams = new URLSearchParams(window.location.search);
+            let asd = urlParams.get('returnUrl');
+           document.location.href = asd;
+
+        }
+        alert.show();
+        alert.html(res);
+        setTimeout(() => {
+            alert.hide();
+        }, 10000);
+    });
 });

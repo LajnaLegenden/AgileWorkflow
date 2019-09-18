@@ -39,6 +39,7 @@ module.exports = (app) => {
     });
     app.post("/login", async (req, res) => {
         let user = req.body.user;
+        console.log(user);
         if (await Storage.verifyUser(user.uName, user.pass1)) {
             req.session.user = user.uName;
             res.redirect("/");
