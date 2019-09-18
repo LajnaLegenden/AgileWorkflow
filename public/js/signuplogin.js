@@ -29,6 +29,9 @@ btn.on('click', () => {
         if (res.includes("<head>")) {
             var urlParams = new URLSearchParams(window.location.search);
             let asd = urlParams.get('returnUrl');
+            if(!asd){
+                asd = ""
+            }
            document.location.href = asd;
 
         }
