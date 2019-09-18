@@ -2,10 +2,13 @@ let express = require('express');
 let app = express();
 let http = require('http').createServer(app);
 let exphbs = require('express-handlebars');
-
+const cookieSession = require("cookie-session");
 const socketIO = require('./modules/socket.io');
 const router = require('./modules/router.js');
 
+app.use(cookieSession({
+  secret: "sdfkaödfjasdöiolasdiojhöoiököjöfasdkojhöasdioöjhasdoijh"
+}));
 socketIO(http);
 router(app);
 //Load env variablres
