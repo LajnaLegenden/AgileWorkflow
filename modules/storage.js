@@ -44,7 +44,6 @@ class Database {
     /**Adds a user*/
     async addUser(username, password, name, lastname) {
         let testUsername = await this.getUser(username);
-        console.log(testUsername);
         if (testUsername == undefined || testUsername == "") {
             await connection.queryP(addUser, [username, await bcryptjs.hash(password, 10), name, lastname, "[]"]);
             return "Added user";
@@ -56,13 +55,13 @@ class Database {
         return await connection.queryP(getUser, username);
     }
     async verifyUser(username, password) {
-        let user = await getUser(username);
+        let user = await this.getUser(username);
         //här returnerar jag true eller false beroende på om jag har hittat ett resultat och det resultat's lösenord stämmer över med det lösenord man skrivit in.
         return user && user.length > 0 && bcryptjs.compare(password, user.password);
     }
     /**Adds a procjetID to a user with a speceifed username*/
     async addProcjetToUser(projectID, username) {
-        let user = await getUser(username)
+        let user = await this.getUser(username)
         let projects = storeArray(user.projects, projectID)
         await connection.queryP(addProcjetToUser, projects);
     }
