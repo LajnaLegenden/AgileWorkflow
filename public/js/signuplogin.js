@@ -15,11 +15,19 @@ btn.on('click', () => {
 
         }
     };
+    let fail = false;
     for (let i in inputs) {
         let currentVal = inputs[i].value;
+        if(currentVal == "") {
+            inputs[i].classList.add("error");
+            fail = true;
+        } else{
+            inputs[i].classList.remove("error");
+        }
         data.user[inputs[i].id] = currentVal;
         //Check pass
     }
+    if(fail) return;
     $.ajax({
         type: "POST",
         url: url,
@@ -29,10 +37,10 @@ btn.on('click', () => {
         if (res.includes("<head>")) {
             var urlParams = new URLSearchParams(window.location.search);
             let asd = urlParams.get('returnUrl');
-            if(!asd){
+            if (!asd) {
                 asd = "/"
             }
-           document.location.href = asd;
+            document.location.href = asd;
 
         }
         alert.show();

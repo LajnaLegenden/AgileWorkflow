@@ -42,10 +42,10 @@ class Database {
         await connection.queryP(addUserToProjcet, users);
     }
     /**Adds a user*/
-    async addUser({username, password, name, lastname}) {
+    async addUser({username, password, firstname, lastname}) {
         let testUsername = await this.getUser(username);
         if (testUsername == undefined || testUsername == "") {
-            await connection.queryP(addUser, [username, await bcryptjs.hash(password, 10), name, lastname, "[]"]);
+            await connection.queryP(addUser, [username, await bcryptjs.hash(password, 10), firstname, lastname, "[]"]);
             return "Added user";
         }
         return "Username already exists!";
