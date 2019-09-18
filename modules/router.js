@@ -13,22 +13,26 @@ module.exports = (app) => {
     });
 
     app.get('/login', (req, res) => {
-        res.sendFile(file('login.html'), { root: "./",});
+        res.sendFile(file('login.html'), { root: "./", });
     });
 
     app.post("/signup", async (req, res) => {
         console.log(req.body);
         let user = req.body.user;
         let result = await Storage.addUser(user.uName, user.pass1, user.fName, user.lName);
-        req.session.user = user.username;
-        res.redirect("/");
+        if (result == "Added user") {
+            req.session.user = user.username;
+            res.redirect("/");
+        } else {
+            res.send(result);
+        }  
     });
     app.post("/login", async (req, res) => {
         let user = req.body.user;
-        if(await Storage.verifyUser(user.username, user.password)){
+        if (await Storage.verifyUser(user.username, user.password)) {
             req.session.user = user.username;
             res.redirect("/");
-        } else{
+        } else {
             res.send("Wrong username or password!");
         };
     });
