@@ -20,7 +20,8 @@ function storeArray(array, pushItem) {
 }
 class Database {
     /**Adds a task*/
-    async addTask(name, desc, procjetID) {
+    async addTask({name, desc, procjetID}) {
+        console.log(name)
         let id = await getNewId();
         let postDate = new Date();
         await connection.queryP(addTask, [name, desc, 'BACKLOG', postDate, id, procjetID])
