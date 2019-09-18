@@ -1,5 +1,6 @@
 
 const connection = require("./mysql");
+const bcryptjs = require("bcryptjs");
 
 const addTask = "INSERT INTO task (name, description, state, postDate, id, projectID) VALUES (?, ?, ?, ?, ?, ?)"
 
@@ -44,7 +45,7 @@ class Database {
     async addUser(username, password, name, lastname) {
         let testUsername = await getUser(username);
         if (testUsername == undefined || testUsername == "") {
-            await connection.queryP(addUser, [username, password, name, lastname, "[]"]);
+            await connection.queryP(addUser, [username, await bcryptjs.hash(password, 10), name, lastname, "[]"]);
             return "Added user";
         }
         return "Username already exists!";
@@ -52,6 +53,11 @@ class Database {
     /**Gives user with the specified username*/
     async getUser(username) {
         return await connection.queryP(getUser, username)[0];
+    }
+    async verifyUser(username, password) {
+        let user = await getUser(username);
+        //här returnerar jag true eller false beroende på om jag har hittat ett resultat och det resultat's lösenord stämmer över med det lösenord man skrivit in.
+        return user && user.length > 0 && bcryptjs.compare(password, user.password);
     }
     /**Adds a procjetID to a user with a speceifed username*/
     async addProcjetToUser(projectID, username) {

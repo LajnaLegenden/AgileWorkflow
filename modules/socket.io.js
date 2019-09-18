@@ -15,4 +15,5 @@ function socketIO() {
             Storage.addTask(data.name, data.description, data.projectID)
         });
     });
+
 }
