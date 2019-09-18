@@ -12,7 +12,7 @@ function socketIO() {
     io.on('connection', (socket) => {
         //Check auth
         socket.on('newTask', (data) => {
-            Storage.addTask({data})
+            Storage.addTask(data)
         });
     });
 

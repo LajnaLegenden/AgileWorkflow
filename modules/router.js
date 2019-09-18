@@ -29,9 +29,10 @@ module.exports = (app) => {
 
     app.post("/signup", async (req, res) =>{
         let user = req.body.user;
-        let result = await Storage.addUser(user.uName, user.pass1, user.fName, user.lName);
+        console.log(user)
+        let result = await Storage.addUser(user);
         if (result == "Added user") {
-            req.session.user = user.uName;
+            req.session.user = user.username;
             res.redirect("/");
         } else {
             res.send(result);
@@ -40,8 +41,8 @@ module.exports = (app) => {
     app.post("/login", async (req, res) => {
         let user = req.body.user;
         console.log(user);
-        if (await Storage.verifyUser(user.uName, user.pass1)) {
-            req.session.user = user.uName;
+        if (await Storage.verifyUser(user)) {
+            req.session.user = user.username;
             res.redirect("/");
         } else {
             res.send("Wrong username or password!");
