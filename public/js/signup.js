@@ -18,5 +18,7 @@ btn.on('click', () => {
         type: "POST",
         url: "/signup",
         data: data
+      }).done((res) => {
+          console.log(res)
       });
 });
