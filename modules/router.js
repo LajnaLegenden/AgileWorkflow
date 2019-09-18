@@ -6,6 +6,14 @@ module.exports = (app) =>{
     app.get('/dashboard', (req,res) => {
         res.sendFile(file('dashboard.html'),{root: "./"});
     });
+
+    app.get('/signup', (req,res) => {
+        res.sendFile(file('signup.html'), {root:"./"});
+    });
+
+    app.get('/login', (req,res) => {
+        res.sendFile(file('login.html'), {root:"./"});
+    });
 }
 
 function file(file){
