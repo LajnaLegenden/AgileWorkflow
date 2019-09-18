@@ -20,7 +20,8 @@ function storeArray(array, pushItem) {
 }
 class Database {
     /**Adds a task*/
-    async addTask(name, desc, procjetID) {
+    async addTask({name, desc, procjetID}) {
+        console.log(name)
         let id = await getNewId();
         let postDate = new Date();
         await connection.queryP(addTask, [name, desc, 'BACKLOG', postDate, id, procjetID])
@@ -55,7 +56,7 @@ class Database {
         return await connection.queryP(getUser, username);
     }
     async verifyUser(username, password) {
-        let user = await this.getUser(username)[0];
+        let user = await this.getUser(username);
         //här returnerar jag true eller false beroende på om jag har hittat ett resultat och det resultat's lösenord stämmer över med det lösenord man skrivit in.
         return user && user.length > 0 && bcryptjs.compare(password, user[0].password);
     }

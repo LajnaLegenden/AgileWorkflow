@@ -23,7 +23,7 @@ btn.on('click', () => {
         url: url,
         data: data
       }).done((res) => {
-          if()
+        
          alert.show();
          alert.html(res);
          setTimeout(() => {
