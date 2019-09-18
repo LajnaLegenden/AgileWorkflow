@@ -30,7 +30,7 @@ btn.on('click', () => {
             var urlParams = new URLSearchParams(window.location.search);
             let asd = urlParams.get('returnUrl');
             if(!asd){
-                asd = ""
+                asd = "/"
             }
            document.location.href = asd;
 
