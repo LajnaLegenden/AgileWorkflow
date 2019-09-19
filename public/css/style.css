@@ -1,10 +1,28 @@
 * {
     box-sizing: border-box;
+    color: #214040;
 }
 
 nav>ul {
     padding: 0.3em;
     width: 100%;
+}
+
+.nav-link {
+    color: #63BFBF !important;
+    transition: 100ms ease-in-out;
+}
+
+.nav-link:hover {
+    color: #85FFFE !important;
+}
+
+li.active>a {
+    color: #85FFFE !important;
+}
+
+.navbar {
+    background: #214040;
 }
 
 .right {
@@ -15,17 +33,20 @@ nav>ul {
     display: none;
 }
 
-.alert{
+.alert {
     width: 90%;
     margin: 1em auto;
-    
 }
 
 .taskViewGrid {
     display: grid;
     grid-template-columns: repeat(6, minmax(auto, 16.6%));
     grid-template-rows: auto;
-    gap:0.3em;
+    gap: 0.3em;
+}
+
+.spacer {
+    height: 3em;
 }
 
 .taskHolder {
@@ -35,27 +56,38 @@ nav>ul {
 }
 
 .taskHolder:hover {
-    background-color: lightgray;
+    background-color: #63BFBF;
 }
 
 .tasks {
-    border-radius: 10px;
-    border: 2px solid black;
+    background-color: ;
+    border-radius: 2em;
     width: 90%;
-    margin:auto;
+    margin: auto;
     padding: 2em;
 }
+
 .center {
     text-align: center;
 }
 
-
 .form {
     width: 30%;
-    margin:auto;
+    margin: auto;
     margin-top: 10%;
 }
-.missing-info{
+
+.missing-info {
     border-color: #FF0000;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6);
+}
+
+.taskItem {
+    transition: 250ms ease-in-out;
+    height: 3em;
+}
+
+.taskItem:hover {
+    background: lightgray;
+    height: 5em;
 }
