@@ -45,11 +45,6 @@ li.active>a {
     gap: 0.3em;
 }
 
-.spacer {
-    height: 3em;
-    transition: 100ms ease-in-out;
-}
-
 .taskHolder {
     border: 2px solid black;
     padding: 0.5em;
