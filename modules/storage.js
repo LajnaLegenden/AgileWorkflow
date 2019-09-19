@@ -2,7 +2,8 @@
 const connection = require("./mysql");
 const bcryptjs = require("bcryptjs");
 
-const addTask = "INSERT INTO task (name, description, state, postDate, id, projectID) VALUES (?, ?, ?, ?, ?, ?)"
+const addTask = "INSERT INTO task (name, description, state, postDate, id, projectID) VALUES (?, ?, ?, ?, ?, ?)";
+const getAllTask = "SELECT * FROM task";
 
 const getProject = "SELECT * FROM project WHERE id = ?"
 const verifyProcjetID = "SELECT * FROM project WHERE id = ?";
@@ -24,6 +25,9 @@ class Database {
         let id = await getNewId();
         let postDate = new Date();
         await connection.queryP(addTask, [name, description, 'BACKLOG', postDate, id, projectID])
+    }
+    async getAllTask(){
+        return await connection.queryP(getAllTask);
     }
     /**Checks if and id for a procjet already exists*/
     async verifyProcjetID(id) {
