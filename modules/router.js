@@ -6,27 +6,20 @@ function auth(req, res, next) {
         next();
     }
 }
+
+
 module.exports = (app) => {
 
     app.get("/favicon.ico", (req, res) => {
         res.sendStatus(404);
     })
     app.get('/', (req, res) => {
-        res.sendFile(file('index.html'), { root: "./" });
-
+        // res.sendFile(file('index.html'), { root: "./" });
+        res.render('index', { title: "Index", loggedIn: req.session.user });
     });
 
     app.get('/dashboard', auth, (req, res) => {
-        res.sendFile(file('dashboard.html'), { root: "./" });
-    });
-
-    app.get('/isloggedin', (req, res) => {
-        console.log("asda");
-        if (req.session.user) {
-            res.end("OK");
-        } else {
-            res.end("ERR");
-        }
+        res.render('dashboard', { title: "Projects", loggedIn: req.session.user });
     });
 
     app.get('/signup', (req, res) => {

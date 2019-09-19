@@ -18,18 +18,13 @@ function addEventListners() {
             let id = $(tasks[i]).attr('id');
             $('#' + id + " p").addClass('hidden');
         });
+
+        tasks[i].addEventListener('click', () => {
+            let id = $(tasks[i]).attr('id');
+            socket.emit('moreInfo', id);
+        });
     }
 }
-
-$('.taskItem').on('mouseenter',
-    function () {
-        console.log("asda");
-        let id = $(this).attr('id');
-        $(id + "p").removeClass('hidden');
-    }).on('mouseleave', function () {
-        let id = $(this).attr('id');
-        $(id + "p").addClass('hidden');
-    });
 
 
 function allowDrop(ev) {

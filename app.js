@@ -1,11 +1,16 @@
-let express = require('express');
-let app = express();
-let http = require('http').createServer(app);
-let exphbs = require('express-handlebars');
+const express = require('express');
+const app = express();
+const http = require('http').createServer(app);
+const path = require('path');
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const socketIO = require('./modules/socket.io');
 const router = require('./modules/router.js');
+const hbs = require('express-hbs');
+
+app.engine('hbs', hbs.express4());
+app.set('view engine', 'hbs');
+app.set('views', __dirname + '/views');
 
 app.use(cookieSession({
   secret: "sdfkaödfjasdöiolasdiojhöoiököjöfasdkojhöasdioöjhasdoijh"
@@ -16,7 +21,7 @@ socketIO(http);
 router(app);
 //Load env variablres
 require('dotenv').config();
- 
+
 //Config
 const port = process.env.PORT || 3000;
 

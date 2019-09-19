@@ -11,7 +11,6 @@ let IMPEDIMENTS = $('#IMPEDIMENTS');
 
 $(document).ready(() => {
     socket.emit('needTasks');
-
 });
 
 
@@ -57,7 +56,6 @@ socket.on('allTasks', (data) => {
     }
     addEventListners();
     function addToBoard(obj, element) {
-
         $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem">${obj.name}<p  draggable="false" class="hidden desc">${obj.description}</p></li>`);
         function measureText(pText, pFontSize, pStyle) {
             var lDiv = document.createElement('div');
@@ -96,13 +94,22 @@ socket.on('allTasks', (data) => {
             desc = desc.substring(0, desc.length - 3) + "...";
         }
         $('#' + obj.id + ' p').html(desc);
+
+
     }
-    //    <li id="asdd" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem">Taskname</li>
 });
 
 socket.on('goUpdate', () => {
     socket.emit('needTasks');
     console.log("asd");
+});
+
+socket.on('infoAboutTask', (data) => {
+    let name = $('#infoName').html("Name: " + data[0].name);
+    let desc = $('#infoDesc').html("Description: " + data[0].description);
+    let state = $('#infoState').html("State: " + data[0].state);
+    let postdate = $('#infoPostdate').html("Date: " + data[0].postDate);
+    let pID = $('#infoProjectId').html("Project ID " + data[0].projectID);
 });
 
 //Functions

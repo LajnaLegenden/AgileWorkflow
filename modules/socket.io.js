@@ -25,6 +25,11 @@ function socketIO() {
             await Storage.updateState(data);
             io.emit('goUpdate');
         });
+
+        socket.on('moreInfo', async (id) => {
+            let task = await Storage.getTask(id);
+            io.to(socket.id).emit('infoAboutTask', task);
+        });
     });
 
 }

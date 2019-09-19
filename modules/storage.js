@@ -14,6 +14,8 @@ const addUserToProjcet = "UPDATE project SET users = ?";
 const getUser = "SELECT * FROM user WHERE username = ?"
 const addUser = "INSERT INTO user (username, password, firstname, lastname, email, projects) VALUES (?, ?, ?, ?, ?, ?)"
 const addProcjetToUser = "UPDATE user SET projects = ?";
+const getTask = "SELECT * FROM task WHERE id = ?"
+
 function storeArray(array, pushItem) {
     array = JSON.parse(array)
     array.push(pushItem);
@@ -30,6 +32,10 @@ class Database {
     /**Returns all tasks*/
     async getAllTasks() {
         return await connection.queryP(getAllTasks);
+    }
+    /**Returns single task*/
+    async getTask(id) {
+        return await connection.queryP(getTask, id);
     }
     /**Updates the tasks state with the specified id*/
     async updateState({ state, id }) {

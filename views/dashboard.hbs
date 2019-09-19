@@ -1,0 +1,92 @@
+{{!< default}}
+{{#contentFor 'head'}}
+<link rel="stylesheet" href="./public/css/dashboard.css">
+{{/contentFor}}
+{{#contentFor 'script'}}
+<script src="./public/js/socket.io/socket.io.js"></script>
+<script src="./public/js/dashboarddesign.js"></script>
+<script src="./public/js/socket.io.js"></script>
+{{/contentFor}}
+
+<main>
+    <div class="tasks">
+        <div id="taskViewHeader" class="taskViewGrid">
+            <p class="center">BACKLOG</p>
+            <p class="center">TODO</p>
+            <p class="center">In Progress</p>
+            <p class="center">To Verify</p>
+            <p class="center">Inprediments</p>
+            <p class="center">DONE</p>
+        </div>
+        <div class="taskViewGrid" id="taskView">
+            <div class="card">
+                <ul id="BACKLOG" class="list-group list-group-flush" ondrop="drop(event)" ondragover="allowDrop(event)">
+                </ul>
+            </div>
+            <div class="card">
+                <ul id="TODO" class="list-group list-group-flush" ondrop="drop(event)" ondragover="allowDrop(event)">
+                </ul>
+            </div>
+            <div class="card">
+                <ul id="INPROGRESS" class="list-group list-group-flush" ondrop="drop(event)"
+                    ondragover="allowDrop(event)">
+
+                </ul>
+            </div>
+            <div class="card">
+                <ul id="TOVERIFY" class="list-group list-group-flush" ondrop="drop(event)"
+                    ondragover="allowDrop(event)">
+
+                </ul>
+            </div>
+            <div class="card">
+                <ul id="IMPEDIMENTS" class="list-group list-group-flush" ondrop="drop(event)"
+                    ondragover="allowDrop(event)">
+
+                </ul>
+            </div>
+            <div class="card">
+                <ul id="DONE" class="list-group list-group-flush" ondrop="drop(event)" ondragover="allowDrop(event)">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="infoGrid" id="mainInfo">
+        <div class="infoGrid">
+            <div id="taskDesc" class="border">
+                <p id="infoName">Name</p>
+                <p id="infoDesc">Desc</p>
+                <p id="infoState">state</p>
+                <p id="infoPostdate">Posted</p>
+                <p id="infoProjectId">Prject ID</p>
+            </div>
+            <div id="form" class="hide">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Task Name</span>
+                    </div>
+                    <input type="text" class="form-control" id="taskNameInput" placeholder="Task Name"
+                        aria-label="Task Name" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Task Description</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Task Description" aria-label="Task Description"
+                        id="taskDescriptionInput" aria-describedby="basic-addon1">
+                </div>
+                <button type="button" id="submitTask" class="btn btn-outline-primary">Add Task</button>
+            </div>
+            <div id="comments" class="border">
+                <div class="comment border">
+                    <p>Yes we should do this<span> @Lajna</span></p>
+                </div>
+            </div>
+        </div>
+        <div id="log" class="border"></div>
+    </div>
+</main>
+<footer>
+    <div class="bar"></div>
+</footer>
