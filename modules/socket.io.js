@@ -22,7 +22,7 @@ function socketIO() {
 
         socket.on('moveTask', async (data) => {
             await Storage.updateState(data);
-            socket.emit('goUpdate');
+            io.emit('goUpdate');
         });
     });
 
