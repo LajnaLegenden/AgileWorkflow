@@ -29,6 +29,10 @@ li.active>a {
     float: right;
 }
 
+.hide {
+    display: none;
+}
+
 .desc {
     transition: all 250ms ease-in-out;
     overflow: hidden;
