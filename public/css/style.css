@@ -71,6 +71,11 @@ li.active>a {
     margin: auto;
     margin-top: 10%;
 }
+#form{
+    width:90%;
+    margin:auto;
+    padding:2em;
+}
 
 .missing-info {
     border-color: #FF0000;
