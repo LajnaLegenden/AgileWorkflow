@@ -19,6 +19,10 @@ function socketIO() {
             let tasks = await Storage.getAllTasks();
             io.to(socket.id).emit('allTasks', tasks);
         });
+
+        socket.on('moveTask', (data) => {
+            
+        });
     });
 
 }

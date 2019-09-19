@@ -29,8 +29,14 @@ li.active>a {
     float: right;
 }
 
+.desc {
+    transition: all 250ms ease-in-out;
+    overflow: hidden;
+    height: 100%;
+}
+
 .hidden {
-    display: none;
+    height: 0px;
 }
 
 .alert {
@@ -71,10 +77,11 @@ li.active>a {
     margin: auto;
     margin-top: 10%;
 }
-#form{
-    width:90%;
-    margin:auto;
-    padding:2em;
+
+#form {
+    width: 90%;
+    margin: auto;
+    padding: 2em;
 }
 
 .missing-info {

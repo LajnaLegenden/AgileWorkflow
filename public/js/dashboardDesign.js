@@ -9,20 +9,17 @@ $('.card').hover(
 function addEventListners() {
     let tasks = [...document.getElementsByClassName('taskItem')];
     for (let i in tasks) {
-        console.log(tasks[i])
         tasks[i].addEventListener('mouseenter', () => {
             let id = $(tasks[i]).attr('id');
-            $('#' + id + "p").removeClass('hidden');
+            $('#' + id + " p").removeClass('hidden');
+
         });
         tasks[i].addEventListener('mouseleave', () => {
             let id = $(tasks[i]).attr('id');
-            $('#' + id + "p").addClass('hidden');
+            $('#' + id + " p").addClass('hidden');
         });
     }
 }
-console.log("hgi")
-addEventListners();
-
 
 $('.taskItem').on('mouseenter',
     function () {
@@ -41,7 +38,6 @@ function allowDrop(ev) {
 
 function drag(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
-    console.log(ev.target.id);
 }
 
 function drop(ev) {
@@ -50,8 +46,12 @@ function drop(ev) {
     if ($(element).is('li')) {
         element = $(element).parent();
     }
-    console.log(ev)
+
     var data = ev.dataTransfer.getData("text");
-    element.append(document.getElementById(data));
+    let dropped = document.getElementById(data);
+
+    element.append(dropped);
+
+    move(element, dropped.id)
 }
 
