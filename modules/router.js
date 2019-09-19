@@ -1,23 +1,32 @@
 const Storage = require("./storage.js");
 function auth(req, res, next) {
     if (!req.session.user) {
-        res.redirect("/login?returnUrl="+req.url);
+        res.redirect("/login?returnUrl=" + req.url);
     } else {
         next();
     }
 }
 module.exports = (app) => {
-    
+
     app.get("/favicon.ico", (req, res) => {
         res.sendStatus(404);
     })
     app.get('/', (req, res) => {
         res.sendFile(file('index.html'), { root: "./" });
-        
+
     });
 
-    app.get('/dashboard',auth, (req, res) => {
+    app.get('/dashboard', auth, (req, res) => {
         res.sendFile(file('dashboard.html'), { root: "./" });
+    });
+
+    app.get('/isloggedin', (req, res) => {
+        console.log("asda");
+        if (req.session.user) {
+            res.end("OK");
+        } else {
+            res.end("ERR");
+        }
     });
 
     app.get('/signup', (req, res) => {
@@ -31,7 +40,7 @@ module.exports = (app) => {
         res.redirect("/");
     });
 
-    app.post("/signup", async (req, res) =>{
+    app.post("/signup", async (req, res) => {
         let user = req.body.user;
         console.log(user)
         let result = await Storage.addUser(user);
@@ -44,7 +53,7 @@ module.exports = (app) => {
     });
     app.post("/login", async (req, res) => {
         let user = req.body.user;
-        console.log("asdasdsa",user);
+        console.log("asdasdsa", user);
         if (await Storage.verifyUser(user)) {
             req.session.user = user.username;
             res.redirect("/");
