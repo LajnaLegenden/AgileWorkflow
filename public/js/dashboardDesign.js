@@ -18,6 +18,8 @@ function addEventListners() {
         });
     }
 }
+console.log("hgi")
+addEventListners();
 
 
 
@@ -30,8 +32,7 @@ $('.taskItem').on('mouseenter',
     }).on('mouseleave', function () {
         let id = $(this).attr('id');
         $(id + "p").addClass('hidden');
-    }
-    );
+    });
 
 
 function allowDrop(ev) {
