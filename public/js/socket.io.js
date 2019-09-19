@@ -1,7 +1,5 @@
 var socket = io();
 
-
-
 //Cards
 let BACKLOG = $('#BACKLOG');
 let TODO = $('#TODO');
@@ -13,7 +11,7 @@ let IMPEDIMENTS = $('#IMPEDIMENTS');
 
 $(document).ready(() => {
     socket.emit('needTasks');
-    addEventListners();
+
 });
 
 
@@ -47,7 +45,7 @@ socket.on('allTasks', (data) => {
                 break;
         }
     }
-
+    addEventListners();
     function addToBoard(obj, element) {
         $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem">${obj.name}<p class="hidden">${obj.description}</p></li>`);
 

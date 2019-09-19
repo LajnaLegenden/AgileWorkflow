@@ -11,15 +11,15 @@ function addEventListners() {
     for (let i in tasks) {
         console.log(tasks[i])
         tasks[i].addEventListener('mouseenter', () => {
-            console.log("Enter");
+            let id = $(tasks[i]).attr('id');
+            $('#' + id + "p").removeClass('hidden');
         });
         tasks[i].addEventListener('mouseleave', () => {
-            console.log("Leave");
+            let id = $(tasks[i]).attr('id');
+            $('#' + id + "p").addClass('hidden');
         });
     }
 }
-
-
 
 
 $('.taskItem').on('mouseenter',
