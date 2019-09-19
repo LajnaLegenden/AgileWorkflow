@@ -32,7 +32,7 @@ class Database {
         return await connection.queryP(getAllTasks);
     }
      /**Updates the tasks state with the specified id*/
-    async updateState(state, id){
+    async updateState({state, id}){
         await connection.queryP(updateState, [state, id])
     }
     /**Checks if and id for a procjet already exists*/
