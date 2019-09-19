@@ -102,6 +102,7 @@ socket.on('allTasks', (data) => {
 
 socket.on('goUpdate', () => {
     socket.emit('needTasks');
+    console.log("asd");
 });
 
 //Functions
