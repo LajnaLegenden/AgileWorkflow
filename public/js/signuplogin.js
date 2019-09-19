@@ -2,7 +2,10 @@ let inputs = [...document.querySelectorAll('input')];
 let btn = $('#submit');
 let alert = $('#alert');
 
-
+function validateEmail(email) {
+    let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
 let url = window.location.href;
 let urlArr = url.split('?');
 url = urlArr[0];
@@ -18,22 +21,31 @@ btn.on('click', () => {
     let fail = false;
     for (let i in inputs) {
         let currentVal = inputs[i].value;
-        if(currentVal == "") {
-            inputs[i].classList.add("error");
+        if (currentVal == "") {
+            inputs[i].classList.add("missing-info");
             fail = true;
-        } else{
-            inputs[i].classList.remove("error");
+        } else {
+            inputs[i].classList.remove("missing-info");
         }
         data.user[inputs[i].id] = currentVal;
         //Check pass
     }
-    if(fail) return;
+    console.log(url)
+    if(url == "/signup" && data.user.password != data.user.password2){
+        fail = true;
+        inputs[inputs.length - 1].classList.add("missing-info");
+        inputs[inputs.length - 2].classList.add("missing-info");
+    }
+    if(url == "/signup" && !validateEmail(inputs[2].value)){
+        fail = true;
+        inputs[2].classList.add("missing-info");
+    }
+    if (fail) return;
     $.ajax({
         type: "POST",
         url: url,
         data: data
     }).done((res) => {
-        console.log(res + "asd");
         if (res.includes("<head>")) {
             var urlParams = new URLSearchParams(window.location.search);
             let asd = urlParams.get('returnUrl');

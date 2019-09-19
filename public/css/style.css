@@ -55,7 +55,7 @@ nav>ul {
     margin:auto;
     margin-top: 10%;
 }
-.error{
-    border:2px solid red;
-    border-radius: 5px;
+.missing-info{
+    border-color: #FF0000;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6);
 }

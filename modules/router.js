@@ -26,6 +26,10 @@ module.exports = (app) => {
     app.get('/login', (req, res) => {
         res.sendFile(file('login.html'), { root: "./", });
     });
+    app.get("/logout", (req, res) => {
+        req.session.user = undefined;
+        res.redirect("/");
+    });
 
     app.post("/signup", async (req, res) =>{
         let user = req.body.user;
@@ -40,7 +44,7 @@ module.exports = (app) => {
     });
     app.post("/login", async (req, res) => {
         let user = req.body.user;
-        console.log(user);
+        console.log("asdasdsa",user);
         if (await Storage.verifyUser(user)) {
             req.session.user = user.username;
             res.redirect("/");
