@@ -27,7 +27,7 @@ function allowDrop(ev) {
 
 function drag(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
-    console.log(ev);
+    console.log(ev.target.id);
 }
 
 function drop(ev) {
@@ -38,5 +38,5 @@ function drop(ev) {
     }
     console.log(ev)
     var data = ev.dataTransfer.getData("text");
-    element.append(data);
+    element.append(document.getElementById(data));
 }
