@@ -47,6 +47,7 @@ li.active>a {
 
 .spacer {
     height: 3em;
+    transition: 100ms ease-in-out;
 }
 
 .taskHolder {
