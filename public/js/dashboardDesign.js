@@ -42,16 +42,26 @@ function drag(ev) {
 
 function drop(ev) {
     ev.preventDefault();
+    let doStuff = true;
     let element = ev.srcElement;
     if ($(element).is('li')) {
         element = $(element).parent();
     }
+    if ($(element).is('p')) {
+        doStuff = false;
+    }
 
-    var data = ev.dataTransfer.getData("text");
-    let dropped = document.getElementById(data);
+    element = $(element);
+    if (doStuff) {
+        var data = ev.dataTransfer.getData("text");
+        let dropped = document.getElementById(data);
+        element.append(dropped);
 
-    element.append(dropped);
+        console.log(element.attr('id'));
 
-    move(element, dropped.id)
+        move(element.attr('id'), dropped.id)
+    }
+
+
 }
 

@@ -58,7 +58,7 @@ socket.on('allTasks', (data) => {
     addEventListners();
     function addToBoard(obj, element) {
 
-        $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem">${obj.name}<p class="hidden desc">${obj.description}</p></li>`);
+        $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem">${obj.name}<p  draggable="false" class="hidden desc">${obj.description}</p></li>`);
         function measureText(pText, pFontSize, pStyle) {
             var lDiv = document.createElement('div');
 
@@ -111,6 +111,8 @@ function addTask() {
     data.projectID = "bw15v0bkZ7daDz7d5HtAOix0o0OY1lW7";
     data.name = $('#taskNameInput').val();
     data.description = $('#taskDescriptionInput').val();
+    $('#taskDescriptionInput').val('');
+    $('#taskNameInput').val('');
     if (isEditing)
         socket.emit('editTask', data);
     else
@@ -118,10 +120,10 @@ function addTask() {
 }
 
 function move(element, taskID) {
-    console.log(element.id, taskID);
+    console.log(element, taskID);
 
     socket.emit('moveTask', {
-        state: element.id,
+        state: element,
         id: taskID
     });
 
