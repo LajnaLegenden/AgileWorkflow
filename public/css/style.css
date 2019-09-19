@@ -87,6 +87,9 @@ li.active>a {
     transition: 250ms ease-in-out;
     height: 3em;
 }
+ul{
+    height:100%;
+}
 
 .taskItem:hover {
     background: lightgray;
@@ -94,9 +97,10 @@ li.active>a {
 }
 .card{
     display:flex;
-    height:25vh;
+    height:40vh;
     overflow: hidden;
 }
+
   /* width */
 ::-webkit-scrollbar {
     width: 5px;
