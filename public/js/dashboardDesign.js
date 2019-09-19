@@ -2,7 +2,6 @@ let taskView = $('#taskView');
 let spacer = $('.spacer');
 let tasks = $('.taskItem');
 
-
 // tasks.each(function (index) {
 //     tasks[index].on(() => {
 //         (this).addClass('itemHover');
@@ -13,11 +12,10 @@ let tasks = $('.taskItem');
 //     });
 // });
 
-$('.taskItem').hover(
+$('.card').hover(
     function () {
-        spacer.css("height", "1em");
+        $(this).css("overflow", "auto")
     }, function () {
-        spacer.css("height", "3em");
-
+        $(this).css("overflow", "hidden")
     }
 );

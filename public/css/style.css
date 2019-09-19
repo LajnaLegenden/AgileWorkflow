@@ -47,7 +47,7 @@ li.active>a {
 
 .spacer {
     height: 3em;
-    transition: 100ms ease-in-out;
+    transition: 250ms ease-in-out;
 }
 
 .taskHolder {
@@ -61,7 +61,7 @@ li.active>a {
 }
 
 .tasks {
-    background-color: ;
+
     border-radius: 2em;
     width: 90%;
     margin: auto;
@@ -92,3 +92,27 @@ li.active>a {
     background: lightgray;
     height: 5em;
 }
+.card{
+    display:flex;
+    height:25vh;
+    overflow: hidden;
+}
+  /* width */
+::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
