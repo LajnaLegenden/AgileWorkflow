@@ -6,7 +6,8 @@ async function doStuff() {
     CREATE TABLE user (
         username varchar(255),
         password varchar(255),
-        name varchar(255),
+        email varchar(255),
+        firstname varchar(255),
         lastname varchar(255),
         projects varchar(255)
     );`, (error, results, fields) => {

@@ -10,7 +10,7 @@ const addProject = "INSERT INTO project (name, creator, admins, users, id) VALUE
 const addUserToProjcet = "UPDATE project SET users = ?";
 
 const getUser = "SELECT * FROM user WHERE username = ?"
-const addUser = "INSERT INTO user (username, password, name, lastname, projects) VALUES (?, ?, ?, ?, ?)"
+const addUser = "INSERT INTO user (username, password, firstname, lastname, email, projects) VALUES (?, ?, ?, ?, ?, ?)"
 const addProcjetToUser = "UPDATE user SET projects = ?";
 function storeArray(array, pushItem) {
     array = JSON.parse(array)
@@ -42,10 +42,10 @@ class Database {
         await connection.queryP(addUserToProjcet, users);
     }
     /**Adds a user*/
-    async addUser({username, password, firstname, lastname}) {
+    async addUser({username, password, firstname, lastname, email}) {
         let testUsername = await this.getUser(username);
         if (testUsername == undefined || testUsername == "") {
-            await connection.queryP(addUser, [username, await bcryptjs.hash(password, 10), firstname, lastname, "[]"]);
+            await connection.queryP(addUser, [username, await bcryptjs.hash(password, 10), firstname, lastname, email, "[]"]);
             return "Added user";
         }
         return "Username already exists!";
@@ -56,7 +56,6 @@ class Database {
     }
     async verifyUser({username, password}) {
         let user = await this.getUser(username);
-        //här returnerar jag true eller false beroende på om jag har hittat ett resultat och det resultat's lösenord stämmer över med det lösenord man skrivit in.
         return user && user.length > 0 && bcryptjs.compare(password, user[0].password);
     }
     /**Adds a procjetID to a user with a speceifed username*/
