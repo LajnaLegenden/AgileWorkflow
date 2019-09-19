@@ -1,16 +1,3 @@
-let taskView = $('#taskView');
-let spacer = $('.spacer');
-let tasks = $('.taskItem');
-
-// tasks.each(function (index) {
-//     tasks[index].on(() => {
-//         (this).addClass('itemHover');
-//         spacer.addClass('spacerSmall');
-//     }, () => {
-//         (this).removeClass('itemHover');
-//         spacer.removeClass('spacerSmall');
-//     });
-// });
 
 $('.card').hover(
     function () {
@@ -19,6 +6,32 @@ $('.card').hover(
         $(this).css("overflow", "hidden")
     }
 );
+function addEventListners() {
+    let tasks = [...document.getElementsByClassName('taskItem')];
+    for (let i in tasks) {
+        console.log(tasks[i])
+        tasks[i].addEventListener('mouseenter', () => {
+            console.log("Enter");
+        });
+        tasks[i].addEventListener('mouseleave', () => {
+            console.log("Leave");
+        });
+    }
+}
+
+
+
+
+$('.taskItem').on('mouseenter',
+    function () {
+        console.log("asda");
+        let id = $(this).attr('id');
+        $(id + "p").removeClass('hidden');
+    }).on('mouseleave', function () {
+        let id = $(this).attr('id');
+        $(id + "p").addClass('hidden');
+    }
+    );
 
 
 function allowDrop(ev) {
@@ -40,3 +53,4 @@ function drop(ev) {
     var data = ev.dataTransfer.getData("text");
     element.append(document.getElementById(data));
 }
+
