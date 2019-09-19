@@ -22,17 +22,17 @@ function storeArray(array, pushItem) {
 }
 class Database {
     /**Adds a task*/
-    async addTask({projectID, name, description}) {
+    async addTask({ projectID, name, description }) {
         let id = await getNewId();
         let postDate = new Date();
         await connection.queryP(addTask, [name, description, 'BACKLOG', postDate, id, projectID])
     }
     /**Returns all tasks*/
-    async getAllTasks(){
+    async getAllTasks() {
         return await connection.queryP(getAllTasks);
     }
-     /**Updates the tasks state with the specified id*/
-    async updateState(state, id){
+    /**Updates the tasks state with the specified id*/
+    async updateState({ state, id }) {
         await connection.queryP(updateState, [state, id])
     }
     /**Checks if and id for a procjet already exists*/
@@ -44,18 +44,18 @@ class Database {
         return await connection.queryP(getProject, id)[0];
     }
     /**Adds a project*/
-    async addProject({name, creator}) {
+    async addProject({ name, creator }) {
         let id = await getNewId();
         await connection.queryP(addProject, [name, creator, `[${creator}]`, `[${creator}]`, id]);
     }
     /**Adds a user to a project*/
-    async addUserToProjcet({username, projectID}) {
+    async addUserToProjcet({ username, projectID }) {
         let project = await getProject(projectID)[0];
         let users = storeArray(project.users, username);
         await connection.queryP(addUserToProjcet, users);
     }
     /**Adds a user*/
-    async addUser({username, password, firstname, lastname, email}) {
+    async addUser({ username, password, firstname, lastname, email }) {
         let testUsername = await this.getUser(username);
         if (testUsername == undefined || testUsername == "") {
             await connection.queryP(addUser, [username, await bcryptjs.hash(password, 10), firstname, lastname, email, "[]"]);
@@ -68,12 +68,12 @@ class Database {
         return await connection.queryP(getUser, username);
     }
     /**Verifys that the user exists*/
-    async verifyUser({username, password}) {
+    async verifyUser({ username, password }) {
         let user = await this.getUser(username);
         return user && user.length > 0 && bcryptjs.compare(password, user[0].password);
     }
     /**Adds a procjetID to a user with a speceifed username*/
-    async addProcjetToUser({projectID, username}) {
+    async addProcjetToUser({ projectID, username }) {
         let user = await this.getUser(username)
         let projects = storeArray(user.projects, projectID)
         await connection.queryP(addProcjetToUser, projects);

@@ -23,8 +23,17 @@ $('#submitTask').on('click', addTask);
 
 //ReviceEvent
 socket.on('allTasks', (data) => {
+    //Empty
+    BACKLOG.empty();
+    TODO.empty();
+    INPROGRESS.empty();
+    TOVERIFY.empty();
+    DONE.empty();
+    IMPEDIMENTS.empty();
     for (let i in data) {
         let obj = data[i];
+
+
         switch (obj.state) {
             case "BACKLOG":
                 addToBoard(obj, BACKLOG);
@@ -91,6 +100,10 @@ socket.on('allTasks', (data) => {
     //    <li id="asdd" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem">Taskname</li>
 });
 
+socket.on('goUpdate', () => {
+    socket.emit('needTasks');
+});
+
 //Functions
 function addTask() {
     let data = {};
@@ -107,8 +120,8 @@ function move(element, taskID) {
     console.log(element.id, taskID);
 
     socket.emit('moveTask', {
-        destination: element.id,
-        taskID: taskID
+        state: element.id,
+        id: taskID
     });
 
 }

@@ -20,8 +20,9 @@ function socketIO() {
             io.to(socket.id).emit('allTasks', tasks);
         });
 
-        socket.on('moveTask', (data) => {
-            
+        socket.on('moveTask', async (data) => {
+            await Storage.updateState(data);
+            socket.emit('goUpdate');
         });
     });
 
