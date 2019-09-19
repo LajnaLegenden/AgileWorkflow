@@ -14,6 +14,11 @@ function socketIO() {
         socket.on('newTask', (data) => {
             Storage.addTask(data)
         });
+
+        socket.on('needTasks', async () => {
+            let tasks = await Storage.getAllTasks();
+            io.to(socket.id).emit('allTasks', tasks);
+        });
     });
 
 }
