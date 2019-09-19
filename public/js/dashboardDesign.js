@@ -27,11 +27,16 @@ function allowDrop(ev) {
 
 function drag(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
+    console.log(ev);
 }
 
 function drop(ev) {
     ev.preventDefault();
-    console.log(ev);
+    let element = ev.srcElement;
+    if ($(element).is('li')) {
+        element = $(element).parent();
+    }
+    console.log(ev)
     var data = ev.dataTransfer.getData("text");
-    ev.target.appendChild(document.getElementById(data));
+    element.append(data);
 }

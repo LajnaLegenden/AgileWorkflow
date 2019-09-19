@@ -82,6 +82,10 @@ li.active>a {
     height: 3em;
 }
 
+ul {
+    height: 100%;
+}
+
 .taskItem:hover {
     background: lightgray;
     height: 5em;
@@ -89,7 +93,7 @@ li.active>a {
 
 .card {
     display: flex;
-    height: 25vh;
+    height: 40vh;
     overflow: hidden;
 }
 
