@@ -13,11 +13,11 @@ let tasks = $('.taskItem');
 //     });
 // });
 
-// $('.taskItem').hover(
-//     function () {
-//         $((this)).animate({ height: "5em" }, 100)
-//     }, function () {
-//         $((this)).animate({ height: "3em" }, 100)
+$('.taskItem').hover(
+    function () {
+        spacer.css("height", "1em");
+    }, function () {
+        spacer.css("height", "3em");
 
-//     }
-// );
+    }
+);
