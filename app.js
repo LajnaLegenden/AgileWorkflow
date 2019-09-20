@@ -37,7 +37,7 @@ socketIO(server);
 router(app);
 
 
-//Config
+//Config things
 const port = process.env.PORT || 3000;
 
 
