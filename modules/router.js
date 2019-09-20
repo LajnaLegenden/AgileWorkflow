@@ -16,7 +16,7 @@ module.exports = (app) => {
     app.get('/', async (req, res) => {
         // res.sendFile(file('index.html'), { root: "./" });
         let allProjects = await Storage.getAllProjects();
-        console.log("adas");
+        console.log("asda");
         res.render('index', { title: "Index", loggedIn: req.session.user, allProjects });
     });
 
