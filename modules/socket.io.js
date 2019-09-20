@@ -22,7 +22,7 @@ function socketIO() {
         try {
             cookies = cookie.parse(socket.handshake.headers.cookie);
             user = new Buffer(cookies['express:sess'], 'base64').toString();
-        } catch (error) {
+        } catch (err) {
             console.log(err);
             return;
         }
