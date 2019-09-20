@@ -7,7 +7,7 @@ $('.card').hover(
     }
 );
 let projectId = window.location.href.split("/");
-projectId = projectId[projectId.length -1];
+projectId = projectId[projectId.length - 1];
 console.log(projectId)
 $("#" + projectId).addClass("currentProject")
 function addEventListners() {
@@ -29,6 +29,8 @@ function addEventListners() {
         });
     }
 }
+
+setTimeout(addEventListners, 500);
 
 
 function allowDrop(ev) {
