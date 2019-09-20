@@ -5,4 +5,4 @@ git pull origin master
 git push origin master
 git add -A
 git commit -m "Deploy"
-git push deploy master
+git push -f deploy master
