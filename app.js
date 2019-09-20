@@ -9,6 +9,10 @@ const router = require('./modules/router.js');
 const hbs = require('express-hbs');
 const fs = require('fs');
 
+//Load env variablres
+require('dotenv').config();
+
+
 var options = {
   key: fs.readFileSync('./cert/localhost.key'),
   cert: fs.readFileSync('./cert/localhost.cert'),
@@ -19,8 +23,7 @@ var options = {
 let server = https.createServer(options, app);
 
 
-//Load env variablres
-require('dotenv').config();
+
 //Handlebars setup
 app.engine('hbs', hbs.express4());
 app.set('view engine', 'hbs');
