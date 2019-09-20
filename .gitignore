@@ -89,3 +89,6 @@ typings/
 
 # Images
 public/bird_images
+
+#Cert
+cert/

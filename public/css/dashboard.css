@@ -33,9 +33,15 @@
 .taskItem {
     transition: 100ms ease-in-out;
     height: 3em;
+<<<<<<< HEAD
     margin:0.5em;
     border-radius:2px !important;
     box-shadow: 1px 2.5px 2px 2.5px #21404071;
+=======
+    font-size: 14px;
+    box-shadow: 5px 10px 8px 10px #8d8d8d42;
+    cursor: grabbing;
+>>>>>>> 21dbebf6cb652c8fc8a693618ad1a749d9d7acee
 }
 
 .taskItem:hover {

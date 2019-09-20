@@ -8,7 +8,7 @@ let TOVERIFY = $('#TOVERIFY');
 let DONE = $('#DONE');
 let IMPEDIMENTS = $('#IMPEDIMENTS');
 
-
+//He
 $(document).ready(() => {
     socket.emit('needTasks');
 });
@@ -31,8 +31,6 @@ socket.on('allTasks', (data) => {
     IMPEDIMENTS.empty();
     for (let i in data) {
         let obj = data[i];
-
-
         switch (obj.state) {
             case "BACKLOG":
                 addToBoard(obj, BACKLOG);
@@ -100,8 +98,7 @@ socket.on('allTasks', (data) => {
 });
 
 socket.on('goUpdate', () => {
-    socket.emit('needTasks');
-    console.log("asd");
+    socket.emit('needTasks');;
 });
 
 socket.on('infoAboutTask', (data) => {
@@ -127,8 +124,6 @@ function addTask() {
 }
 
 function move(element, taskID) {
-    console.log(element, taskID);
-
     socket.emit('moveTask', {
         state: element,
         id: taskID

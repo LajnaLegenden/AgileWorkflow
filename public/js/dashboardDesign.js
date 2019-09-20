@@ -55,9 +55,6 @@ function drop(ev) {
         var data = ev.dataTransfer.getData("text");
         let dropped = document.getElementById(data);
         element.append(dropped);
-
-        console.log(element.attr('id'));
-
         move(element.attr('id'), dropped.id)
     }
 

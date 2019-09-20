@@ -12,6 +12,10 @@ url = urlArr[0];
 url = url.split('/');
 url = '/' + url[url.length - 1];
 
+if (performance.navigation.type == 2) {
+    location.reload(true);
+}
+
 btn.on('click', () => {
     let data = {
         user: {
