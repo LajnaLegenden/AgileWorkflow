@@ -25,10 +25,17 @@ function socketIO() {
         let user = new Buffer(cookies['express:sess'], 'base64').toString();
         user = JSON.parse(user);
         if (user !== "{}" || user == undefined) {
+<<<<<<< HEAD
             socket.on('newTask', async (data) => {
                 await Storage.addTask(data);
                 io.emit('goUpdate', data);
                 io.emit('log', log("addedTask", data));
+=======
+            socket.user = user.user
+            socket.on('newTask', (data) => {
+                Storage.addTask(data);
+                io.emit('goUpdate');
+>>>>>>> cdf869d7e952dae3428fe668cfd941e6689c219b
             });
             socket.on('needTasks', async (projectID) => {
                 let tasks = await Storage.getAllTasks(projectID);
@@ -49,8 +56,13 @@ function socketIO() {
             });
 
             socket.on('addProject', async  data => {
-                data.creator = user.user;
+                data.creator = socket.user;
                 await Storage.addProject(data);
+<<<<<<< HEAD
+=======
+                io.emit('log', `@${socket.user} created a project called ${data.name}`);
+                io.to(socket.id).emit('allGood');
+>>>>>>> cdf869d7e952dae3428fe668cfd941e6689c219b
             });
         }
         function log(action, data) {

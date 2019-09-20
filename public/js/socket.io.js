@@ -140,6 +140,9 @@ socket.on('log', async (data) => {
     chatHistory.scrollTop = chatHistory.scrollHeight;
 });
 
+socket.on('allGood', function () {
+    $('#myModal').modal('hide');
+});
 //Functions
 function addTask() {
     let data = {};
