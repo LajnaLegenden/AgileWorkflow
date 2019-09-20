@@ -86,6 +86,7 @@ ul {
     height: 100%;
 }
 .projects{
+    padding-top:2em;
     direction:rtl;
     overflow:auto;
     position: fixed;
