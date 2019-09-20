@@ -66,7 +66,6 @@ class Database {
             }
             return projects
         }
-
     }
     /**Adds a project*/
     async addProject({ name, creator }) {
