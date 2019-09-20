@@ -26,6 +26,7 @@ function socketIO() {
         let user = new Buffer(cookies['express:sess'], 'base64').toString();
         user = JSON.parse(user);
         if (user !== "{}" || user == undefined) {
+            socket.user = user.user
             socket.on('newTask', (data) => {
                 Storage.addTask(data);
                 io.emit('goUpdate');
@@ -47,9 +48,10 @@ function socketIO() {
             });
 
             socket.on('addProject', async  data => {
-                data.creator = user.user;
+                data.creator = socket.user;
                 await Storage.addProject(data);
-                io.emit('log', `@${user.user} created a project called ${data.name}`);
+                io.emit('log', `@${socket.user} created a project called ${data.name}`);
+                io.to(socket.id).emit('allGood');
             });
         }
     });

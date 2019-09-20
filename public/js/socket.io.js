@@ -113,9 +113,12 @@ socket.on("updateProjects", data => {
 
 socket.on('log', (data) => {
     let d = new Date();
-    $('#log').append(`<span>[${d.getMinutes}.${d.getSeconds}.${d.getMilliseconds}] ${data}</span>`);
+    $('#log').append(`<span>[${d.getHours().toString()}.${d.getMilliseconds().toString()}.${d.getSeconds().toString()}] ${data}</span>`);
 });
 
+socket.on('allGood', function () {
+    $('#myModal').modal('hide');
+});
 //Functions
 function addTask() {
     let data = {};
@@ -136,6 +139,6 @@ function move(element, taskID) {
         id: taskID
     });
 }
-async function addProject(name, desc){
-    socket.emit("addProject",{name, desc});
+async function addProject(name, desc) {
+    socket.emit("addProject", { name, desc });
 }
