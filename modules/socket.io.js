@@ -1,34 +1,62 @@
 const sIO = require('socket.io');
 const Storage = require("./storage.js");
+const cookie = require('cookie');
+const sharedsession = require("express-socket.io-session");
+
 
 let io;
 
-module.exports = (https) => {
+module.exports = (https, cookie) => {
     io = sIO.listen(https);
+    io.use(sharedsession(cookie, {
+        autoSave: true
+    }));
     socketIO();
 }
 
 function socketIO() {
     io.on('connection', (socket) => {
-        //Check auth
-        socket.on('newTask', (data) => {
-            Storage.addTask(data);
-            io.emit('goUpdate');
-        });
-        socket.on('needTasks', async () => {
-            let tasks = await Storage.getAllTasks();
-            io.to(socket.id).emit('allTasks', tasks);
-        });
+        var cookief = socket.handshake.headers.cookie;
+        let cookies;
+        try {
+            cookies = cookie.parse(socket.handshake.headers.cookie);
+        } catch (error) {
+        }
 
-        socket.on('moveTask', async (data) => {
-            await Storage.updateState(data);
-            io.emit('goUpdate');
-        });
+        let user = new Buffer(cookies['express:sess'], 'base64').toString();
+        user = JSON.parse(user);
+        if (user !== "{}" || user == undefined) {
+            socket.on('newTask', (data) => {
+                Storage.addTask(data);
+                io.emit('goUpdate');
+            });
+            socket.on('needTasks', async () => {
+                let tasks = await Storage.getAllTasks();
+                io.to(socket.id).emit('allTasks', tasks);
+            });
 
-        socket.on('moreInfo', async (id) => {
-            let task = await Storage.getTask(id);
-            io.to(socket.id).emit('infoAboutTask', task);
-        });
+            // socket.on('moveTask', async (data) => {
+            //     await Storage.updateState(data);
+            //     io.emit('goUpdate');
+            //     io.emit('log', log('move')
+            // });
+
+            socket.on('moreInfo', async (id) => {
+                let task = await Storage.getTask(id);
+                io.to(socket.id).emit('infoAboutTask', task);
+            });
+
+            socket.on('addProject', async  data => {
+                data.creator = user.user;
+                await Storage.addProject(data);
+                io.emit('log', `@${user.user} created a project called ${data.name}`);
+            });
+        }
     });
-
 }
+
+// function log(action, data){
+//     switch (action){
+//         case 'move'
+//     }
+// }

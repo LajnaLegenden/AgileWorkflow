@@ -108,6 +108,11 @@ socket.on('infoAboutTask', (data) => {
     let pID = $('#infoProjectId').html("Project ID " + data[0].projectID);
 });
 
+socket.on('log', (data) => {
+    let d = new Date();
+    $('#log').append(`<span>[${d.getMinutes}.${d.getSeconds}.${d.getMilliseconds}] ${data}</span>`);
+});
+
 //Functions
 function addTask() {
     let data = {};
