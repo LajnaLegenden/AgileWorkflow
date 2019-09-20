@@ -39,7 +39,9 @@ app.use(cookieSession({
 app.use(bodyParser.urlencoded({ extended: true }))
 
 //Start stuff
-socketIO(server);
+socketIO(server, cookieSession({
+  secret: process.env.SECRET || "sdfkaödfjasdöiolasdiojhöoiököjöfasdkojhöasdioöjhasdoijh"
+}));
 router(app);
 
 
