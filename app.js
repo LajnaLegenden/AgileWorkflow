@@ -10,13 +10,12 @@ const hbs = require('express-hbs');
 const fs = require('fs');
 
 //Load env variablres
-require('dotenv').config();
+require('dotenv').config({ path: './env' });
 
-console.log(process.env.PORT);
 
 var options = {
-  key: fs.readFileSync('./cert/localhost.key'),
-  cert: fs.readFileSync('./cert/localhost.cert'),
+  key: fs.readFileSync(process.env.KEY),
+  cert: fs.readFileSync(process.env.CERT),
   requestCert: false,
   rejectUnauthorized: false
 };
