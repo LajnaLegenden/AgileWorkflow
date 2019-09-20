@@ -32,7 +32,7 @@ app.use(cookieSession({
 }));
 app.use(bodyParser.urlencoded({ extended: true }))
 
-
+//Start stuff
 socketIO(server);
 router(app);
 
