@@ -8,7 +8,7 @@ let TOVERIFY = $('#TOVERIFY');
 let DONE = $('#DONE');
 let IMPEDIMENTS = $('#IMPEDIMENTS');
 
-//aS
+//He
 $(document).ready(() => {
     socket.emit('needTasks');
 });
