@@ -12,6 +12,7 @@ const fs = require('fs');
 //Load env variablres
 require('dotenv').config();
 
+console.log(process.env.PORT);
 
 var options = {
   key: fs.readFileSync('./cert/localhost.key'),
