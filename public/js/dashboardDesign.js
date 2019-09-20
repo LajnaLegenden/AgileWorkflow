@@ -6,6 +6,10 @@ $('.card').hover(
         $(this).css("overflow", "hidden")
     }
 );
+let projectId = window.location.href.split("/");
+projectId = projectId[projectId.length -1];
+console.log(projectId)
+$("#" + projectId).addClass("currentProject")
 function addEventListners() {
     let tasks = [...document.getElementsByClassName('taskItem')];
     for (let i in tasks) {

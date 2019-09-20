@@ -10,6 +10,7 @@ const getProject = "SELECT * FROM project WHERE id = ?"
 const verifyProcjetID = "SELECT * FROM project WHERE id = ?";
 const addProject = "INSERT INTO project (name, creator, admins, users, id) VALUES (?, ?, ?, ?, ?)"
 const addUserToProjcet = "UPDATE project SET users = ?";
+const getAllProjects = "SELECT * FROM project";
 
 const getUser = "SELECT * FROM user WHERE username = ?"
 const addUser = "INSERT INTO user (username, password, firstname, lastname, email, projects) VALUES (?, ?, ?, ?, ?, ?)"
@@ -47,7 +48,10 @@ class Database {
     }
     /**Returns projcet with the specified id*/
     async getProject(id) {
-        return await connection.queryP(getProject, id)[0];
+        return await connection.queryP(getProject, id);
+    }
+    async getAllProjects(){
+        return await connection.queryP(getAllProjects);
     }
     /**Adds a project*/
     async addProject({ name, creator }) {

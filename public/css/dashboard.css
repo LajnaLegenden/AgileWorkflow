@@ -1,7 +1,5 @@
 .desc {
-    transition: all 250ms ease-in-out;
     overflow: hidden;
-    height: 100%;
 }
 
 .hidden {
@@ -33,8 +31,11 @@
 }
 
 .taskItem {
-    transition: 250ms ease-in-out;
+    transition: 100ms ease-in-out;
     height: 3em;
+    margin:0.5em;
+    border-radius:2px !important;
+    box-shadow: 1px 2.5px 2px 2.5px #21404071;
 }
 
 .taskItem:hover {

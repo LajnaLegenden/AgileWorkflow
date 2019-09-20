@@ -1,0 +1,54 @@
+{{!< default}}
+{{#contentFor 'head'}}
+<link rel="stylesheet" href="./public/css/user.css">
+{{/contentFor}}
+{{#contentFor 'script'}}
+<script src="./public/js/userScript.js"></script>
+{{/contentFor}}
+<div class="triangle"></div>
+<div class="projects">
+    {{#each allProjects}}
+    <button class="project" id="{{this.id}}" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="right"
+        title="{{this.name}}">
+        A
+    </button>
+    {{/each}}
+
+</div>
+<main class="container">
+    <div class="infoGrid" id="mainInfo">
+        <div class="infoGrid">
+            <div id="taskDesc" class="border">
+                <h4>Info</h4>
+                <p id="infoName"><b>Username:</b> {{{user.username}}}</p>
+                <p id="infoFirstName"><b>First Name:</b> {{{user.firstname}}}</p>
+                <p id="infoLastName"><b>Last Name:</b> {{{user.lastname}}}</p>
+                <p id="infoEmail"><b>Email:</b> {{{user.email}}}</p>
+            </div>
+            <div id="form" class="hide">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Task Name</span>
+                    </div>
+                    <input type="text" class="form-control" id="taskNameInput" placeholder="Task Name"
+                        aria-label="Task Name" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Task Description</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Task Description" aria-label="Task Description"
+                        id="taskDescriptionInput" aria-describedby="basic-addon1">
+                </div>
+                <button type="button" id="submitTask" class="btn btn-outline-primary">Add Task</button>
+            </div>
+            <div id="friends" class="border">
+                <h4>Friends</h4>
+                <div class="friend">
+                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-at"></i> Lajna</span>
+                </div>
+            </div>
+        </div>
+        <div id="log" class="border"></div>
+    </div>
+</main>

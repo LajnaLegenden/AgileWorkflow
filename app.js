@@ -7,7 +7,6 @@ const cookieSession = require("cookie-session");
 const socketIO = require('./modules/socket.io');
 const router = require('./modules/router.js');
 const hbs = require('express-hbs');
-
 app.engine('hbs', hbs.express4());
 app.set('view engine', 'hbs');
 app.set('views', __dirname + '/views');

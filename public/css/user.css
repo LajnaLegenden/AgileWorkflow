@@ -1,0 +1,67 @@
+.desc {
+    overflow: hidden;
+}
+
+.hidden {
+    display: none;
+}
+
+
+
+/* width */
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+
+::-webkit-scrollbar-track {
+    background: #214040;
+}
+
+/* Handle */
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: 6fr 3fr;
+    gap: 1em;
+    width: 100%;
+    margin: auto;
+}
+
+#mainInfo {
+    width: 90%;
+    padding-top:2em;
+}
+
+.comment {
+    padding: 2px;
+}
+
+.border {
+    border: 2px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+    padding: 0.5em;
+}
+.friend p {
+    margin:auto;
+    display: inline-block;
+}
+.friend span{
+    transition: all 100ms ease-in-out;
+}
+.friend span:hover{
+    transform: scale(0.97);
+    cursor: pointer;
+}

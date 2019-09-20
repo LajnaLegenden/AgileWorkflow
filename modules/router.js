@@ -13,13 +13,17 @@ module.exports = (app) => {
     app.get("/favicon.ico", (req, res) => {
         res.sendStatus(404);
     })
-    app.get('/', (req, res) => {
+    app.get('/', async (req, res) => {
         // res.sendFile(file('index.html'), { root: "./" });
-        res.render('index', { title: "Index", loggedIn: req.session.user });
+        let allProjects = await Storage.getAllProjects();
+        res.render('index', { title: "Index", loggedIn: req.session.user, allProjects});
     });
 
-    app.get('/dashboard', auth, (req, res) => {
-        res.render('dashboard', { title: "Projects", loggedIn: req.session.user });
+    app.get('/dashboard/:projectID', auth, async (req, res) => {
+        let projectID = req.params.projectID;
+        let project = (await Storage.getProject(projectID))[0];
+        let allProjects = await Storage.getAllProjects();
+        res.render('dashboard', { title: "Projects", loggedIn: req.session.user, project, allProjects});
     });
 
     app.get('/signup', (req, res) => {
@@ -53,6 +57,13 @@ module.exports = (app) => {
         } else {
             res.send("Wrong username or password!");
         };
+    });
+    app.get("/user", auth, async (req, res) => {
+        let username = req.session.user;
+        let user = (await Storage.getUser(username))[0];
+        let allProjects = await Storage.getAllProjects();
+        console.log(user)
+        res.render("user", { title: username, loggedIn: username, user, allProjects})
     });
 }
 

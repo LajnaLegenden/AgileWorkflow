@@ -1,13 +1,22 @@
 {{!< default}}
 {{#contentFor 'head'}}
-<link rel="stylesheet" href="./public/css/dashboard.css">
+<link rel="stylesheet" href="../public/css/dashboard.css">
 {{/contentFor}}
 {{#contentFor 'script'}}
-<script src="./public/js/socket.io/socket.io.js"></script>
-<script src="./public/js/dashboardDesign.js"></script>
-<script src="./public/js/socket.io.js"></script>
+<script src="../public/js/socket.io/socket.io.js"></script>
+<script src="../public/js/dashboardDesign.js"></script>
+<script src="../public/js/socket.io.js"></script>
 {{/contentFor}}
+<div class="triangle"></div>
+<div class="projects">
+    {{#each allProjects}}
+    <button class="project" id="{{this.id}}" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="right"
+        title="{{this.name}}">
+        A
+    </button>
+    {{/each}}
 
+</div>
 <main>
     <div class="tasks">
         <div id="taskViewHeader" class="taskViewGrid">

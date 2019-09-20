@@ -8,8 +8,8 @@
     <title>{{title}}</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/solid.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./public/css/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="./public/css/style.css">
+    <link rel="stylesheet" href="../public/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="../public/css/style.css">
     {{{block "head"}}}
 </head>
 
@@ -21,12 +21,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/dashboard">Dashboard</a>
-                    </li>
                 </ul>
                 {{#if loggedIn}}
                 <ul class="navbar-nav mt-2 mt-lg-0" id="userControl">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/user">{{{loggedIn}}}</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="/logout">Log out</a>
                     </li>
@@ -47,10 +47,10 @@
 
     </header>
     {{{body}}}
-    <script src="./public/js/jquery/jquery.js"></script>
-    <script src="./public/js/popper.js/umd/popper.js"></script>
-    <script src="./public/js/bootstrap/bootstrap.js"></script>
-    <script src="./public/js/js.js"></script>
+    <script src="../public/js/jquery/jquery.js"></script>
+    <script src="../public/js/popper.js/umd/popper.js"></script>
+    <script src="../public/js/bootstrap/bootstrap.js"></script>
+    <script src="../public/js/js.js"></script>
     {{{block 'script'}}}
 </body>
 
