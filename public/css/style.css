@@ -26,6 +26,7 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
 nav>ul {
     padding: 0.3em;
     width: 100%;
@@ -90,57 +91,66 @@ ul {
     direction:rtl;
     overflow:auto;
     position: fixed;
-    width:4em;
-    height:100vh;
-    background:#214040;
+    width: 4em;
+    height: 100vh;
+    background: #214040;
 }
-.project{
-    display:flex;
-    justify-content: center;
-    align-items: center;
-    color:#63BFBF;
-    background:grey;
-    border: 2px solid #214040 !important;
-    border-radius: 100%;
-    height:3em;
-    width:3em;
-    margin:0.5em;
-    transition: all 200ms ease-in-out;
-}
-#addProject{
-    display:flex;
-    justify-content: center;
-    align-items: center;
-    background:grey;
-    border: 2px solid #214040 !important;
-    border-radius: 100%;
-    height:3em;
-    width:3em;
-    margin:0.5em;
 
-    float:bottom;
+.project {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #63BFBF;
+    background: grey;
+    border: 2px solid #214040 !important;
+    border-radius: 100%;
+    height: 3em;
+    width: 3em;
+    margin: 0.5em;
+    transition: all 200ms ease-in-out;
 }
-#addProject i{
+
+#addProject {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: grey;
+    border: 2px solid #214040 !important;
+    border-radius: 100%;
+    height: 3em;
+    width: 3em;
+    margin: 0.5em;
+    float: bottom;
+}
+
+#addProject i {
     transition: all 200ms ease-in-out;
     border-radius: 100%;
 }
-#addProject:hover i{
+
+#addProject:hover i {
     background: #85FFFE !important;
-    cursor:pointer;
+    cursor: pointer;
+}
 
+.project:hover {
+    border: 2px solid #85FFFE !important;
+    cursor: pointer;
 }
-.project:hover{
-    border:2px solid #85FFFE !important;
-    cursor:pointer;
+
+.currentProject {
+    border: 2px solid #85FFFE !important;
 }
-.currentProject{
-    border:2px solid #85FFFE !important;
-}
-.triangle{
+
+.triangle {
     position: fixed;
-    width:7em;
-    height:2em;
-    transform:rotateZ(-45deg);
-    background:#214040;
+    width: 7em;
+    height: 2em;
+    transform: rotateZ(-45deg);
+    background: #214040;
     z-index: -1111;
+}
+
+.addNew {
+    padding: 2em;
 }

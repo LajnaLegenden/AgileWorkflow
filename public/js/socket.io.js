@@ -52,7 +52,6 @@ socket.on('allTasks', (data) => {
                 break;
         }
     }
-    addEventListners();
     function addToBoard(obj, element) {
         $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border">${obj.name}<p  draggable="false" class="hidden desc">${obj.description}</p></li>`);
         function measureText(pText, pFontSize, pStyle) {
