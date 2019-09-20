@@ -52,7 +52,7 @@
         {{#each allProjects}}
         <button class="project" id="{{this.id}}" type="button" class="btn btn-secondary" data-toggle="tooltip"
             data-placement="right" title="{{this.name}}">
-            A
+            {{trimString this.name}}
         </button>
         {{/each}}
         <button class="" id="addProject" type="button" class="btn btn-secondary" data-toggle="modal"
