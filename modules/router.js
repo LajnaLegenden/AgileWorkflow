@@ -16,14 +16,15 @@ module.exports = (app) => {
     app.get('/', async (req, res) => {
         // res.sendFile(file('index.html'), { root: "./" });
         let allProjects = await Storage.getAllProjects();
-        res.render('index', { title: "Index", loggedIn: req.session.user, allProjects});
+        console.log("adas");
+        res.render('index', { title: "Index", loggedIn: req.session.user, allProjects });
     });
 
     app.get('/dashboard/:projectID', auth, async (req, res) => {
         let projectID = req.params.projectID;
         let project = (await Storage.getProject(projectID))[0];
         let allProjects = await Storage.getAllProjects();
-        res.render('dashboard', { title: "Projects", loggedIn: req.session.user, project, allProjects});
+        res.render('dashboard', { title: "Projects", loggedIn: req.session.user, project, allProjects });
     });
 
     app.get('/signup', (req, res) => {
@@ -65,7 +66,7 @@ module.exports = (app) => {
         let user = (await Storage.getUser(username))[0];
         let allProjects = await Storage.getAllProjects();
         console.log(user)
-        res.render("user", { title: username, loggedIn: username, user, allProjects})
+        res.render("user", { title: username, loggedIn: username, user, allProjects })
     });
 }
 
