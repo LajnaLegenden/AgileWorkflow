@@ -31,12 +31,12 @@ btn.on('click', () => {
         //Check pass
     }
     console.log(url)
-    if(url == "/signup" && data.user.password != data.user.password2){
+    if (url == "/signup" && data.user.password != data.user.password2) {
         fail = true;
         inputs[inputs.length - 1].classList.add("missing-info");
         inputs[inputs.length - 2].classList.add("missing-info");
     }
-    if(url == "/signup" && !validateEmail(inputs[2].value)){
+    if (url == "/signup" && !validateEmail(inputs[2].value)) {
         fail = true;
         inputs[2].classList.add("missing-info");
     }

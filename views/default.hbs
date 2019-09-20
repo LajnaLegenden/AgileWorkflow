@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Dimand</title>
+    <title>{{title}}</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/solid.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./public/css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="./public/css/style.css">
+    {{{block "head"}}}
 </head>
 
 <body>
@@ -17,13 +18,20 @@
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/dashboard">Dashboard</a>
                     </li>
                 </ul>
+                {{#if loggedIn}}
+                <ul class="navbar-nav mt-2 mt-lg-0" id="userControl">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/logout">Log out</a>
+                    </li>
+                </UL>
+                {{else}}
                 <ul class="navbar-nav mt-2 mt-lg-0" id="userControl">
                     <li class="nav-item">
                         <a class="nav-link" href="/login">Log In</a>
@@ -32,17 +40,18 @@
                         <a class="nav-link" href="/signup">Sign Up</a>
                     </li>
                 </ul>
+                {{/if}}
+            </div>
+        </nav>
+
 
     </header>
-    <main>
-
-    </main>
-    <footer>
-
-    </footer>
+    {{{body}}}
     <script src="./public/js/jquery/jquery.js"></script>
-
-    <script src="./public/js/userAgent.js"></script>
+    <script src="./public/js/popper.js/umd/popper.js"></script>
+    <script src="./public/js/bootstrap/bootstrap.js"></script>
+    <script src="./public/js/js.js"></script>
+    {{{block 'script'}}}
 </body>
 
 </html>

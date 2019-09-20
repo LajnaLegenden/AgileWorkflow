@@ -12,7 +12,8 @@ function socketIO() {
     io.on('connection', (socket) => {
         //Check auth
         socket.on('newTask', (data) => {
-            Storage.addTask(data)
+            Storage.addTask(data);
+            io.emit('goUpdate');
         });
 
         socket.on('needTasks', async () => {
@@ -22,7 +23,12 @@ function socketIO() {
 
         socket.on('moveTask', async (data) => {
             await Storage.updateState(data);
-            socket.emit('goUpdate');
+            io.emit('goUpdate');
+        });
+
+        socket.on('moreInfo', async (id) => {
+            let task = await Storage.getTask(id);
+            io.to(socket.id).emit('infoAboutTask', task);
         });
     });
 
