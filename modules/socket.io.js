@@ -18,16 +18,19 @@ function socketIO() {
     io.on('connection', (socket) => {
         var cookief = socket.handshake.headers.cookie;
         let cookies;
+        let user;
         try {
             cookies = cookie.parse(socket.handshake.headers.cookie);
+            user = new Buffer(cookies['express:sess'], 'base64').toString();
         } catch (error) {
+            console.log(err);
+            return;
         }
-        let user = new Buffer(cookies['express:sess'], 'base64').toString();
         user = JSON.parse(user);
         if (user !== "{}" || user == undefined) {
             socket.on('newTask', async (data) => {
                 await Storage.addTask(data);
-                let LOG =log("addedTask", data);
+                let LOG = log("addedTask", data);
                 io.emit('goUpdate', data);
                 await Storage.addLog(LOG, data.projectID)
                 io.emit('log', LOG);
@@ -61,21 +64,21 @@ function socketIO() {
             let hours = d.getHours().toString();
             let minutes = d.getMinutes().toString()
             let seconds = d.getSeconds().toString()
-            if(hours.length == 1){
+            if (hours.length == 1) {
                 hours += "0";
                 hours = hours.split("").reverse().join("");
             }
-            if(minutes.length == 1){
+            if (minutes.length == 1) {
                 minutes += "0";
                 minutes = minutes.split("").reverse().join("");
             }
-            if(seconds.length == 1){
+            if (seconds.length == 1) {
                 seconds += "0";
                 seconds = seconds.split("").reverse().join("");
             }
             switch (action) {
                 case 'move':
-                    return  `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${user.user}</b> moved ${data.id} to ${data.state}</div>`;
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${user.user}</b> moved ${data.id} to ${data.state}</div>`;
                 case 'addedTask':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${user.user}</b> created a task called "${data.name}"</div>`;
             }
