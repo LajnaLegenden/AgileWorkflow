@@ -19,11 +19,21 @@ isEditing = false;
 //Eventlistners
 $('#submitTask').on('click', addTask);
 
+
+
 //ReviceEvent
 socket.on('allTasks', (data) => {
-    console.log(data);
+    //Empty
+    BACKLOG.empty();
+    TODO.empty();
+    INPROGRESS.empty();
+    TOVERIFY.empty();
+    DONE.empty();
+    IMPEDIMENTS.empty();
     for (let i in data) {
         let obj = data[i];
+
+
         switch (obj.state) {
             case "BACKLOG":
                 addToBoard(obj, BACKLOG);
@@ -47,10 +57,51 @@ socket.on('allTasks', (data) => {
     }
     addEventListners();
     function addToBoard(obj, element) {
-        $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem">${obj.name}<p class="hidden">${obj.description}</p></li>`);
 
+        $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem">${obj.name}<p class="hidden desc">${obj.description}</p></li>`);
+        function measureText(pText, pFontSize, pStyle) {
+            var lDiv = document.createElement('div');
+
+            document.body.appendChild(lDiv);
+
+            if (pStyle != null) {
+                lDiv.style = pStyle;
+            }
+            lDiv.style.fontSize = "" + pFontSize + "px";
+            lDiv.style.position = "absolute";
+            lDiv.style.left = -1000;
+            lDiv.style.top = -1000;
+
+            lDiv.innerHTML = pText;
+
+            var lResult = {
+                width: lDiv.clientWidth,
+                height: lDiv.clientHeight
+            };
+
+            document.body.removeChild(lDiv);
+            lDiv = null;
+
+            return lResult;
+        }
+        let hasBeenCut = false;
+        let targetWidth = Math.floor($(document.getElementsByClassName('desc')[0]).width());
+        let fontSize = $(document.getElementsByClassName('desc')[0]).css('font-size');
+        let desc = obj.description;
+        while (measureText(desc, fontSize, "").width >= targetWidth) {
+            desc = desc.substring(0, desc.length - 3);
+            hasBeenCut = true;
+        }
+        if (hasBeenCut) {
+            desc = desc.substring(0, desc.length - 3) + "...";
+        }
+        $('#' + obj.id + ' p').html(desc);
     }
     //    <li id="asdd" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem">Taskname</li>
+});
+
+socket.on('goUpdate', () => {
+    socket.emit('needTasks');
 });
 
 //Functions
@@ -63,4 +114,14 @@ function addTask() {
         socket.emit('editTask', data);
     else
         socket.emit('newTask', data);
+}
+
+function move(element, taskID) {
+    console.log(element.id, taskID);
+
+    socket.emit('moveTask', {
+        state: element.id,
+        id: taskID
+    });
+
 }
