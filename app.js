@@ -28,7 +28,7 @@ app.set('views', __dirname + '/views');
 
 //Cookie secret
 app.use(cookieSession({
-  secret: process.env.SECRET
+  secret: process.env.SECRET || "sdfkaödfjasdöiolasdiojhöoiököjöfasdkojhöasdioöjhasdoijh"
 }));
 app.use(bodyParser.urlencoded({ extended: true }))
 
