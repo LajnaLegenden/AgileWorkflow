@@ -6,32 +6,6 @@
     display: none;
 }
 
-
-
-/* width */
-
-::-webkit-scrollbar {
-    width: 5px;
-}
-
-/* Track */
-
-::-webkit-scrollbar-track {
-    background: #214040;
-}
-
-/* Handle */
-
-::-webkit-scrollbar-thumb {
-    background: #888;
-}
-
-/* Handle on hover */
-
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
 .infoGrid {
     display: grid;
     grid-template-columns: 6fr 3fr;
@@ -39,9 +13,12 @@
     width: 100%;
     margin: auto;
 }
+.container{
+    padding:0;
+}
 
 #mainInfo {
-    width: 90%;
+    width: 100%;
     padding-top:2em;
 }
 

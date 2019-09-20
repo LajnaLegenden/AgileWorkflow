@@ -125,11 +125,12 @@ ul {
 
 #addProject i {
     transition: all 200ms ease-in-out;
-    border-radius: 100%;
+    border-radius: 170%;
 }
 
 #addProject:hover i {
-    background: #85FFFE !important;
+    color: #85FFFE !important;
+    background:#214040;
     cursor: pointer;
 }
 

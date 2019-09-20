@@ -35,7 +35,12 @@
     height: 3em;
     font-size: 14px;
     box-shadow: 5px 10px 8px 10px #8d8d8d42;
+    cursor: grab;
+}
+.taskItem:active {
     cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
 }
 
 .taskItem:hover {
@@ -83,6 +88,7 @@
 
 #mainInfo {
     width: 90%;
+    padding:2em;
 }
 
 .comment {

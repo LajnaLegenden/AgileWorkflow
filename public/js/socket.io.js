@@ -107,6 +107,9 @@ socket.on('infoAboutTask', (data) => {
     let postdate = $('#infoPostdate').html("Date: " + data[0].postDate);
     let pID = $('#infoProjectId').html("Project ID " + data[0].projectID);
 });
+socket.on("updateProjects", data => {
+    socket.emit()
+});
 
 //Functions
 function addTask() {
@@ -127,5 +130,7 @@ function move(element, taskID) {
         state: element,
         id: taskID
     });
-
+}
+async function addProject(name, desc){
+    socket.emit("addProject",{name, desc});
 }
