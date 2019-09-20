@@ -100,3 +100,29 @@
     border-radius: 0.25rem;
     padding: 0.5em;
 }
+#showForm{
+    padding:0;
+    border:0;
+    text-decoration: none;
+}
+#showAddTaskForm{
+    padding-left:2em;
+    margin-left:5em;
+    width:100%;
+    display:flex;
+    justify-content: flex-start;
+    align-content:center;
+}
+#showForm:hover{
+    background:none;
+}
+#showForm:hover i{
+    color:#63BFBF;
+}
+#showForm i{
+    transition: all 100ms ease-in-out;
+}
+#log{
+    height:23vh;
+    overflow-y:scroll;
+}

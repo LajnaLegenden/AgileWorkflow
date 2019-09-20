@@ -3,19 +3,23 @@ const connection = require("./mysql");
 const bcryptjs = require("bcryptjs");
 
 const addTask = "INSERT INTO task (name, description, state, postDate, id, projectID) VALUES (?, ?, ?, ?, ?, ?)";
-const getAllTasks = "SELECT * FROM task";
+const getAllTasks = "SELECT * FROM task WHERE projectID = ?";
 const updateState = "UPDATE task SET state = ? WHERE id = ?";
+const getTask = "SELECT * FROM task WHERE id = ?"
 
 const getProject = "SELECT * FROM project WHERE id = ?"
 const verifyProcjetID = "SELECT * FROM project WHERE id = ?";
-const addProject = "INSERT INTO project (name, creator, admins, users, id) VALUES (?, ?, ?, ?, ?)"
+const addProject = "INSERT INTO project (name, creator, id) VALUES (?, ?, ?)"
 const addUserToProjcet = "UPDATE project SET users = ?";
-const getAllProjects = "SELECT * FROM project";
+const getAllProjects = "SELECT * FROM userProject WHERE username = ?";
+const addUserProject = "INSERT INTO userProject (username, projectID, admin) VALUES (?, ?, ?)";
 
 const getUser = "SELECT * FROM user WHERE username = ?"
 const addUser = "INSERT INTO user (username, password, firstname, lastname, email, projects) VALUES (?, ?, ?, ?, ?, ?)"
 const addProcjetToUser = "UPDATE user SET projects = ?";
-const getTask = "SELECT * FROM task WHERE id = ?"
+
+const addLog = "INSERT INTO log (html, projectID) VALUES (?, ?)";
+const getAllLogs = "SELECT * FROM log WHERE projectID = ?";
 
 function storeArray(array, pushItem) {
     array = JSON.parse(array)
@@ -31,8 +35,10 @@ class Database {
         await connection.queryP(addTask, [name, description, 'BACKLOG', postDate, id, projectID])
     }
     /**Returns all tasks*/
-    async getAllTasks() {
-        return await connection.queryP(getAllTasks);
+    async getAllTasks(projectID) {
+        if(projectID != undefined){
+            return await connection.queryP(getAllTasks, projectID);
+        }
     }
     /**Returns single task*/
     async getTask(id) {
@@ -40,6 +46,7 @@ class Database {
     }
     /**Updates the tasks state with the specified id*/
     async updateState({ state, id }) {
+        console.log(state)
         await connection.queryP(updateState, [state, id])
     }
     /**Checks if and id for a procjet already exists*/
@@ -50,13 +57,22 @@ class Database {
     async getProject(id) {
         return await connection.queryP(getProject, id);
     }
-    async getAllProjects(){
-        return await connection.queryP(getAllProjects);
+    async getAllProjects(username) {
+        if (username != undefined) {
+            let allProjectsIds = await connection.queryP(getAllProjects, username);
+            let projects = [];
+            for (let i = 0; i < allProjectsIds.length; i++) {
+                projects.push((await this.getProject(allProjectsIds[i].projectID))[0])
+            }
+            return projects
+        }
+
     }
     /**Adds a project*/
     async addProject({ name, creator }) {
         let id = await getNewId();
-        await connection.queryP(addProject, [name, creator, `[${creator}]`, `[${creator}]`, id]);
+        await connection.queryP(addProject, [name, creator, id]);
+        await connection.queryP(addUserProject, [creator, id, true]);
     }
     /**Adds a user to a project*/
     async addUserToProjcet({ username, projectID }) {
@@ -87,6 +103,12 @@ class Database {
         let user = await this.getUser(username)
         let projects = storeArray(user.projects, projectID)
         await connection.queryP(addProcjetToUser, projects);
+    }
+    async getAllLogs(projectID) {
+        return await connection.queryP(getAllLogs, projectID);
+    }
+    async addLog(html, projectID){
+        await connection.queryP(addLog, [html, projectID]);
     }
 }
 let Storage = new Database();

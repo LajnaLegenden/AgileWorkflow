@@ -7,13 +7,31 @@ let INPROGRESS = $('#INPROGRESS');
 let TOVERIFY = $('#TOVERIFY');
 let DONE = $('#DONE');
 let IMPEDIMENTS = $('#IMPEDIMENTS');
-
 //He
 $(document).ready(() => {
-    socket.emit('needTasks');
+    let projectID = $(".currentProject").attr("id")
+    socket.emit('needTasks', projectID);
 });
 
+function addNewEventListeners(newTask){
+    newTask.addEventListener('mouseenter', () => {
+        let id = $(newTask).attr('id');
+        $('#' + id + " p").removeClass('hidden');
 
+    });
+    newTask.addEventListener('mouseleave', () => {
+        let id = $(newTask).attr('id');
+        $('#' + id + " p").addClass('hidden');
+    });
+
+    newTask.addEventListener('click', () => {
+        let id = $(newTask).attr('id');
+        socket.emit('moreInfo', id);
+        $("#form").addClass("hide")
+        $("#taskDesc").removeClass("hide")
+        $("#comments").removeClass("hide")
+    });
+}
 isEditing = false;
 //Eventlistners
 $('#submitTask').on('click', addTask);
@@ -54,6 +72,9 @@ socket.on('allTasks', (data) => {
     }
     function addToBoard(obj, element) {
         $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border">${obj.name}<p  draggable="false" class="hidden desc">${obj.description}</p></li>`);
+        let newTask = document.getElementById(obj.id);
+        addNewEventListeners(newTask);
+
         function measureText(pText, pFontSize, pStyle) {
             var lDiv = document.createElement('div');
 
@@ -96,8 +117,9 @@ socket.on('allTasks', (data) => {
     }
 });
 
-socket.on('goUpdate', () => {
-    socket.emit('needTasks');;
+socket.on('goUpdate', (data) => {
+    let projectID = $(".currentProject").attr("id")
+    socket.emit('needTasks', projectID);;
 });
 
 socket.on('infoAboutTask', (data) => {
@@ -110,16 +132,18 @@ socket.on('infoAboutTask', (data) => {
 socket.on("updateProjects", data => {
     socket.emit()
 });
-
-socket.on('log', (data) => {
-    let d = new Date();
-    $('#log').append(`<span>[${d.getMinutes}.${d.getSeconds}.${d.getMilliseconds}] ${data}</span>`);
+socket.on('log', async (data) => {
+    
+    let element = data;
+    $('#log').append(element);
+    let chatHistory = document.getElementById("log");
+    chatHistory.scrollTop = chatHistory.scrollHeight;
 });
 
 //Functions
 function addTask() {
     let data = {};
-    data.projectID = "bw15v0bkZ7daDz7d5HtAOix0o0OY1lW7";
+    data.projectID = $(".currentProject").attr("id");
     data.name = $('#taskNameInput').val();
     data.description = $('#taskDescriptionInput').val();
     $('#taskDescriptionInput').val('');
@@ -133,9 +157,10 @@ function addTask() {
 function move(element, taskID) {
     socket.emit('moveTask', {
         state: element,
-        id: taskID
+        id: taskID,
+        projectID:$(".currentProject").attr("id")
     });
 }
-async function addProject(name, desc){
-    socket.emit("addProject",{name, desc});
+async function addProject(name, desc) {
+    socket.emit("addProject", { name, desc });
 }

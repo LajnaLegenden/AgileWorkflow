@@ -11,8 +11,7 @@ $(function () {
     e.preventDefault()
     let name = $("#name").val();
     let desc = $("#description").val();
-    if(projectName != "" && projectDesc != ""){
+    if(name != "" && desc != ""){
         addProject(name, desc)
     }
-    
   });

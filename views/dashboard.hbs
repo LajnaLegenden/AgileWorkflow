@@ -48,8 +48,10 @@
             </div>
         </div>
     </div>
-
+    <div id="showAddTaskForm"><button type="button" id="showForm" class="btn btn-outline-primary"><i
+                class="fas fa-plus fa-2x"></i></button></div>
     <div class="infoGrid" id="mainInfo">
+
         <div class="infoGrid">
             <div id="taskDesc" class="border">
                 <p id="infoName">Name</p>
@@ -82,6 +84,9 @@
             </div>
         </div>
         <div id="log" class="border">
+            {{#each logs}}
+               {{{this.html}}}
+            {{/each}}
         </div>
     </div>
 </main>

@@ -22,24 +22,26 @@ function socketIO() {
             cookies = cookie.parse(socket.handshake.headers.cookie);
         } catch (error) {
         }
-
         let user = new Buffer(cookies['express:sess'], 'base64').toString();
         user = JSON.parse(user);
         if (user !== "{}" || user == undefined) {
-            socket.on('newTask', (data) => {
-                Storage.addTask(data);
-                io.emit('goUpdate');
+            socket.on('newTask', async (data) => {
+                await Storage.addTask(data);
+                io.emit('goUpdate', data);
+                io.emit('log', log("addedTask", data));
             });
-            socket.on('needTasks', async () => {
-                let tasks = await Storage.getAllTasks();
+            socket.on('needTasks', async (projectID) => {
+                let tasks = await Storage.getAllTasks(projectID);
                 io.to(socket.id).emit('allTasks', tasks);
             });
 
-            // socket.on('moveTask', async (data) => {
-            //     await Storage.updateState(data);
-            //     io.emit('goUpdate');
-            //     io.emit('log', log('move')
-            // });
+            socket.on('moveTask', async data => {
+                await Storage.updateState(data);
+                io.emit('goUpdate', data);
+                let LOG = log('move', data);
+                io.emit('log', LOG)
+                await Storage.addLog(LOG, data.projectID)
+            });
 
             socket.on('moreInfo', async (id) => {
                 let task = await Storage.getTask(id);
@@ -49,14 +51,31 @@ function socketIO() {
             socket.on('addProject', async  data => {
                 data.creator = user.user;
                 await Storage.addProject(data);
-                io.emit('log', `@${user.user} created a project called ${data.name}`);
             });
+        }
+        function log(action, data) {
+            let d = new Date();
+            let hours = d.getHours().toString();
+            let minutes = d.getMinutes().toString()
+            let seconds = d.getSeconds().toString()
+            if(hours.length == 1){
+                hours += "0";
+                hours = hours.split("").reverse().join("");
+            }
+            if(minutes.length == 1){
+                minutes += "0";
+                minutes = minutes.split("").reverse().join("");
+            }
+            if(seconds.length == 1){
+                seconds += "0";
+                seconds = seconds.split("").reverse().join("");
+            }
+            switch (action) {
+                case 'move':
+                    return  `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${user.user}</b> moved ${data.id} to ${data.state}</div>`;
+                case 'addedTask':
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${user.user}</b> created a task called "${data.name}"</div>`;
+            }
         }
     });
 }
-
-// function log(action, data){
-//     switch (action){
-//         case 'move'
-//     }
-// }

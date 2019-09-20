@@ -1,6 +1,7 @@
 * {
     box-sizing: border-box;
     color: #214040;
+    overflow:hidden;
 }
 
 /* width */
