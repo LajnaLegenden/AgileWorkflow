@@ -26,6 +26,9 @@ module.exports = (app) => {
         res.sendFile(file('signup.html'), { root: "./" });
     });
     app.get('/login', (req, res) => {
+        if (req.session.user !== undefined) {
+            res.redirect('/');
+        }
         res.sendFile(file('login.html'), { root: "./", });
     });
     app.get("/logout", (req, res) => {
@@ -35,7 +38,6 @@ module.exports = (app) => {
 
     app.post("/signup", async (req, res) => {
         let user = req.body.user;
-        console.log(user)
         let result = await Storage.addUser(user);
         if (result == "Added user") {
             req.session.user = user.username;
@@ -45,8 +47,8 @@ module.exports = (app) => {
         }
     });
     app.post("/login", async (req, res) => {
+
         let user = req.body.user;
-        console.log("asdasdsa", user);
         if (await Storage.verifyUser(user)) {
             req.session.user = user.username;
             res.redirect("/");
