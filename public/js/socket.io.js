@@ -112,8 +112,6 @@ socket.on('allTasks', (data) => {
             desc = desc.substring(0, desc.length - 3) + "...";
         }
         $('#' + obj.id + ' p').html(desc);
-
-
     }
 });
 

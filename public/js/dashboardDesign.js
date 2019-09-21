@@ -23,18 +23,29 @@ function drag(ev) {
 function drop(ev) {
     ev.preventDefault();
     let doStuff = true;
-    let element = ev.srcElement;
-    if ($(element).is('li')) {
+    let element = $(ev.srcElement);
+    if (element.is('li')) {
         element = $(element).parent();
     }
-    if ($(element).is('p')) {
+    if (element.is('p')) {
         doStuff = false;
     }
 
-    element = $(element);
+
+    var data = ev.dataTransfer.getData("text")
+    let dropped = document.getElementById(data);
+
+
+    let from = $(dropped).parent().attr('id');
+    let to = element.attr('id');
+
+
+    if (from == to) {
+        doStuff = false;
+    }
+
+
     if (doStuff) {
-        var data = ev.dataTransfer.getData("text");
-        let dropped = document.getElementById(data);
         element.append(dropped);
         move(element.attr('id'), dropped.id)
     }
