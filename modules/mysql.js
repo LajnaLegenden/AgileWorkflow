@@ -2,14 +2,21 @@ const mysql = require("mysql");
 const util = require("util");
 
 const connection = mysql.createConnection({
-    host: "85.24.194.27",
-    user: "ag_code",
-    password: "ag_userPass60",
-    database: "AG_TASKS"
+    host: process.env.DBADDR,
+    user: process.env.DBUSER,
+    password: process.env.DBPASS,
+    database: process.env.DBNAME
 });
 
-connection.connect();
-connection.queryP = util.promisify(connection.query);
+console.log()
+
+try {
+    connection.connect();
+    connection.queryP = util.promisify(connection.query);
+} catch (error) {
+    console.log(error);
+    connection.connect();
+}
 
 module.exports = connection;
 

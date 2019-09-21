@@ -49,6 +49,7 @@
     box-shadow: 5px 10px 8px 10px #8d8d8d42;
     cursor: grab;
 }
+
 .taskItem:active {
     cursor: grabbing;
     cursor: -moz-grabbing;
@@ -100,7 +101,7 @@
 
 #mainInfo {
     width: 90%;
-    padding:2em;
+    padding: 2em;
 }
 
 .comment {
@@ -112,29 +113,50 @@
     border-radius: 0.25rem;
     padding: 0.5em;
 }
-#showForm{
-    padding:0;
-    border:0;
+
+#showForm {
+    padding: 0;
+    border: 0;
     text-decoration: none;
 }
-#showAddTaskForm{
-    padding-left:2em;
-    margin-left:5em;
-    width:100%;
-    display:flex;
+
+#showAddTaskForm {
+    padding-left: 2em;
+    margin-left: 5em;
+    width: 100%;
+    display: flex;
     justify-content: flex-start;
-    align-content:center;
+    align-content: center;
 }
-#showForm:hover{
-    background:none;
+
+#showForm:hover {
+    background: none;
 }
-#showForm:hover i{
-    color:#63BFBF;
+
+#showForm:hover i {
+    color: #63BFBF;
 }
-#showForm i{
+
+#showForm i {
     transition: all 100ms ease-in-out;
 }
-#log{
-    height:23vh;
-    overflow-y:scroll;
+
+#log {
+    height: 23vh;
+    overflow-y: scroll;
+    font-family: monospace;
+}
+
+.bar {
+    background: #476380;
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    z-index: -10;
+    padding-left: 5em;
+}
+
+.barItem {
+    min-width: 4em;
+    margin: 0px 0.7em 0px 0.7em
 }

@@ -115,8 +115,6 @@ socket.on('allTasks', (data) => {
             desc = desc.substring(0, desc.length - 3) + "...";
         }
         $('#' + obj.id + ' p').html(desc);
-
-
     }
 });
 
@@ -141,6 +139,10 @@ socket.on("updateProjects", data => {
     socket.emit()
 });
 socket.on('log', async (data) => {
+<<<<<<< HEAD
+=======
+
+>>>>>>> a832be1085546f73108fa207dfdee4c21937c0c9
     let element = data;
     $('#log').append(element);
     let chatHistory = document.getElementById("log");
@@ -153,8 +155,38 @@ socket.on("showComment", data => {
     $("#allComments").append(`<div class="comment border"><h6>@${data.author}</h6><p class="commentContent">${data.content}</p></div>`)
 });
 
+socket.on('onlinePeople', onlineusers => {
+    $('#online').html("Online: " + onlineusers);
+});
+
 socket.on('allGood', function () {
     $('#myModal').modal('hide');
+});
+
+socket.on('moveThisTask', data => {
+    let oldTask = $('#' + data.id);
+    console.log(oldTask);
+    console.log(data.state);
+    switch (data.state) {
+        case "BACKLOG":
+            BACKLOG.append(oldTask)
+            break;
+        case "TODO":
+            TODO.append(oldTask)
+            break;
+        case "INPROGRESS":
+            INPROGRESS.append(oldTask)
+            break;
+        case "TOVERIFY":
+            TOVERIFY.append(oldTask)
+            break;
+        case "DONE":
+            DONE.append(oldTask)
+            break;
+        case "IMPEDIMENTS":
+            IMPEDIMENTS.append(oldTask)
+            break;
+    }
 });
 //Functions
 function addTask() {
