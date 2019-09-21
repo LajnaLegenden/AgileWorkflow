@@ -47,13 +47,20 @@ function socketIO() {
 
             socket.on('moreInfo', async (id) => {
                 let task = await Storage.getTask(id);
-                io.to(socket.id).emit('infoAboutTask', task);
+                let comments = await Storage.getAllComments(task[0].id);
+                io.to(socket.id).emit('infoAboutTask', {task:task[0], comments});
             });
 
             socket.on('addProject', async  data => {
                 data.creator = user.user;
-                console.log(data)
                 await Storage.addProject(data);
+            });
+            socket.on("addComment", async data => {
+                data.author = user.user;
+                data.postDate = new Date();
+                checkIfNote(data.content);
+                await Storage.addComment(data);
+                io.emit("showComment", data)
             });
         }
         function log(action, data) {
@@ -79,6 +86,9 @@ function socketIO() {
                 case 'addedTask':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${user.user}</b> created a task called "${data.name}"</div>`;
             }
+        }
+        function checkIfNote(string){
+            return string.split("@")[1].split(" ");
         }
     });
 }

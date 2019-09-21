@@ -1,9 +1,21 @@
 .desc {
     overflow: hidden;
 }
-
 .hidden {
     height: 0px;
+}
+.currentTask{
+    background:lightgray;
+}
+#allComments{
+    overflow-y:auto;
+    height:20vh;
+
+}
+
+.commentContent{
+    margin:0;
+    padding:0;
 }
 
 .taskViewGrid {

@@ -53,14 +53,14 @@
     <div class="infoGrid" id="mainInfo">
 
         <div class="infoGrid">
-            <div id="taskDesc" class="border">
+            <div id="taskDesc" class="border hide">
                 <p id="infoName">Name</p>
                 <p id="infoDesc">Desc</p>
                 <p id="infoState">state</p>
                 <p id="infoPostdate">Posted</p>
                 <p id="infoProjectId">Prject ID</p>
             </div>
-            <div id="form" class="hide">
+            <div id="form" class="">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Task Name</span>
@@ -77,15 +77,28 @@
                 </div>
                 <button type="button" id="submitTask" class="btn btn-outline-primary">Add Task</button>
             </div>
-            <div id="comments" class="border">
-                <div class="comment border">
-                    <p>Yes we should do this<span> @Lajna</span></p>
+            <div id="comments" class="border hide">
+                <div id="allComments">
+                    <div class="comment border">
+                        <p>Yes we should do this<span> @Lajna</span></p>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="far fa-comment"></i></span>
+                    </div>
+                    <input type="text" id="Comment" class="form-control" id="taskNameInput" placeholder="Comment"
+                        aria-label="Comment" aria-describedby="basic-addon1">
+                    <div class="input-group-prepend">
+                        <button type="button" class="input-group-text btn btn-outline-primary"
+                            id="addComment">Send</button>
+                    </div>
                 </div>
             </div>
         </div>
         <div id="log" class="border">
             {{#each logs}}
-               {{{this.html}}}
+            {{{this.html}}}
             {{/each}}
         </div>
     </div>
