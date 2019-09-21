@@ -131,7 +131,6 @@ socket.on("updateProjects", data => {
     socket.emit()
 });
 socket.on('log', async (data) => {
-
     let element = data;
     $('#log').append(element);
     let chatHistory = document.getElementById("log");
@@ -148,8 +147,6 @@ socket.on('allGood', function () {
 
 socket.on('moveThisTask', data => {
     let oldTask = $('#' + data.id);
-    console.log(oldTask);
-    console.log(data.state);
     switch (data.state) {
         case "BACKLOG":
             BACKLOG.append(oldTask)
