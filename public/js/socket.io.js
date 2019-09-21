@@ -13,7 +13,7 @@ $(document).ready(() => {
     socket.emit('needTasks', projectID);
 });
 
-function addNewEventListeners(newTask){
+function addNewEventListeners(newTask) {
     newTask.addEventListener('mouseenter', () => {
         let id = $(newTask).attr('id');
         $('#' + id + " p").removeClass('hidden');
@@ -131,15 +131,45 @@ socket.on("updateProjects", data => {
     socket.emit()
 });
 socket.on('log', async (data) => {
-    
+
     let element = data;
     $('#log').append(element);
     let chatHistory = document.getElementById("log");
     chatHistory.scrollTop = chatHistory.scrollHeight;
 });
 
+socket.on('onlinePeople', onlineusers => {
+    $('#online').html("Online: " + onlineusers);
+});
+
 socket.on('allGood', function () {
     $('#myModal').modal('hide');
+});
+
+socket.on('moveThisTask', data => {
+    let oldTask = $('#' + data.id);
+    console.log(oldTask);
+    console.log(data.state);
+    switch (data.state) {
+        case "BACKLOG":
+            BACKLOG.append(oldTask)
+            break;
+        case "TODO":
+            TODO.append(oldTask)
+            break;
+        case "INPROGRESS":
+            INPROGRESS.append(oldTask)
+            break;
+        case "TOVERIFY":
+            TOVERIFY.append(oldTask)
+            break;
+        case "DONE":
+            DONE.append(oldTask)
+            break;
+        case "IMPEDIMENTS":
+            IMPEDIMENTS.append(oldTask)
+            break;
+    }
 });
 //Functions
 function addTask() {
@@ -159,7 +189,7 @@ function move(element, taskID) {
     socket.emit('moveTask', {
         state: element,
         id: taskID,
-        projectID:$(".currentProject").attr("id")
+        projectID: $(".currentProject").attr("id")
     });
 }
 async function addProject(name, desc) {

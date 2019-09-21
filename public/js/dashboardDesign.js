@@ -8,7 +8,6 @@ $('.card').hover(
 );
 let projectId = window.location.href.split("/");
 projectId = projectId[projectId.length - 1];
-console.log(projectId)
 $("#" + projectId).addClass("currentProject")
 
 
@@ -53,8 +52,8 @@ function drop(ev) {
 
 }
 $("#showForm").click(() => {
-    $("#form").removeClass("hide")
-    $("#taskDesc").addClass("hide")
-    $("#comments").addClass("hide")
+    $("#form").toggleClass("hide")
+    $("#taskDesc").toggleClass("hide")
+    $("#comments").toggleClass("hide");
 });
 

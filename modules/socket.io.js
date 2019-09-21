@@ -15,19 +15,21 @@ module.exports = (https, cookie) => {
 }
 
 function socketIO() {
+    let online = 0;
     io.on('connection', (socket) => {
-        var cookief = socket.handshake.headers.cookie;
-        let cookies;
-        let user;
-        try {
-            cookies = cookie.parse(socket.handshake.headers.cookie);
-            user = new Buffer(cookies['express:sess'], 'base64').toString();
-        } catch (err) {
-            console.log(err);
-            return;
-        }
-        user = JSON.parse(user);
+        //Online user with timeout to not add non auth people to the list
+        setTimeout(() => {
+            io.emit('onlinePeople', ++online);
+        }, 100);
+        socket.on('disconnect', () => {
+            setTimeout(() => {
+                io.emit('onlinePeople', --online);
+            }, 100);
+        })
+        //Make sure no non auth users are here (they should have dc)
+        user = socketioAuth(socket);
         if (user !== "{}" || user == undefined) {
+            //New task
             socket.on('newTask', async (data) => {
                 await Storage.addTask(data);
                 let LOG = log("addedTask", data);
@@ -35,30 +37,34 @@ function socketIO() {
                 await Storage.addLog(LOG, data.projectID)
                 io.emit('log', LOG);
             });
+            //Send all task for a certain project id
             socket.on('needTasks', async (projectID) => {
                 let tasks = await Storage.getAllTasks(projectID);
                 io.to(socket.id).emit('allTasks', tasks);
             });
-
+            //Update the moved task in the db and tell clients that the task has moved
+            //Only moves the task to save on network
             socket.on('moveTask', async data => {
                 await Storage.updateState(data);
-                io.emit('goUpdate', data);
+                socket.broadcast.emit('moveThisTask', data);
                 let LOG = log('move', data);
                 io.emit('log', LOG)
                 await Storage.addLog(LOG, data.projectID)
             });
-
+            //Gets the data for the task to show in the description box
             socket.on('moreInfo', async (id) => {
                 let task = await Storage.getTask(id);
                 io.to(socket.id).emit('infoAboutTask', task);
             });
-
+            //Makes a new projects
             socket.on('addProject', async  data => {
                 data.creator = user.user;
                 console.log(data)
                 await Storage.addProject(data);
+                io.to(socket.id).emit('allGood');
             });
         }
+        //Logs stuff in a pretty manner
         function log(action, data) {
             let d = new Date();
             let hours = d.getHours().toString();
@@ -84,4 +90,23 @@ function socketIO() {
             }
         }
     });
+
+}
+//Checks cookie for atuh
+function socketioAuth(socket) {
+    var cookief = socket.handshake.headers.cookie;
+    let cookies;
+    let user;
+    try {
+        cookies = cookie.parse(socket.handshake.headers.cookie);
+        user = new Buffer(cookies['express:sess'], 'base64').toString();
+    } catch (err) {
+        console.log(err);
+        socket.disconnect(true)
+        return;
+    }
+
+    if (user == "{}")
+        socket.disconnect(true);
+    return JSON.parse(user);
 }
