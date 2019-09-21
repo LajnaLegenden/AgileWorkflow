@@ -15,6 +15,7 @@ try {
     connection.queryP = util.promisify(connection.query);
 } catch (error) {
     console.log(error);
+    connection.connect();
 }
 
 module.exports = connection;
