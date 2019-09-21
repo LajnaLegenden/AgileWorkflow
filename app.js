@@ -1,3 +1,5 @@
+require('dotenv').config({ path: './env' });
+
 const express = require('express');
 const app = express();
 const https = require('https');
@@ -10,7 +12,7 @@ const hbs = require('express-hbs');
 const fs = require('fs');
 
 //Load env variablres
-require('dotenv').config({ path: './env' });
+
 
 
 var options = {
@@ -19,8 +21,8 @@ var options = {
   requestCert: false,
   rejectUnauthorized: false
 };
-hbs.registerHelper('trimString', function(passedString) {
-  var theString = passedString.substring(0,3).toUpperCase();
+hbs.registerHelper('trimString', function (passedString) {
+  var theString = passedString.substring(0, 3).toUpperCase();
   return new hbs.SafeString(theString)
 });
 let server = https.createServer(options, app);
