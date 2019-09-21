@@ -8,8 +8,12 @@ const connection = mysql.createConnection({
     database: "AG_TASKS"
 });
 
-connection.connect();
-connection.queryP = util.promisify(connection.query);
+try {
+    connection.connect();
+    connection.queryP = util.promisify(connection.query);
+} catch (error) {
+    console.log(error);
+}
 
 module.exports = connection;
 
