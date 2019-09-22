@@ -11,6 +11,8 @@ let IMPEDIMENTS = $('#IMPEDIMENTS');
 $(document).ready(() => {
     let projectID = $(".currentProject").attr("id")
     socket.emit('needTasks', projectID);
+    let chatHistory = document.getElementById("log");
+    chatHistory.scrollTop = chatHistory.scrollHeight;
 });
 
 function addNewEventListeners(newTask) {
@@ -139,10 +141,6 @@ socket.on("updateProjects", data => {
     socket.emit()
 });
 socket.on('log', async (data) => {
-<<<<<<< HEAD
-=======
-
->>>>>>> a832be1085546f73108fa207dfdee4c21937c0c9
     let element = data;
     $('#log').append(element);
     let chatHistory = document.getElementById("log");
@@ -215,7 +213,8 @@ async function addProject(name, desc) {
 function addComment() {
     let data = {
         content: $("#Comment").val(),
-        taskID: $(".currentTask").attr("id")
+        taskID: $(".currentTask").attr("id"),
+        projectID: $(".currentProject").attr("id")
     }
     console.log(data)
     socket.emit("addComment", data)

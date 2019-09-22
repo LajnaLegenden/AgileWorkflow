@@ -66,7 +66,8 @@ function socketIO() {
             socket.on("addComment", async data => {
                 data.author = user.user;
                 data.postDate = new Date();
-                checkIfNote(data.content);
+                data.userNote = checkIfNote(data.content);
+                await Storage.addUserNote(data.userNote, user.user, data.taskID, data.projectID)
                 await Storage.addComment(data);
                 io.emit("showComment", data)
             });
@@ -97,7 +98,8 @@ function socketIO() {
             }
         }
         function checkIfNote(string){
-            return string.split("@")[1].split(" ");
+            if(!string.includes("@")) return "";
+            else return string.split("@").join("").split(" ")[1]
         }
     });
 

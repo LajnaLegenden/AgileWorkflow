@@ -8,7 +8,6 @@ const connection = mysql.createConnection({
     database: process.env.DBNAME
 });
 
-console.log()
 
 try {
     connection.connect();

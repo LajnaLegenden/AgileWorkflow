@@ -62,9 +62,7 @@
 }
 
 .card {
-    display: flex;
     height: 40vh;
-    overflow: hidden;
 }
 
 /* width */

@@ -5,7 +5,6 @@ async function doStuff() {
     await connection.queryP(`
     CREATE TABLE userNote (
         username varchar(255),
-        content varchar(255),
         fromUser varchar(255),
         projectID varchar(255),
         taskID  varchar(255),

@@ -24,7 +24,7 @@ const getAllLogs = "SELECT * FROM log WHERE projectID = ?";
 const addComment = "INSERT INTO comment (author, content, postDate, taskID) VALUES (?, ?, ?, ?)";
 const getAllComments = "SELECT * FROM comment WHERE taskID = ?";
 
-const addUserNote = "INSERT INTO userNote (username, content, fromUser, projectID, taskID, id) VALUES (?, ?, ?, ?, ?, ?)";
+const addUserNote = "INSERT INTO userNote (username, fromUser, projectID, taskID, id) VALUES (?, ?, ?, ?, ?)";
 const getAllUserNotes = "SELECT * FROM userNote WHERE username = ?";
 const getUserNote = "SELECT * FROM userNote WHERE id = ?";
 
@@ -120,6 +120,9 @@ class Database {
     }
     async getAllComments(taskID){
         return await connection.queryP(getAllComments, taskID);
+    }
+    async addUserNote({username, fromUser, taskID, projectID}){
+        await connection.queryP(addUserNote, [username, fromUser, taskID, projectID, (await getNewId())]);
     }
 }
 let Storage = new Database();
