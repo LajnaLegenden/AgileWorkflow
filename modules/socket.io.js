@@ -59,6 +59,7 @@ function socketIO() {
                 Storage.deleteUserNotes(task[0].id);
                 let comments = await Storage.getAllComments(task[0].id);
                 io.to(socket.id).emit('infoAboutTask', { task: task[0], comments });
+                updateProjects();
             });
             //Makes a new projects
             socket.on('addProject', async  data => {
@@ -77,7 +78,8 @@ function socketIO() {
                     await Storage.addUserNote(userTagged, user.user, data.projectID, data.taskID);
                 });
                 await Storage.addComment(data);
-                io.emit("showComment", data)
+                io.emit("showComment", data);
+                updateProjects();
             });
             socket.on('myProjects', async () => {
                 let projects = await Storage.getAllProjects(socket.user);
@@ -121,6 +123,15 @@ function socketIO() {
                 string = string.substring(string.indexOf('@') + 1);
             }
             return users;
+        }
+
+        async function updateProjects() {
+            let projects = await Storage.getAllProjects(socket.user);
+            for (let i = 0; i < projects.length; i++) {
+                projects[i].notes = (await Storage.getAllUserNotes(socket.user, projects[i].id)).length;
+                if (projects[i].notes == 0) projects[i].notes = "";
+            }
+            io.to(socket.id).emit('updateProject', projects);
         }
     });
 

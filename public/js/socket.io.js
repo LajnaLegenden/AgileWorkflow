@@ -195,6 +195,17 @@ socket.on('yourProjects', data => {
     }
 });
 
+socket.on('updateProject', data => {
+    console.log(data)
+    let allProjects = $('.yourProjects').children();
+    for (let i in data) {
+        let notes = $('#' + data[i].id + " span");
+        if (notes != data[i].notes) {
+            notes.html(data[i].notes);
+        }
+    }
+});
+
 //Functions
 function addTask() {
     let data = {};
