@@ -27,6 +27,7 @@ const getAllComments = "SELECT * FROM comment WHERE taskID = ?";
 const addUserNote = "INSERT INTO userNote (username, fromUser, projectID, taskID, id) VALUES (?, ?, ?, ?, ?)";
 const getAllUserNotes = "SELECT * FROM userNote WHERE username = ?";
 const getUserNote = "SELECT * FROM userNote WHERE id = ?";
+const deleteUserNotes = "DELETE FROM userNote WHERE taskID = ?";
 
 function storeArray(array, pushItem) {
     array = JSON.parse(array)
@@ -121,8 +122,14 @@ class Database {
     async getAllComments(taskID){
         return await connection.queryP(getAllComments, taskID);
     }
-    async addUserNote({username, fromUser, taskID, projectID}){
+    async addUserNote(username, fromUser, taskID, projectID){
         await connection.queryP(addUserNote, [username, fromUser, taskID, projectID, (await getNewId())]);
+    }
+    async getAllUserNotes(username){
+        return await connection.queryP(getAllUserNotes, username);
+    }
+    async deleteUserNotes(taskID){
+        await connection.queryP(deleteUserNotes, taskID)
     }
 }
 let Storage = new Database();

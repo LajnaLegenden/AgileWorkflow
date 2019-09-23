@@ -99,17 +99,25 @@ ul {
 }
 
 .project {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     color: #63BFBF;
     background: grey;
     border: 2px solid #214040 !important;
     border-radius: 100%;
     height: 3em;
     width: 3em;
-    margin: 0.5em;
+    margin:0.5em;
     transition: all 200ms ease-in-out;
+}
+.project p{
+    font-weight: bold;
+    color: #63BFBF; 
+    text-align: center;
+    position: relative;
+    display:block;
+    left:50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin:0;
 }
 
 #addProject {
@@ -156,4 +164,11 @@ ul {
 
 .addNew {
     padding: 2em;
+}
+.notes{
+    background: #214040;
+    color:#85FFFE;
+    float:right;
+    padding-bottom:10px;
+    font-weight:500;
 }

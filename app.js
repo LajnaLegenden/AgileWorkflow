@@ -21,11 +21,10 @@ var options = {
   rejectUnauthorized: false
 };
 hbs.registerHelper('trimString', function (passedString) {
-  var theString = passedString.substring(0, 3).toUpperCase();
+  var theString = passedString.substring(0, 1).toUpperCase();
   return new hbs.SafeString(theString)
 });
 let server = https.createServer(options, app);
-
 
 
 //Handlebars setup

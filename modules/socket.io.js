@@ -56,6 +56,7 @@ function socketIO() {
             //Gets the data for the task to show in the description box
             socket.on('moreInfo', async (id) => {
                 let task = await Storage.getTask(id);
+                Storage.deleteUserNotes(task[0].id);
                 let comments = await Storage.getAllComments(task[0].id);
                 io.to(socket.id).emit('infoAboutTask', { task: task[0], comments });
             });
@@ -71,8 +72,10 @@ function socketIO() {
             socket.on("addComment", async data => {
                 data.author = user.user;
                 data.postDate = new Date();
-                data.userNote = checkIfNote(data.content);
-                await Storage.addUserNote(data.userNote, user.user, data.taskID, data.projectID);
+                data.userNote = checkIfNote(data.content) || [];
+                data.userNote.forEach(async userTagged => {
+                    await Storage.addUserNote(userTagged, user.user, data.projectID, data.taskID);
+                });
                 await Storage.addComment(data);
                 io.emit("showComment", data)
             });
@@ -107,8 +110,18 @@ function socketIO() {
             }
         }
         function checkIfNote(string) {
+<<<<<<< HEAD
             if (!string.includes("@")) return "";
             else return string.split("@")[1].join("");
+=======
+            let users = [];
+            if (!string.includes("@")) return "";
+            while (string.includes("@")) {
+                users.push(string.split("@")[1].split(" ")[0]);
+                string = string.substring(string.indexOf('@') + 1);
+            }
+            return users;
+>>>>>>> 47c60945a07384a1eaf881e922613698c20d89fa
         }
     });
 
