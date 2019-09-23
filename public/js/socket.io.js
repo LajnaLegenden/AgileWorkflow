@@ -216,6 +216,7 @@ function addComment() {
         taskID: $(".currentTask").attr("id"),
         projectID: $(".currentProject").attr("id")
     }
+    $("#Comment").val("");
     console.log(data)
     socket.emit("addComment", data)
 

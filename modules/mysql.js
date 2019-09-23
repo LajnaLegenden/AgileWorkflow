@@ -1,6 +1,7 @@
 const mysql = require("mysql");
 const util = require("util");
-
+require('dotenv').config({ path: './env' });
+console.log(process.env.DBADDR)
 const connection = mysql.createConnection({
     host: process.env.DBADDR,
     user: process.env.DBUSER,
