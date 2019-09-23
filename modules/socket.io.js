@@ -67,6 +67,10 @@ function socketIO() {
                 await Storage.addProject(data);
                 io.to(socket.id).emit('allGood');
                 let projects = await Storage.getAllProjects(socket.user);
+                for (let i = 0; i < projects.length; i++) {
+                    projects[i].notes = (await Storage.getAllUserNotes(socket.user, projects[i].id)).length;
+                    if (projects[i].notes == 0) projects[i].notes = "";
+                }
                 io.to(socket.id).emit('yourProjects', projects);
 
             });
