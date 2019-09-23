@@ -110,10 +110,6 @@ function socketIO() {
             }
         }
         function checkIfNote(string) {
-<<<<<<< HEAD
-            if (!string.includes("@")) return "";
-            else return string.split("@")[1].join("");
-=======
             let users = [];
             if (!string.includes("@")) return "";
             while (string.includes("@")) {
@@ -121,7 +117,6 @@ function socketIO() {
                 string = string.substring(string.indexOf('@') + 1);
             }
             return users;
->>>>>>> 47c60945a07384a1eaf881e922613698c20d89fa
         }
     });
 
