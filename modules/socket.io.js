@@ -54,8 +54,9 @@ function socketIO() {
             //Gets the data for the task to show in the description box
             socket.on('moreInfo', async (id) => {
                 let task = await Storage.getTask(id);
+                Storage.deleteUserNotes(task[0].id);
                 let comments = await Storage.getAllComments(task[0].id);
-                io.to(socket.id).emit('infoAboutTask', {task:task[0], comments});
+                io.to(socket.id).emit('infoAboutTask', { task: task[0], comments });
             });
             //Makes a new projects
             socket.on('addProject', async  data => {
@@ -66,8 +67,10 @@ function socketIO() {
             socket.on("addComment", async data => {
                 data.author = user.user;
                 data.postDate = new Date();
-                data.userNote = checkIfNote(data.content);
-                await Storage.addUserNote(data.userNote, user.user, data.taskID, data.projectID);
+                data.userNote = checkIfNote(data.content) || [];
+                data.userNote.forEach(async userTagged => {
+                    await Storage.addUserNote(userTagged, user.user, data.projectID, data.taskID);
+                });
                 await Storage.addComment(data);
                 io.emit("showComment", data)
             });
@@ -97,9 +100,14 @@ function socketIO() {
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${user.user}</b> created a task called "${data.name}"</div>`;
             }
         }
-        function checkIfNote(string){
-            if(!string.includes("@")) return "";
-            else return string.split("@")[1].join("");
+        function checkIfNote(string) {
+            let users = [];
+            if (!string.includes("@")) return "";
+            while (string.includes("@")) {
+                users.push(string.split("@")[1].split(" ")[0]);
+                string = string.substring(string.indexOf('@') + 1);
+            }
+            return users;
         }
     });
 

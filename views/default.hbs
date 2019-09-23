@@ -49,12 +49,16 @@
     {{#if loggedIn}}
     <div class="triangle"></div>
     <div class="projects">
-        {{#each allProjects}}
-        <button class="project" id="{{this.id}}" type="button" class="btn btn-secondary" data-toggle="tooltip"
-            data-placement="right" title="{{this.name}}">
-            {{trimString this.name}}
-        </button>
-        {{/each}}
+        <div class="yourProjects">
+            {{#each allProjects}}
+            <div class="project" id="{{this.id}}" class="btn btn-secondary" data-toggle="tooltip" data-placement="right"
+                title="{{this.name}}">
+                <p>{{trimString this.name}}</p>
+                <span class="badge notes">{{this.notes}}</span>
+            </div>
+
+            {{/each}}
+        </div>
         <button class="" id="addProject" type="button" class="btn btn-secondary" data-toggle="modal"
             data-target="#myModal">
             <i class="fas fa-plus-circle fa-2x"></i>
