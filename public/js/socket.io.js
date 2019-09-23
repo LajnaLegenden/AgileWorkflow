@@ -163,8 +163,6 @@ socket.on('allGood', function () {
 
 socket.on('moveThisTask', data => {
     let oldTask = $('#' + data.id);
-    console.log(oldTask);
-    console.log(data.state);
     switch (data.state) {
         case "BACKLOG":
             BACKLOG.append(oldTask)

@@ -1,3 +1,4 @@
+//Load env variablres
 require('dotenv').config({ path: './env' });
 
 const express = require('express');
@@ -10,8 +11,6 @@ const socketIO = require('./modules/socket.io');
 const router = require('./modules/router.js');
 const hbs = require('express-hbs');
 const fs = require('fs');
-
-//Load env variablres
 
 
 
@@ -35,13 +34,13 @@ app.set('views', __dirname + '/views');
 
 //Cookie secret
 app.use(cookieSession({
-  secret: process.env.SECRET || "sdfkaödfjasdöiolasdiojhöoiököjöfasdkojhöasdioöjhasdoijh"
+  secret: process.env.SECRET
 }));
 app.use(bodyParser.urlencoded({ extended: true }))
 
 //Start stuff
 socketIO(server, cookieSession({
-  secret: process.env.SECRET || "sdfkaödfjasdöiolasdiojhöoiököjöfasdkojhöasdioöjhasdoijh"
+  secret: process.env.SECRET
 }));
 router(app);
 
