@@ -46,6 +46,7 @@ function socketIO() {
                     tasks[i].notes = (await Storage.getAllUserNotesWithTask(socket.user, tasks[i].id)).length;
                     if (tasks[i].notes == 0) tasks[i].notes = "";
                 }
+                console.log(tasks)
                 io.to(socket.id).emit('allTasks', tasks);
             });
             //Update the moved task in the db and tell clients that the task has moved
@@ -61,6 +62,7 @@ function socketIO() {
             socket.on('moreInfo', async (id) => {
                 let task = await Storage.getTask(id);
                 Storage.deleteUserNotes(task[0].id);
+                io.emit("goUpdate");
                 let comments = await Storage.getAllComments(task[0].id);
                 io.to(socket.id).emit('infoAboutTask', { task: task[0], comments });
                 updateProjects();
@@ -79,15 +81,18 @@ function socketIO() {
 
             });
             socket.on("addComment", async data => {
+                console.log("ADDCOMMENT DATA", data.taskID)
                 data.author = user.user;
                 data.postDate = new Date();
                 data.userNote = checkIfNote(data.content) || [];
                 data.userNote.forEach(async userTagged => {
+                    console.log("eherer", data.taskID)
                     await Storage.addUserNote(userTagged, user.user, data.projectID, data.taskID);
                 });
                 await Storage.addComment(data);
                 io.emit("showComment", data);
                 updateProjects();
+                io.emit("goUpdate");
             });
             socket.on('myProjects', async () => {
                 let projects = await Storage.getAllProjects(socket.user);

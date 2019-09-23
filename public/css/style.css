@@ -161,6 +161,15 @@ ul {
     background: #214040;
     z-index: -1111;
 }
+.triangle-down{
+    position: fixed;
+    bottom:1.7em;
+    width: 7em;
+    height: 2em;
+    transform: rotateZ(45deg);
+    background: #214040;
+    z-index: -1111;
+}
 
 .addNew {
     padding: 2em;
@@ -170,5 +179,11 @@ ul {
     color:#85FFFE;
     float:right;
     padding-bottom:10px;
+    font-weight:500;
+}
+.taskNotes{
+    background: #214040;
+    color:#85FFFE;
+    float:right;
     font-weight:500;
 }

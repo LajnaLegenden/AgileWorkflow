@@ -10,8 +10,13 @@ let IMPEDIMENTS = $('#IMPEDIMENTS');
 
 $(document).ready(() => {
     let projectID = $(".currentProject").attr("id")
+    if(projectID != undefined){
+        console.log("got here")
+        socket.emit("needTasks", projectID);
+    }
     let chatHistory = document.getElementById("log");
-    chatHistory.scrollTop = chatHistory.scrollHeight;
+    if(chatHistory != null)
+        chatHistory.scrollTop = chatHistory.scrollHeight;
 });
 
 function addNewEventListeners(newTask) {
@@ -45,6 +50,8 @@ $("#addComment").on("click", addComment);
 //ReviceEvent
 socket.on('allTasks', (data) => {
     //Empty
+    let currentTask = $(".currentTask")
+    if(currentTask.length > 0) currentTask = $(".currentTask").attr("id");
     BACKLOG.empty();
     TODO.empty();
     INPROGRESS.empty();
@@ -74,9 +81,11 @@ socket.on('allTasks', (data) => {
                 break;
         }
     }
+    if(currentTask.length > 0) $("#" + currentTask).addClass("currentTask");
     function addToBoard(obj, element) {
-        $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border">${obj.name}<p  draggable="false" class="hidden desc">${obj.description}</p></li>`);
+        $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border">${obj.name}<span class="badge taskNotes">${obj.notes}</span><p  draggable="false" class="hidden desc">${obj.description}</p></li>`);
         let newTask = document.getElementById(obj.id);
+        console.log("ya")
         addNewEventListeners(newTask);
 
         function measureText(pText, pFontSize, pStyle) {
@@ -121,7 +130,7 @@ socket.on('allTasks', (data) => {
 
 socket.on('goUpdate', (data) => {
     let projectID = $(".currentProject").attr("id")
-    socket.emit('needTasks', projectID);;
+    socket.emit('needTasks', projectID);
 });
 
 socket.on('infoAboutTask', (data) => {
@@ -237,7 +246,7 @@ function addComment() {
         projectID: $(".currentProject").attr("id")
     }
     $("#Comment").val("");
-    console.log(data)
+    console.log("herererer", data)
     socket.emit("addComment", data)
 
 }

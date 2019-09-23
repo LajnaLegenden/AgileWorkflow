@@ -42,7 +42,7 @@ module.exports = (app) => {
             if (allProjects[i].notes == 0) allProjects[i].notes = "";
         }
         let logs = await Storage.getAllLogs(projectID)
-        res.render('dashboard', { title: "Projects", loggedIn: user, project, allProjects, logs });
+        res.render('dashboard', { title: "Projects", loggedIn: user, project, allProjects, logs});
     });
 
     app.get('/signup', (req, res) => {
