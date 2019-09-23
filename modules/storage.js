@@ -70,7 +70,7 @@ class Database {
             let allProjectsIds = await connection.queryP(getAllProjects, username);
             let projects = [];
             for (let i = 0; i < allProjectsIds.length; i++) {
-                projects.push((await this.getProject(allProjectsIds[i].projectID))[0])
+               projects.push((await this.getProject(allProjectsIds[i].projectID))[0])
             }
             return projects
         }
@@ -82,10 +82,8 @@ class Database {
         await connection.queryP(addUserProject, [creator, id, true]);
     }
     /**Adds a user to a project*/
-    async addUserToProjcet({ username, projectID }) {
-        let project = await getProject(projectID)[0];
-        let users = storeArray(project.users, username);
-        await connection.queryP(addUserToProjcet, users);
+    async addUserProject({ username, projectID }) {
+        await connection.queryP(addUserProject, [username, projectID, true]);
     }
     /**Adds a user*/
     async addUser({ username, password, firstname, lastname, email }) {
@@ -105,12 +103,7 @@ class Database {
         let user = await this.getUser(username);
         return user && user.length > 0 && bcryptjs.compare(password, user[0].password);
     }
-    /**Adds a procjetID to a user with a speceifed username*/
-    async addProcjetToUser({ projectID, username }) {
-        let user = await this.getUser(username)
-        let projects = storeArray(user.projects, projectID)
-        await connection.queryP(addProcjetToUser, projects);
-    }
+
     async getAllLogs(projectID) {
         return await connection.queryP(getAllLogs, projectID);
     }

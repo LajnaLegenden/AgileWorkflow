@@ -9,11 +9,6 @@ let DONE = $('#DONE');
 let IMPEDIMENTS = $('#IMPEDIMENTS');
 
 $(document).ready(() => {
-    let projectID = $(".currentProject").attr("id")
-    if(projectID != undefined){
-        console.log("got here")
-        socket.emit("needTasks", projectID);
-    }
     let chatHistory = document.getElementById("log");
     if(chatHistory != null)
         chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -44,6 +39,11 @@ isEditing = false;
 //Eventlistners
 $('#submitTask').on('click', addTask);
 $("#addComment").on("click", addComment);
+$("#addUser").on("click", e => {
+    e.preventDefault();
+    console.log("here")
+    addUser($("#usernameAdd").val());
+});
 
 
 
@@ -85,7 +85,6 @@ socket.on('allTasks', (data) => {
     function addToBoard(obj, element) {
         $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border">${obj.name}<span class="badge taskNotes">${obj.notes}</span><p  draggable="false" class="hidden desc">${obj.description}</p></li>`);
         let newTask = document.getElementById(obj.id);
-        console.log("ya")
         addNewEventListeners(newTask);
 
         function measureText(pText, pFontSize, pStyle) {
@@ -130,6 +129,7 @@ socket.on('allTasks', (data) => {
 
 socket.on('goUpdate', (data) => {
     let projectID = $(".currentProject").attr("id")
+    console.log("got here")
     socket.emit('needTasks', projectID);
 });
 
@@ -257,9 +257,16 @@ function addComment() {
         projectID: $(".currentProject").attr("id")
     }
     $("#Comment").val("");
-    console.log("herererer", data)
     socket.emit("addComment", data)
 
+}
+function addUser(username){
+    let data = {
+        users:username.split(","),
+        projectID: $(".currentProject").attr("id")
+    }
+    console.log(data)
+    socket.emit("addUser", data)
 }
 
 function prependThisProject(obj) {

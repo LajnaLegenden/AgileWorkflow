@@ -41,6 +41,7 @@ function socketIO() {
             });
             //Send all task for a certain project id
             socket.on('needTasks', async (projectID) => {
+                console.log(projectID)
                 let tasks = await Storage.getAllTasks(projectID);
                 for (let i = 0; i < tasks.length; i++) {
                     tasks[i].notes = (await Storage.getAllUserNotesWithTask(socket.user, tasks[i].id)).length;
@@ -63,10 +64,10 @@ function socketIO() {
             socket.on('moreInfo', async (id) => {
                 let task = await Storage.getTask(id);
                 Storage.deleteUserNotes(task[0].id);
-                io.emit("goUpdate");
                 let comments = await Storage.getAllComments(task[0].id);
                 io.to(socket.id).emit('infoAboutTask', { task: task[0], comments });
                 updateProjects();
+                io.emit("goUpdate")
             });
             //Makes a new projects
             socket.on('addProject', async  data => {
@@ -92,7 +93,7 @@ function socketIO() {
                 await Storage.addComment(data);
                 io.emit("showComment", data);
                 updateProjects();
-                io.emit("goUpdate");
+                io.emit("goUpdate")
             });
             socket.on('myProjects', async () => {
                 let projects = await Storage.getAllProjects(socket.user);
@@ -101,6 +102,10 @@ function socketIO() {
                     if (projects[i].notes == 0) projects[i].notes = "";
                 }
                 io.to(socket.id).emit('yourProjects', projects);
+            });
+            socket.on("addUser", async data => {
+                for(let i in data.users)
+                await Storage.addUserProject({projectID:data.projectID, username:data.users[i]})
             });
         }
         //Logs stuff in a pretty manner

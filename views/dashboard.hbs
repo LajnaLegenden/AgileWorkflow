@@ -49,7 +49,12 @@
         </div>
     </div>
     <div id="showAddTaskForm"><button type="button" id="showForm" class="btn btn-outline-primary"><i
-                class="fas fa-plus fa-2x"></i></button></div>
+                class="fas fa-plus fa-2x"></i></button>
+        <button class="" id="addProject" type="button" class="btn btn-secondary" data-toggle="modal"
+            data-target="#addUserModal">
+            ADD
+        </button>
+    </div>
     <div class="infoGrid" id="mainInfo">
 
         <div class="infoGrid">
@@ -100,6 +105,19 @@
             {{#each logs}}
             {{{this.html}}}
             {{/each}}
+        </div>
+    </div>
+    <div class="modal fade" id="addUserModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <form class="addNew">
+                    <div class="form-group">
+                        <label for="name">Username</label>
+                        <input type="input" class="form-control" id="usernameAdd" placeholder="Enter Username">
+                    </div>
+                    <div class="from-group"><button class="btn btn-primary" id="addUser">Add User</button></div>
+                </form>
+            </div>
         </div>
     </div>
 </main>
