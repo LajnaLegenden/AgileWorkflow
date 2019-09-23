@@ -44,7 +44,6 @@ socketIO(server, cookieSession({
 }));
 router(app);
 
-
 //Config things
 const port = process.env.PORT || 3000;
 

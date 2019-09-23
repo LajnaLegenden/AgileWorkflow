@@ -1,4 +1,5 @@
 const Storage = require("./storage.js");
+const express = require('express');
 function auth(req, res, next) {
     if (!req.session.user) {
         res.redirect("/login?returnUrl=" + req.url);
@@ -9,6 +10,17 @@ function auth(req, res, next) {
 
 
 module.exports = (app) => {
+
+    app.use(function (req, res, next) {
+        if (req.secure) {
+            // request was via https, so do no special handling
+            next();
+        } else {
+            // request was via http, so redirect to https
+            console.log("asd");
+            res.redirect('https://' + req.headers.host + req.url);
+        }
+    });
 
     app.get("/favicon.ico", (req, res) => {
         res.sendStatus(404);

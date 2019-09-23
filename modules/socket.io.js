@@ -17,6 +17,10 @@ module.exports = (https, cookie) => {
 function socketIO() {
     let online = 0;
     io.on('connection', (socket) => {
+        //Make sure no non auth users are here (they should have dc)
+
+        user = socketioAuth(socket);
+        socket.user = user.user;
         //Online user with timeout to not add non auth people to the list
         setTimeout(() => {
             io.emit('onlinePeople', ++online);
@@ -26,9 +30,7 @@ function socketIO() {
                 io.emit('onlinePeople', --online);
             }, 100);
         })
-        //Make sure no non auth users are here (they should have dc)
-        user = socketioAuth(socket);
-        if (user !== "{}" || user == undefined) {
+        if (socket.user !== "{}" || socket.user == undefined) {
             //New task
             socket.on('newTask', async (data) => {
                 await Storage.addTask(data);
@@ -63,6 +65,9 @@ function socketIO() {
                 data.creator = user.user;
                 await Storage.addProject(data);
                 io.to(socket.id).emit('allGood');
+                let projects = await Storage.getAllProjects(socket.user);
+                io.to(socket.id).emit('yourProjects', projects);
+
             });
             socket.on("addComment", async data => {
                 data.author = user.user;
@@ -73,6 +78,10 @@ function socketIO() {
                 });
                 await Storage.addComment(data);
                 io.emit("showComment", data)
+            });
+            socket.on('myProjects', async () => {
+                let projects = await Storage.getAllProjects(socket.user);
+                io.to(socket.id).emit('yourProjects', projects);
             });
         }
         //Logs stuff in a pretty manner
@@ -101,6 +110,10 @@ function socketIO() {
             }
         }
         function checkIfNote(string) {
+<<<<<<< HEAD
+            if (!string.includes("@")) return "";
+            else return string.split("@")[1].join("");
+=======
             let users = [];
             if (!string.includes("@")) return "";
             while (string.includes("@")) {
@@ -108,6 +121,7 @@ function socketIO() {
                 string = string.substring(string.indexOf('@') + 1);
             }
             return users;
+>>>>>>> 47c60945a07384a1eaf881e922613698c20d89fa
         }
     });
 

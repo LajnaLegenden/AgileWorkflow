@@ -1,7 +1,7 @@
 * {
     box-sizing: border-box;
     color: #214040;
-    overflow:hidden;
+    overflow: hidden;
 }
 
 /* width */
@@ -87,10 +87,11 @@ li.active>a {
 ul {
     height: 100%;
 }
-.projects{
-    padding-top:2em;
-    direction:rtl;
-    overflow:auto;
+
+.projects {
+    padding-top: 2em;
+    direction: rtl;
+    overflow: auto;
     position: fixed;
     width: 4em;
     height: 100vh;
@@ -139,7 +140,7 @@ ul {
 
 #addProject:hover i {
     color: #85FFFE !important;
-    background:#214040;
+    background: #214040;
     cursor: pointer;
 }
 

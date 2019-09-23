@@ -7,10 +7,9 @@ let INPROGRESS = $('#INPROGRESS');
 let TOVERIFY = $('#TOVERIFY');
 let DONE = $('#DONE');
 let IMPEDIMENTS = $('#IMPEDIMENTS');
-//He
+
 $(document).ready(() => {
     let projectID = $(".currentProject").attr("id")
-    socket.emit('needTasks', projectID);
     let chatHistory = document.getElementById("log");
     chatHistory.scrollTop = chatHistory.scrollHeight;
 });
@@ -147,9 +146,6 @@ socket.on('log', async (data) => {
     chatHistory.scrollTop = chatHistory.scrollHeight;
 });
 socket.on("showComment", data => {
-    // <div class="comment border">
-    //     <p>Yes we should do this<span> @Lajna</span></p>
-    // </div>
     $("#allComments").append(`<div class="comment border"><h6>@${data.author}</h6><p class="commentContent">${data.content}</p></div>`)
 });
 
@@ -184,6 +180,20 @@ socket.on('moveThisTask', data => {
             break;
     }
 });
+
+socket.on('yourProjects', data => {
+    for (let i in data) {
+        let obj = data[i];
+        prependThisProject(obj);
+        $('#' + obj.id).on('click', () => {
+            let project = $('#' + obj.id);
+            socket.emit('needTasks', obj.id);
+            $('.currentProject').removeClass('currentProject');
+            project.addClass('currentProject');
+        });
+    }
+});
+
 //Functions
 function addTask() {
     let data = {};
@@ -218,4 +228,16 @@ function addComment() {
     console.log(data)
     socket.emit("addComment", data)
 
+}
+
+function prependThisProject(obj) {
+    let projects = $('.projects');
+    let id = window.location.href.split('/');
+    id = id[id.length - 1];
+    let displayName = obj.name.substring(0, 2).toUpperCase();
+    projects.prepend(`<a class="project" id="${obj.id}" class="btn btn-secondary" data-placement="right" data-toggle="tooltip" title="${obj.name}">${displayName}</a>`)
+    $('#' + obj.id).tooltip({ boundary: 'window' });
+    if (obj.id == id) {
+        $('#' + obj.id).addClass('currentProject');
+    }
 }
