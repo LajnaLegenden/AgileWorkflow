@@ -182,10 +182,10 @@ socket.on('moveThisTask', data => {
 });
 
 socket.on('yourProjects', data => {
-    $('.yourProjects').empty();
+    //$('.yourProjects').empty();
     for (let i in data) {
         let obj = data[i];
-        prependThisProject(obj);
+        //prependThisProject(obj);
         $('#' + obj.id).on('click', () => {
             let project = $('#' + obj.id);
             socket.emit('needTasks', obj.id);
@@ -239,7 +239,7 @@ function prependThisProject(obj) {
     projects.append(` <div class="project" id="${obj.id}" class="btn btn-secondary" data-toggle="tooltip" data-placement="right"
                 title="${obj.name}">
                 <p>${obj.name.substring(0, 2).toUpperCase()}</p>
-                <span class="badge notes">${"as"}</span >
+                <span class="badge notes">a</span >
             </div > `)
     $('#' + obj.id).tooltip({ boundary: 'window' });
     if (obj.id == id) {

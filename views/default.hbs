@@ -50,6 +50,14 @@
     <div class="triangle"></div>
     <div class="projects">
         <div class="yourProjects">
+            {{#each allProjects}}
+            <div class="project" id="{{this.id}}" class="btn btn-secondary" data-toggle="tooltip" data-placement="right"
+                title="{{this.name}}">
+                <p>{{trimString this.name}}</p>
+                <span class="badge notes">{{this.notes}}</span>
+            </div>
+
+            {{/each}}
         </div>
         <button class="" id="addProject" type="button" class="btn btn-secondary" data-toggle="modal"
             data-target="#myModal">
