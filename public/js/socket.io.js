@@ -182,6 +182,7 @@ socket.on('moveThisTask', data => {
 });
 
 socket.on('yourProjects', data => {
+    $('.yourProjects').empty();
     for (let i in data) {
         let obj = data[i];
         prependThisProject(obj);
@@ -231,11 +232,15 @@ function addComment() {
 }
 
 function prependThisProject(obj) {
-    let projects = $('.projects');
+    let projects = $('.yourProjects');
     let id = window.location.href.split('/');
     id = id[id.length - 1];
     let displayName = obj.name.substring(0, 2).toUpperCase();
-    projects.prepend(`<a class="project" id="${obj.id}" class="btn btn-secondary" data-placement="right" data-toggle="tooltip" title="${obj.name}">${displayName}</a>`)
+    projects.append(` <div class="project" id="${obj.id}" class="btn btn-secondary" data-toggle="tooltip" data-placement="right"
+                title="${obj.name}">
+                <p>${obj.name.substring(0, 2).toUpperCase()}</p>
+                <span class="badge notes">${"as"}</span >
+            </div > `)
     $('#' + obj.id).tooltip({ boundary: 'window' });
     if (obj.id == id) {
         $('#' + obj.id).addClass('currentProject');
