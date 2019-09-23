@@ -1,4 +1,5 @@
 const Storage = require("./storage.js");
+const express = require('express');
 function auth(req, res, next) {
     if (!req.session.user) {
         res.redirect("/login?returnUrl=" + req.url);
@@ -9,6 +10,17 @@ function auth(req, res, next) {
 
 
 module.exports = (app) => {
+
+    app.use(function (req, res, next) {
+        if (req.secure) {
+            // request was via https, so do no special handling
+            next();
+        } else {
+            // request was via http, so redirect to https
+            console.log("asd");
+            res.redirect('https://' + req.headers.host + req.url);
+        }
+    });
 
     app.get("/favicon.ico", (req, res) => {
         res.sendStatus(404);
@@ -25,8 +37,12 @@ module.exports = (app) => {
         let project = (await Storage.getProject(projectID))[0];
         let user = req.session.user;
         let allProjects = await Storage.getAllProjects(user);
+        for (let i = 0; i < allProjects.length; i++) {
+            allProjects[i].notes = (await Storage.getAllUserNotes(user, allProjects[i].id)).length;
+            if (allProjects[i].notes == 0) allProjects[i].notes = "";
+        }
         let logs = await Storage.getAllLogs(projectID)
-        res.render('dashboard', { title: "Projects", loggedIn: req.session.user, project, allProjects, logs});
+        res.render('dashboard', { title: "Projects", loggedIn: user, project, allProjects, logs});
     });
 
     app.get('/signup', (req, res) => {

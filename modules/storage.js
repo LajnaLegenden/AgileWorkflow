@@ -25,8 +25,10 @@ const addComment = "INSERT INTO comment (author, content, postDate, taskID) VALU
 const getAllComments = "SELECT * FROM comment WHERE taskID = ?";
 
 const addUserNote = "INSERT INTO userNote (username, fromUser, projectID, taskID, id) VALUES (?, ?, ?, ?, ?)";
-const getAllUserNotes = "SELECT * FROM userNote WHERE username = ?";
+const getAllUserNotes = "SELECT * FROM userNote WHERE (username = ? AND projectID = ?)";
+const getAllUserNotesWithTask = "SELECT * FROM userNote WHERE (username = ? AND taskID = ?)";
 const getUserNote = "SELECT * FROM userNote WHERE id = ?";
+const deleteUserNotes = "DELETE FROM userNote WHERE taskID = ?";
 
 function storeArray(array, pushItem) {
     array = JSON.parse(array)
@@ -121,8 +123,17 @@ class Database {
     async getAllComments(taskID){
         return await connection.queryP(getAllComments, taskID);
     }
-    async addUserNote({username, fromUser, taskID, projectID}){
-        await connection.queryP(addUserNote, [username, fromUser, taskID, projectID, (await getNewId())]);
+    async addUserNote(username, fromUser, projectID, taskID){
+        await connection.queryP(addUserNote, [username, fromUser, projectID, taskID, (await getNewId())]);
+    }
+    async getAllUserNotes(username, projectID){
+        return await connection.queryP(getAllUserNotes, [username, projectID]);
+    }
+    async getAllUserNotesWithTask(username, taskID){
+        return await connection.queryP(getAllUserNotesWithTask, [username, taskID]);
+    }
+    async deleteUserNotes(taskID){
+        await connection.queryP(deleteUserNotes, taskID)
     }
 }
 let Storage = new Database();
@@ -134,7 +145,6 @@ async function getNewId() {
     }
 
     if (await Storage.verifyProcjetID(testId)) {
-
         return testId;
     }
     return this.getNewId();

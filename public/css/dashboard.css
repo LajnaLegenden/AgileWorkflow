@@ -46,7 +46,10 @@
     transition: 100ms ease-in-out;
     height: 3em;
     font-size: 14px;
-    box-shadow: 5px 10px 8px 10px #8d8d8d42;
+    margin:0.5em;
+    border:1px solid #214040 !important;
+    border-radius: 5px !important;
+    box-shadow: 1px 2.5px 2px 2.5px #8d8d8d42;
     cursor: grab;
 }
 
@@ -146,7 +149,7 @@
 }
 
 .bar {
-    background: #476380;
+    background: #214040;
     position: absolute;
     bottom: 0px;
     width: 100%;
@@ -155,6 +158,7 @@
 }
 
 .barItem {
+    color:#63BFBF;
     min-width: 4em;
     margin: 0px 0.7em 0px 0.7em
 }

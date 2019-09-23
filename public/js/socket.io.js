@@ -7,12 +7,16 @@ let INPROGRESS = $('#INPROGRESS');
 let TOVERIFY = $('#TOVERIFY');
 let DONE = $('#DONE');
 let IMPEDIMENTS = $('#IMPEDIMENTS');
-//He
+
 $(document).ready(() => {
     let projectID = $(".currentProject").attr("id")
-    socket.emit('needTasks', projectID);
+    if(projectID != undefined){
+        console.log("got here")
+        socket.emit("needTasks", projectID);
+    }
     let chatHistory = document.getElementById("log");
-    chatHistory.scrollTop = chatHistory.scrollHeight;
+    if(chatHistory != null)
+        chatHistory.scrollTop = chatHistory.scrollHeight;
 });
 
 function addNewEventListeners(newTask) {
@@ -46,6 +50,8 @@ $("#addComment").on("click", addComment);
 //ReviceEvent
 socket.on('allTasks', (data) => {
     //Empty
+    let currentTask = $(".currentTask")
+    if(currentTask.length > 0) currentTask = $(".currentTask").attr("id");
     BACKLOG.empty();
     TODO.empty();
     INPROGRESS.empty();
@@ -75,9 +81,11 @@ socket.on('allTasks', (data) => {
                 break;
         }
     }
+    if(currentTask.length > 0) $("#" + currentTask).addClass("currentTask");
     function addToBoard(obj, element) {
-        $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border">${obj.name}<p  draggable="false" class="hidden desc">${obj.description}</p></li>`);
+        $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border">${obj.name}<span class="badge taskNotes">${obj.notes}</span><p  draggable="false" class="hidden desc">${obj.description}</p></li>`);
         let newTask = document.getElementById(obj.id);
+        console.log("ya")
         addNewEventListeners(newTask);
 
         function measureText(pText, pFontSize, pStyle) {
@@ -122,7 +130,7 @@ socket.on('allTasks', (data) => {
 
 socket.on('goUpdate', (data) => {
     let projectID = $(".currentProject").attr("id")
-    socket.emit('needTasks', projectID);;
+    socket.emit('needTasks', projectID);
 });
 
 socket.on('infoAboutTask', (data) => {
@@ -136,6 +144,9 @@ socket.on('infoAboutTask', (data) => {
         comment = data.comments[comment];
         $("#allComments").append(`<div class="comment border"><h6>@${comment.author}</h6><p class="commentContent">${comment.content}</p></div>`)
     }
+    let chatHistory = document.getElementById("allComments");
+    if(chatHistory != null)
+        chatHistory.scrollTop = chatHistory.scrollHeight;
 });
 socket.on("updateProjects", data => {
     socket.emit()
@@ -146,11 +157,16 @@ socket.on('log', async (data) => {
     let chatHistory = document.getElementById("log");
     chatHistory.scrollTop = chatHistory.scrollHeight;
 });
+socket.on("updateLog", data => {
+    $('#log').empty();
+    for(i in data)
+        $('#log').append(data[i].html);
+});
 socket.on("showComment", data => {
-    // <div class="comment border">
-    //     <p>Yes we should do this<span> @Lajna</span></p>
-    // </div>
     $("#allComments").append(`<div class="comment border"><h6>@${data.author}</h6><p class="commentContent">${data.content}</p></div>`)
+    let chatHistory = document.getElementById("allComments");
+    if(chatHistory != null)
+        chatHistory.scrollTop = chatHistory.scrollHeight;
 });
 
 socket.on('onlinePeople', onlineusers => {
@@ -163,8 +179,6 @@ socket.on('allGood', function () {
 
 socket.on('moveThisTask', data => {
     let oldTask = $('#' + data.id);
-    console.log(oldTask);
-    console.log(data.state);
     switch (data.state) {
         case "BACKLOG":
             BACKLOG.append(oldTask)
@@ -186,6 +200,32 @@ socket.on('moveThisTask', data => {
             break;
     }
 });
+
+socket.on('yourProjects', data => {
+    $('.yourProjects').empty();
+    for (let i in data) {
+        let obj = data[i];
+        prependThisProject(obj);
+        $('#' + obj.id).on('click', () => {
+            let project = $('#' + obj.id);
+            socket.emit('needTasks', obj.id);
+            $('.currentProject').removeClass('currentProject');
+            project.addClass('currentProject');
+        });
+    }
+});
+
+socket.on('updateProject', data => {
+    console.log(data)
+    let allProjects = $('.yourProjects').children();
+    for (let i in data) {
+        let notes = $('#' + data[i].id + " span");
+        if (notes != data[i].notes) {
+            notes.html(data[i].notes);
+        }
+    }
+});
+
 //Functions
 function addTask() {
     let data = {};
@@ -216,7 +256,24 @@ function addComment() {
         taskID: $(".currentTask").attr("id"),
         projectID: $(".currentProject").attr("id")
     }
-    console.log(data)
+    $("#Comment").val("");
+    console.log("herererer", data)
     socket.emit("addComment", data)
 
+}
+
+function prependThisProject(obj) {
+    let projects = $('.yourProjects');
+    let id = window.location.href.split('/');
+    id = id[id.length - 1];
+    let displayName = obj.name.substring(0, 2).toUpperCase();
+    projects.append(` <div class="project" id="${obj.id}" class="btn btn-secondary" data-toggle="tooltip" data-placement="right"
+                title="${obj.name}">
+                <p>${obj.name.substring(0, 2).toUpperCase()}</p>
+                <span class="badge notes">${obj.notes}</span >
+            </div > `)
+    $('#' + obj.id).tooltip({ boundary: 'window' });
+    if (obj.id == id) {
+        $('#' + obj.id).addClass('currentProject');
+    }
 }

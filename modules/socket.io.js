@@ -17,6 +17,10 @@ module.exports = (https, cookie) => {
 function socketIO() {
     let online = 0;
     io.on('connection', (socket) => {
+        //Make sure no non auth users are here (they should have dc)
+
+        user = socketioAuth(socket);
+        socket.user = user.user;
         //Online user with timeout to not add non auth people to the list
         setTimeout(() => {
             io.emit('onlinePeople', ++online);
@@ -26,9 +30,7 @@ function socketIO() {
                 io.emit('onlinePeople', --online);
             }, 100);
         })
-        //Make sure no non auth users are here (they should have dc)
-        user = socketioAuth(socket);
-        if (user !== "{}" || user == undefined) {
+        if (socket.user !== "{}" || socket.user == undefined) {
             //New task
             socket.on('newTask', async (data) => {
                 await Storage.addTask(data);
@@ -40,6 +42,12 @@ function socketIO() {
             //Send all task for a certain project id
             socket.on('needTasks', async (projectID) => {
                 let tasks = await Storage.getAllTasks(projectID);
+                for (let i = 0; i < tasks.length; i++) {
+                    tasks[i].notes = (await Storage.getAllUserNotesWithTask(socket.user, tasks[i].id)).length;
+                    if (tasks[i].notes == 0) tasks[i].notes = "";
+                }
+                let logs = await Storage.getAllLogs(projectID);
+                io.emit("updateLog", logs)
                 io.to(socket.id).emit('allTasks', tasks);
             });
             //Update the moved task in the db and tell clients that the task has moved
@@ -54,22 +62,45 @@ function socketIO() {
             //Gets the data for the task to show in the description box
             socket.on('moreInfo', async (id) => {
                 let task = await Storage.getTask(id);
+                Storage.deleteUserNotes(task[0].id);
+                io.emit("goUpdate");
                 let comments = await Storage.getAllComments(task[0].id);
-                io.to(socket.id).emit('infoAboutTask', {task:task[0], comments});
+                io.to(socket.id).emit('infoAboutTask', { task: task[0], comments });
+                updateProjects();
             });
             //Makes a new projects
             socket.on('addProject', async  data => {
                 data.creator = user.user;
                 await Storage.addProject(data);
                 io.to(socket.id).emit('allGood');
+                let projects = await Storage.getAllProjects(socket.user);
+                for (let i = 0; i < projects.length; i++) {
+                    projects[i].notes = (await Storage.getAllUserNotes(socket.user, projects[i].id)).length;
+                    if (projects[i].notes == 0) projects[i].notes = "";
+                }
+                io.to(socket.id).emit('yourProjects', projects);
+
             });
             socket.on("addComment", async data => {
                 data.author = user.user;
                 data.postDate = new Date();
-                data.userNote = checkIfNote(data.content);
-                await Storage.addUserNote(data.userNote, user.user, data.taskID, data.projectID)
+                data.userNote = checkIfNote(data.content) || [];
+                data.userNote.forEach(async userTagged => {
+                    console.log("eherer", data.taskID)
+                    await Storage.addUserNote(userTagged, user.user, data.projectID, data.taskID);
+                });
                 await Storage.addComment(data);
-                io.emit("showComment", data)
+                io.emit("showComment", data);
+                updateProjects();
+                io.emit("goUpdate");
+            });
+            socket.on('myProjects', async () => {
+                let projects = await Storage.getAllProjects(socket.user);
+                for (let i = 0; i < projects.length; i++) {
+                    projects[i].notes = (await Storage.getAllUserNotes(socket.user, projects[i].id)).length;
+                    if (projects[i].notes == 0) projects[i].notes = "";
+                }
+                io.to(socket.id).emit('yourProjects', projects);
             });
         }
         //Logs stuff in a pretty manner
@@ -97,9 +128,23 @@ function socketIO() {
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${user.user}</b> created a task called "${data.name}"</div>`;
             }
         }
-        function checkIfNote(string){
-            if(!string.includes("@")) return "";
-            else return string.split("@").join("").split(" ")[1]
+        function checkIfNote(string) {
+            let users = [];
+            if (!string.includes("@")) return "";
+            while (string.includes("@")) {
+                users.push(string.split("@")[1].split(" ")[0]);
+                string = string.substring(string.indexOf('@') + 1);
+            }
+            return users;
+        }
+
+        async function updateProjects() {
+            let projects = await Storage.getAllProjects(socket.user);
+            for (let i = 0; i < projects.length; i++) {
+                projects[i].notes = (await Storage.getAllUserNotes(socket.user, projects[i].id)).length;
+                if (projects[i].notes == 0) projects[i].notes = "";
+            }
+            io.to(socket.id).emit('updateProject', projects);
         }
     });
 

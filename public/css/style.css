@@ -1,7 +1,7 @@
 * {
     box-sizing: border-box;
     color: #214040;
-    overflow:hidden;
+    overflow: hidden;
 }
 
 /* width */
@@ -87,10 +87,11 @@ li.active>a {
 ul {
     height: 100%;
 }
-.projects{
-    padding-top:2em;
-    direction:rtl;
-    overflow:auto;
+
+.projects {
+    padding-top: 2em;
+    direction: rtl;
+    overflow: auto;
     position: fixed;
     width: 4em;
     height: 100vh;
@@ -98,17 +99,25 @@ ul {
 }
 
 .project {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     color: #63BFBF;
     background: grey;
     border: 2px solid #214040 !important;
     border-radius: 100%;
     height: 3em;
     width: 3em;
-    margin: 0.5em;
+    margin:0.5em;
     transition: all 200ms ease-in-out;
+}
+.project p{
+    font-weight: bold;
+    color: #63BFBF; 
+    text-align: center;
+    position: relative;
+    display:block;
+    left:50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin:0;
 }
 
 #addProject {
@@ -131,7 +140,7 @@ ul {
 
 #addProject:hover i {
     color: #85FFFE !important;
-    background:#214040;
+    background: #214040;
     cursor: pointer;
 }
 
@@ -152,7 +161,29 @@ ul {
     background: #214040;
     z-index: -1111;
 }
+.triangle-down{
+    position: fixed;
+    bottom:1.7em;
+    width: 7em;
+    height: 2em;
+    transform: rotateZ(45deg);
+    background: #214040;
+    z-index: -1111;
+}
 
 .addNew {
     padding: 2em;
+}
+.notes{
+    background: #214040;
+    color:#85FFFE;
+    float:right;
+    padding-bottom:10px;
+    font-weight:500;
+}
+.taskNotes{
+    background: #214040;
+    color:#85FFFE;
+    float:right;
+    font-weight:500;
 }

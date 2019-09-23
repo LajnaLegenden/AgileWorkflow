@@ -7,14 +7,10 @@ function showScrollWhenHover(element){
         }
     );
 }
-$(".card").hover(
-    function () {
-        $(this).css("overflow", "auto")
-    }, function () {
-        $(this).css("overflow", "hidden")
-    }
-);
+
 showScrollWhenHover(".card");
+showScrollWhenHover("#allComments");
+showScrollWhenHover("#log");
 
 let projectId = window.location.href.split("/");
 projectId = projectId[projectId.length - 1];

@@ -1,3 +1,4 @@
+//Load env variablres
 require('dotenv').config({ path: './env' });
 
 const express = require('express');
@@ -11,8 +12,6 @@ const router = require('./modules/router.js');
 const hbs = require('express-hbs');
 const fs = require('fs');
 
-//Load env variablres
-
 
 
 var options = {
@@ -22,11 +21,10 @@ var options = {
   rejectUnauthorized: false
 };
 hbs.registerHelper('trimString', function (passedString) {
-  var theString = passedString.substring(0, 3).toUpperCase();
+  var theString = passedString.substring(0, 1).toUpperCase();
   return new hbs.SafeString(theString)
 });
 let server = https.createServer(options, app);
-
 
 
 //Handlebars setup
@@ -36,16 +34,15 @@ app.set('views', __dirname + '/views');
 
 //Cookie secret
 app.use(cookieSession({
-  secret: process.env.SECRET || "sdfkaödfjasdöiolasdiojhöoiököjöfasdkojhöasdioöjhasdoijh"
+  secret: process.env.SECRET
 }));
 app.use(bodyParser.urlencoded({ extended: true }))
 
 //Start stuff
 socketIO(server, cookieSession({
-  secret: process.env.SECRET || "sdfkaödfjasdöiolasdiojhöoiököjöfasdkojhöasdioöjhasdoijh"
+  secret: process.env.SECRET
 }));
 router(app);
-
 
 //Config things
 const port = process.env.PORT || 3000;
