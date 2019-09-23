@@ -25,7 +25,7 @@ const addComment = "INSERT INTO comment (author, content, postDate, taskID) VALU
 const getAllComments = "SELECT * FROM comment WHERE taskID = ?";
 
 const addUserNote = "INSERT INTO userNote (username, fromUser, projectID, taskID, id) VALUES (?, ?, ?, ?, ?)";
-const getAllUserNotes = "SELECT * FROM userNote WHERE username = ?";
+const getAllUserNotes = "SELECT * FROM userNote WHERE (username = ? AND projectID = ?)";
 const getUserNote = "SELECT * FROM userNote WHERE id = ?";
 const deleteUserNotes = "DELETE FROM userNote WHERE taskID = ?";
 
@@ -125,8 +125,8 @@ class Database {
     async addUserNote(username, fromUser, taskID, projectID){
         await connection.queryP(addUserNote, [username, fromUser, taskID, projectID, (await getNewId())]);
     }
-    async getAllUserNotes(username){
-        return await connection.queryP(getAllUserNotes, username);
+    async getAllUserNotes(username, projectID){
+        return await connection.queryP(getAllUserNotes, [username, projectID]);
     }
     async deleteUserNotes(taskID){
         await connection.queryP(deleteUserNotes, taskID)

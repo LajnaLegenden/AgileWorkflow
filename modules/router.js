@@ -36,19 +36,13 @@ module.exports = (app) => {
         let projectID = req.params.projectID;
         let project = (await Storage.getProject(projectID))[0];
         let user = req.session.user;
-        let userNotes = await Storage.getAllUserNotes(user)
         let allProjects = await Storage.getAllProjects(user);
         for (let i = 0; i < allProjects.length; i++) {
-            allProjects[i].notes = 0;
-            for (let j = 0; j < userNotes.length; j++) {
-                if (allProjects[i].id == userNotes[j].projectID) {
-                    allProjects[i].notes++;
-                }
-            }
+            allProjects[i].notes = (await Storage.getAllUserNotes(user, allProjects[i].id)).length;
             if (allProjects[i].notes == 0) allProjects[i].notes = "";
         }
         let logs = await Storage.getAllLogs(projectID)
-        res.render('dashboard', { title: "Projects", loggedIn: user, project, allProjects, logs, userNotes });
+        res.render('dashboard', { title: "Projects", loggedIn: user, project, allProjects, logs });
     });
 
     app.get('/signup', (req, res) => {
