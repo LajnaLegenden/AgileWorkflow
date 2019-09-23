@@ -21,6 +21,13 @@ const addProcjetToUser = "UPDATE user SET projects = ?";
 const addLog = "INSERT INTO log (html, projectID) VALUES (?, ?)";
 const getAllLogs = "SELECT * FROM log WHERE projectID = ?";
 
+const addComment = "INSERT INTO comment (author, content, postDate, taskID) VALUES (?, ?, ?, ?)";
+const getAllComments = "SELECT * FROM comment WHERE taskID = ?";
+
+const addUserNote = "INSERT INTO userNote (username, fromUser, projectID, taskID, id) VALUES (?, ?, ?, ?, ?)";
+const getAllUserNotes = "SELECT * FROM userNote WHERE username = ?";
+const getUserNote = "SELECT * FROM userNote WHERE id = ?";
+
 function storeArray(array, pushItem) {
     array = JSON.parse(array)
     array.push(pushItem);
@@ -46,7 +53,6 @@ class Database {
     }
     /**Updates the tasks state with the specified id*/
     async updateState({ state, id }) {
-        console.log(state)
         await connection.queryP(updateState, [state, id])
     }
     /**Checks if and id for a procjet already exists*/
@@ -66,7 +72,6 @@ class Database {
             }
             return projects
         }
-
     }
     /**Adds a project*/
     async addProject({ name, creator }) {
@@ -109,6 +114,15 @@ class Database {
     }
     async addLog(html, projectID){
         await connection.queryP(addLog, [html, projectID]);
+    }
+    async addComment({author, content, postDate, taskID}){
+        await connection.queryP(addComment, [author, content, postDate, taskID]);
+    }
+    async getAllComments(taskID){
+        return await connection.queryP(getAllComments, taskID);
+    }
+    async addUserNote({username, fromUser, taskID, projectID}){
+        await connection.queryP(addUserNote, [username, fromUser, taskID, projectID, (await getNewId())]);
     }
 }
 let Storage = new Database();

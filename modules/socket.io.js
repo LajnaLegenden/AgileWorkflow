@@ -54,14 +54,22 @@ function socketIO() {
             //Gets the data for the task to show in the description box
             socket.on('moreInfo', async (id) => {
                 let task = await Storage.getTask(id);
-                io.to(socket.id).emit('infoAboutTask', task);
+                let comments = await Storage.getAllComments(task[0].id);
+                io.to(socket.id).emit('infoAboutTask', {task:task[0], comments});
             });
             //Makes a new projects
             socket.on('addProject', async  data => {
                 data.creator = user.user;
-                console.log(data)
                 await Storage.addProject(data);
                 io.to(socket.id).emit('allGood');
+            });
+            socket.on("addComment", async data => {
+                data.author = user.user;
+                data.postDate = new Date();
+                data.userNote = checkIfNote(data.content);
+                await Storage.addUserNote(data.userNote, user.user, data.taskID, data.projectID);
+                await Storage.addComment(data);
+                io.emit("showComment", data)
             });
         }
         //Logs stuff in a pretty manner
@@ -88,6 +96,10 @@ function socketIO() {
                 case 'addedTask':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${user.user}</b> created a task called "${data.name}"</div>`;
             }
+        }
+        function checkIfNote(string){
+            if(!string.includes("@")) return "";
+            else return string.split("@")[1].join("");
         }
     });
 

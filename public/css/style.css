@@ -126,7 +126,7 @@ ul {
 
 #addProject i {
     transition: all 200ms ease-in-out;
-    border-radius: 170%;
+    border-radius: 100%;
 }
 
 #addProject:hover i {

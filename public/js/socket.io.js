@@ -11,6 +11,8 @@ let IMPEDIMENTS = $('#IMPEDIMENTS');
 $(document).ready(() => {
     let projectID = $(".currentProject").attr("id")
     socket.emit('needTasks', projectID);
+    let chatHistory = document.getElementById("log");
+    chatHistory.scrollTop = chatHistory.scrollHeight;
 });
 
 function addNewEventListeners(newTask) {
@@ -27,14 +29,17 @@ function addNewEventListeners(newTask) {
     newTask.addEventListener('click', () => {
         let id = $(newTask).attr('id');
         socket.emit('moreInfo', id);
-        $("#form").addClass("hide")
-        $("#taskDesc").removeClass("hide")
-        $("#comments").removeClass("hide")
+        $(".currentTask").removeClass("currentTask");
+        $(newTask).addClass("currentTask");
+        $("#form").addClass("hide");
+        $("#taskDesc").removeClass("hide");
+        $("#comments").removeClass("hide");
     });
 }
 isEditing = false;
 //Eventlistners
 $('#submitTask').on('click', addTask);
+$("#addComment").on("click", addComment);
 
 
 
@@ -121,11 +126,16 @@ socket.on('goUpdate', (data) => {
 });
 
 socket.on('infoAboutTask', (data) => {
-    let name = $('#infoName').html("Name: " + data[0].name);
-    let desc = $('#infoDesc').html("Description: " + data[0].description);
-    let state = $('#infoState').html("State: " + data[0].state);
-    let postdate = $('#infoPostdate').html("Date: " + data[0].postDate);
-    let pID = $('#infoProjectId').html("Project ID " + data[0].projectID);
+    let name = $('#infoName').html("Name: " + data.task.name);
+    let desc = $('#infoDesc').html("Description: " + data.task.description);
+    let state = $('#infoState').html("State: " + data.task.state);
+    let postdate = $('#infoPostdate').html("Date: " + data.task.postDate);
+    let pID = $('#infoProjectId').html("Project ID " + data.task.projectID);
+    $("#allComments").empty();
+    for (comment in data.comments) {
+        comment = data.comments[comment];
+        $("#allComments").append(`<div class="comment border"><h6>@${comment.author}</h6><p class="commentContent">${comment.content}</p></div>`)
+    }
 });
 socket.on("updateProjects", data => {
     socket.emit()
@@ -135,6 +145,12 @@ socket.on('log', async (data) => {
     $('#log').append(element);
     let chatHistory = document.getElementById("log");
     chatHistory.scrollTop = chatHistory.scrollHeight;
+});
+socket.on("showComment", data => {
+    // <div class="comment border">
+    //     <p>Yes we should do this<span> @Lajna</span></p>
+    // </div>
+    $("#allComments").append(`<div class="comment border"><h6>@${data.author}</h6><p class="commentContent">${data.content}</p></div>`)
 });
 
 socket.on('onlinePeople', onlineusers => {
@@ -191,4 +207,15 @@ function move(element, taskID) {
 }
 async function addProject(name, desc) {
     socket.emit("addProject", { name, desc });
+}
+function addComment() {
+    let data = {
+        content: $("#Comment").val(),
+        taskID: $(".currentTask").attr("id"),
+        projectID: $(".currentProject").attr("id")
+    }
+    $("#Comment").val("");
+    console.log(data)
+    socket.emit("addComment", data)
+
 }

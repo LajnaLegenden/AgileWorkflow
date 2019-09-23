@@ -1,11 +1,21 @@
-
-$('.card').hover(
+function showScrollWhenHover(element){
+    $(element).hover(
+        function () {
+            $(this).css("overflow", "auto")
+        }, function () {
+            $(this).css("overflow", "hidden")
+        }
+    );
+}
+$(".card").hover(
     function () {
         $(this).css("overflow", "auto")
     }, function () {
         $(this).css("overflow", "hidden")
     }
 );
+showScrollWhenHover(".card");
+
 let projectId = window.location.href.split("/");
 projectId = projectId[projectId.length - 1];
 $("#" + projectId).addClass("currentProject")
