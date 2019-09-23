@@ -141,7 +141,6 @@ async function getNewId() {
     }
 
     if (await Storage.verifyProcjetID(testId)) {
-
         return testId;
     }
     return this.getNewId();

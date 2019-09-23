@@ -239,11 +239,7 @@ function prependThisProject(obj) {
     projects.append(` <div class="project" id="${obj.id}" class="btn btn-secondary" data-toggle="tooltip" data-placement="right"
                 title="${obj.name}">
                 <p>${obj.name.substring(0, 2).toUpperCase()}</p>
-<<<<<<< HEAD
-                <span class="badge notes">a</span >
-=======
                 <span class="badge notes">${obj.notes}</span >
->>>>>>> cb5a9c24effce1bb2c550d243531c522e1bf2fb3
             </div > `)
     $('#' + obj.id).tooltip({ boundary: 'window' });
     if (obj.id == id) {
