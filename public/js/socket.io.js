@@ -182,10 +182,10 @@ socket.on('moveThisTask', data => {
 });
 
 socket.on('yourProjects', data => {
-    //$('.yourProjects').empty();
+    $('.yourProjects').empty();
     for (let i in data) {
         let obj = data[i];
-        //prependThisProject(obj);
+        prependThisProject(obj);
         $('#' + obj.id).on('click', () => {
             let project = $('#' + obj.id);
             socket.emit('needTasks', obj.id);

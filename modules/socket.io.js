@@ -42,6 +42,10 @@ function socketIO() {
             //Send all task for a certain project id
             socket.on('needTasks', async (projectID) => {
                 let tasks = await Storage.getAllTasks(projectID);
+                for (let i = 0; i < tasks.length; i++) {
+                    tasks[i].notes = (await Storage.getAllUserNotesWithTask(socket.user, tasks[i].id)).length;
+                    if (tasks[i].notes == 0) tasks[i].notes = "";
+                }
                 io.to(socket.id).emit('allTasks', tasks);
             });
             //Update the moved task in the db and tell clients that the task has moved
