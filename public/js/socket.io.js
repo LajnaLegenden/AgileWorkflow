@@ -23,7 +23,6 @@ function addNewEventListeners(newTask) {
 
     newTask.addEventListener('click', () => {
         let id = $(newTask).attr('id');
-
         socket.emit('moreInfo', id);
         $(".currentTask").removeClass("currentTask");
         $(newTask).addClass("currentTask");
@@ -290,6 +289,7 @@ function prependThisProject(obj) {
                 <p>${obj.name.substring(0, 2).toUpperCase()}</p>
                 <span class="badge notes">${obj.notes}</span >
             </div > `)
+    console.log($('#' + obj.id))
     $('#' + obj.id).tooltip({ boundary: 'window' });
     if (obj.id == id) {
         $('#' + obj.id).addClass('currentProject');
