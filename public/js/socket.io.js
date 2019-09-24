@@ -226,7 +226,6 @@ socket.on('yourProjects', data => {
 
     }
     let allProjects = $('.yourProjects').children();
-
     for (let i = 0; i < allProjects.length; i++) {
         let id = $(allProjects[i]).attr('id');
         if (id == startID) {
@@ -250,14 +249,35 @@ socket.on('updateProject', data => {
 function addTask() {
     let data = {};
     data.projectID = $(".currentProject").attr("id");
-    data.name = $('#taskNameInput').val();
-    data.description = $('#taskDescriptionInput').val();
-    $('#taskDescriptionInput').val('');
-    $('#taskNameInput').val('');
-    if (isEditing)
-        socket.emit('editTask', data);
-    else
-        socket.emit('newTask', data);
+    let fail = false;
+    if ($('#taskNameInput').val() != "") {
+        data.name = $('#taskNameInput').val();
+        $('#taskNameInput').val('');
+    } else {
+        $('#taskNameInput').addClass("missing-info");
+        fail = true
+    }
+
+    if ($('#taskDescriptionInput').val() != "") {
+        data.description = $('#taskDescriptionInput').val();
+        $('#taskDescriptionInput').val('');
+
+    } else {
+        $('#taskDescriptionInput').addClass("missing-info");
+        fail = true
+    }
+
+    setTimeout(() => {
+        $('#taskDescriptionInput').removeClass("missing-info");
+        $('#taskNameInput').removeClass("missing-info");
+    }, 5000)
+
+    if (!fail) {
+        if (isEditing)
+            socket.emit('editTask', data);
+        else
+            socket.emit('newTask', data);
+    }
 }
 
 function move(element, taskID) {
