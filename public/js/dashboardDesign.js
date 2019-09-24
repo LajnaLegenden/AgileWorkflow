@@ -11,7 +11,6 @@ function showScrollWhenHover(element) {
 showScrollWhenHover(".card")
 showScrollWhenHover("#allComments");
 showScrollWhenHover("#log");
-showScrollWhenHover('.card')
 
 let projectId = window.location.href.split("/");
 projectId = projectId[projectId.length - 1];

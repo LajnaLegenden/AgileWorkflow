@@ -56,7 +56,6 @@ $(".decline").click(function () {
 //ReviceEvent
 socket.on('allTasks', (data) => {
     //Empty
-    console.log("sdf");
     let currentTask = $(".currentTask")
     if (currentTask.length > 0) currentTask = $(".currentTask").attr("id");
     BACKLOG.empty();
