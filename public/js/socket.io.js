@@ -38,12 +38,15 @@ $("#addComment").on("click", addComment);
 $("#addUser").on("click", e => {
     e.preventDefault();
     addUser($("#usernameAdd").val());
+    $("#usernameAdd").val("")
 });
 $("#addFriend").click(e => {
     e.preventDefault();
     let username = $("#usernameAddFriend");
-    if(username.length > 0)
+    if(username.length > 0){
         addFriend($("#usernameAddFriend").val())
+        $("#usernameAddFriend").val("")
+    }
 });
 $(".accept").click(function () {
     let inviteID = $(this).parent().attr("id")
@@ -326,7 +329,7 @@ function addComment() {
 }
 function addUser(username) {
     let data = {
-        users: username.split(","),
+        users: username.replace(/ /g,'').split(","),
         projectID: $(".currentProject").attr("id")
     }
     socket.emit("addUser", data)

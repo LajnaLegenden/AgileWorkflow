@@ -110,9 +110,11 @@
     <script src="../public/js/socket.io.js" defer></script>
     <script src="../public/js/js.js" defer></script>
     <script>
-        if({{totalNotes}} != 0){
-            document.querySelector("#dropdownMenu2 i").style.color = "red";
-        }
+            if({{totalNotes}} != 0){
+                document.querySelector("#dropdownMenu2 i").style.color = "red";
+            } else{
+                 document.querySelector(".dropdown-menu").innerHTML = "<span style=padding:5px;>No notifications!</span>"
+            }
     </script>
     {{{block 'script'}}}
 </body>
