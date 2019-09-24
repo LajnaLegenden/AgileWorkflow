@@ -1,4 +1,4 @@
-function showScrollWhenHover(element){
+function showScrollWhenHover(element) {
     $(element).hover(
         function () {
             $(this).css("overflow", "auto")
@@ -11,6 +11,7 @@ function showScrollWhenHover(element){
 
 showScrollWhenHover("#allComments");
 showScrollWhenHover("#log");
+showScrollWhenHover('.card')
 
 let projectId = window.location.href.split("/");
 projectId = projectId[projectId.length - 1];
