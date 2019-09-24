@@ -54,9 +54,12 @@ function socketIO() {
             //Only moves the task to save on network
             socket.on('moveTask', async data => {
                 await Storage.updateState(data);
+                let task = await Storage.getTask(data.id);
                 socket.broadcast.emit('moveThisTask', data);
+                data.name = task[0].name
                 let LOG = log('move', data);
                 io.emit('log', LOG)
+
                 await Storage.addLog(LOG, data.projectID)
             });
             //Gets the data for the task to show in the description box
@@ -104,7 +107,7 @@ function socketIO() {
             });
             socket.on("addUser", async data => {
                 for (let i in data.users) {
-                    if((await Storage.getUserProject({ username: data.toUser, projectID: data.projectID })).length == 0)
+                    if ((await Storage.getUserProject({ username: data.toUser, projectID: data.projectID })).length == 0)
                         await Storage.sendInvite({ fromUser: socket.user, toUser: data.users[i], projectID: data.projectID });
                 }
             });
@@ -139,7 +142,7 @@ function socketIO() {
             }
             switch (action) {
                 case 'move':
-                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${user.user}</b> moved ${data.id} to ${data.state}</div>`;
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${user.user}</b> moved ${data.name} to ${data.state}</div>`;
                 case 'addedTask':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${user.user}</b> created a task called "${data.name}"</div>`;
             }

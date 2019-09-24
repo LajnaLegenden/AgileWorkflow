@@ -1,4 +1,4 @@
-function showScrollWhenHover(element){
+function showScrollWhenHover(element) {
     $(element).hover(
         function () {
             $(this).css("overflow", "auto")
