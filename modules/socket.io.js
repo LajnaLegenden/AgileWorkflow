@@ -85,7 +85,7 @@ function socketIO() {
 
             });
             socket.on("addComment", async data => {
-                data.author = user.user;
+                data.author = socket.user;
                 data.postDate = new Date();
                 data.userNote = checkIfNote(data.content) || [];
                 data.userNote.forEach(async userTagged => {
