@@ -172,7 +172,7 @@ function socketioAuth(socket) {
     let user;
     try {
         cookies = cookie.parse(socket.handshake.headers.cookie);
-        user = new Buffer(cookies['express:sess'], 'base64').toString();
+        user = Buffer.from(cookies['express:sess'], 'base64').toString();
     } catch (err) {
         console.log(err);
         socket.disconnect(true)
