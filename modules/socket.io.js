@@ -104,8 +104,8 @@ function socketIO() {
                 io.to(socket.id).emit('yourProjects', projects);
             });
             socket.on("addUser", async data => {
-                for(let i in data.users)
-                await Storage.addUserProject({projectID:data.projectID, username:data.users[i]})
+                for (let i in data.users)
+                    await Storage.addUserProject({ projectID: data.projectID, username: data.users[i] })
             });
         }
         //Logs stuff in a pretty manner
@@ -167,6 +167,7 @@ function socketioAuth(socket) {
         socket.disconnect(true)
         return;
     }
+    console.log(user);
 
     if (user == "{}")
         socket.disconnect(true);
