@@ -142,9 +142,9 @@ function socketIO() {
             }
             switch (action) {
                 case 'move':
-                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${user.user}</b> moved ${data.name} to ${data.state}</div>`;
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${socket.user}</b> moved ${data.name} to ${data.state}</div>`;
                 case 'addedTask':
-                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${user.user}</b> created a task called "${data.name}"</div>`;
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${socket.user}</b> created a task called "${data.name}"</div>`;
             }
         }
         function checkIfNote(string) {
