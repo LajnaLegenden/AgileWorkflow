@@ -58,7 +58,7 @@ function socketIO() {
                 socket.broadcast.emit('moveThisTask', data);
                 data.name = task[0].name
                 let LOG = log('move', data);
-                io.emit('log', LOG)
+                io.to(socket.id).emit('log', LOG)
 
                 await Storage.addLog(LOG, data.projectID)
             });
@@ -89,11 +89,10 @@ function socketIO() {
                 data.postDate = new Date();
                 data.userNote = checkIfNote(data.content) || [];
                 data.userNote.forEach(async userTagged => {
-                    console.log("eherer", data.taskID)
                     await Storage.addUserNote(userTagged, user.user, data.projectID, data.taskID);
                 });
                 await Storage.addComment(data);
-                io.emit("showComment", data);
+                io.to(socket.id).emit("showComment", data);
                 updateProjects();
                 io.emit("goUpdate")
             });
