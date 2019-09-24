@@ -2,6 +2,7 @@
     height:40vh;
 }
 .card {
+    display:flex;
     height:40vh;
     overflow-y:scroll;
 }
