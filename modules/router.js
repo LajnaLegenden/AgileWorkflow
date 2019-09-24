@@ -83,8 +83,8 @@ module.exports = (app) => {
         let username = req.session.user;
         let user = (await Storage.getUser(username))[0];
         let allProjects = await Storage.getAllProjects(username);
-        console.log(user)
-        res.render("user", { title: username, loggedIn: username, user, allProjects })
+        let allInvites = await Storage.getAllProjectInvites(username);
+        res.render("user", { title: username, loggedIn: username, user, allProjects , allInvites})
     });
 }
 

@@ -12,7 +12,9 @@ const verifyProcjetID = "SELECT * FROM project WHERE id = ?";
 const addProject = "INSERT INTO project (name, creator, id) VALUES (?, ?, ?)"
 const addUserToProjcet = "UPDATE project SET users = ?";
 const getAllProjects = "SELECT * FROM userProject WHERE username = ?";
+
 const addUserProject = "INSERT INTO userProject (username, projectID, admin) VALUES (?, ?, ?)";
+const getUserProject = "SELECT * FROM userProject WHERE (username = ? AND projectID = ?)"
 
 const getUser = "SELECT * FROM user WHERE username = ?"
 const addUser = "INSERT INTO user (username, password, firstname, lastname, email, projects) VALUES (?, ?, ?, ?, ?, ?)"
@@ -29,6 +31,11 @@ const getAllUserNotes = "SELECT * FROM userNote WHERE (username = ? AND projectI
 const getAllUserNotesWithTask = "SELECT * FROM userNote WHERE (username = ? AND taskID = ?)";
 const getUserNote = "SELECT * FROM userNote WHERE id = ?";
 const deleteUserNotes = "DELETE FROM userNote WHERE taskID = ?";
+
+const sendInvite = "INSERT INTO inviteProject (fromUser, toUser, projectID,projectName, id) VALUES (?, ?, ?, ?, ?)";
+const getAllProjectInvites = "SELECT * FROM inviteProject WHERE toUser = ?";
+const getProjectInvite = "SELECT * FROM inviteProject WHERE id = ?";
+const deleteProjectInvite = "DELETE FROM inviteProject WHERE id =  ?";
 
 function storeArray(array, pushItem) {
     array = JSON.parse(array)
@@ -85,6 +92,9 @@ class Database {
     async addUserProject({ username, projectID }) {
         await connection.queryP(addUserProject, [username, projectID, true]);
     }
+    async getUserProject({username, projectID}){
+        return await connection.queryP(getUserProject, [username, projectID]);
+    }
     /**Adds a user*/
     async addUser({ username, password, firstname, lastname, email }) {
         let testUsername = await this.getUser(username);
@@ -127,6 +137,20 @@ class Database {
     }
     async deleteUserNotes(taskID){
         await connection.queryP(deleteUserNotes, taskID)
+    }
+    async sendInvite({fromUser, toUser, projectID}){
+        let project = (await this.getProject(projectID))[0];
+        await connection.queryP(sendInvite, [fromUser, toUser, projectID, project.name, (await getNewId())]);
+    }
+    async getAllProjectInvites(username){
+        return await connection.queryP(getAllProjectInvites, username);
+    }
+    async getProjectInvite(id){
+        return await connection.queryP(getProjectInvite, id)
+    }
+    async deleteProjectInvite(id){
+        console.log("id", id)
+        await connection.queryP(deleteProjectInvite, id);
     }
 }
 let Storage = new Database();

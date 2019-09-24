@@ -41,7 +41,6 @@ function socketIO() {
             });
             //Send all task for a certain project id
             socket.on('needTasks', async (projectID) => {
-                console.log(projectID)
                 let tasks = await Storage.getAllTasks(projectID);
                 for (let i = 0; i < tasks.length; i++) {
                     tasks[i].notes = (await Storage.getAllUserNotesWithTask(socket.user, tasks[i].id)).length;
@@ -104,8 +103,20 @@ function socketIO() {
                 io.to(socket.id).emit('yourProjects', projects);
             });
             socket.on("addUser", async data => {
-                for(let i in data.users)
-                await Storage.addUserProject({projectID:data.projectID, username:data.users[i]})
+                for (let i in data.users) {
+                    if (await Storage.getUserProject({ username: socket.user, projectID: data.projectID }).length > 0)
+                        await Storage.sendInvite({ fromUser: socket.user, toUser: data.users[i], projectID: data.projectID });
+                }
+            });
+            socket.on("acceptProjectInvite", async data => {
+                let invite = (await Storage.getProjectInvite(data))[0];
+                await Storage.addUserProject({ username: socket.user, projectID: invite.projectID })
+                await Storage.deleteProjectInvite(invite.id);
+                await updateProjects();
+            });
+            socket.on("declineProjectInvite", async data => {
+                let invite = (await Storage.getProjectInvite(data))[0];
+                await Storage.deleteProjectInvite(invite.id);
             });
         }
         //Logs stuff in a pretty manner
@@ -149,7 +160,7 @@ function socketIO() {
                 projects[i].notes = (await Storage.getAllUserNotes(socket.user, projects[i].id)).length;
                 if (projects[i].notes == 0) projects[i].notes = "";
             }
-            io.to(socket.id).emit('updateProject', projects);
+            io.to(socket.id).emit('yourProjects', projects);
         }
     });
 
