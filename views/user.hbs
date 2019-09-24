@@ -5,7 +5,9 @@
 {{#contentFor 'script'}}
 <script src="./public/js/userScript.js"></script>
 {{/contentFor}}
+
 <main class="container">
+    
     <div class="infoGrid" id="mainInfo">
         <div class="infoGrid">
             <div id="taskDesc" class="border">
@@ -36,7 +38,8 @@
                 <h4>Friends</h4>
                 {{#each friends}}
                 <div class="friend">
-                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-at"></i> {{this.friendUsername}}</span>
+                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-at"></i>
+                        {{this.friendUsername}}</span>
                 </div>
                 {{/each}}
             </div>
@@ -77,4 +80,5 @@
             </div>
         </div>
     </div>
+
 </main>

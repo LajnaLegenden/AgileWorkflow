@@ -1,7 +1,6 @@
 * {
     box-sizing: border-box;
     color: #214040;
-    overflow: hidden;
 }
 
 /* width */
@@ -190,4 +189,8 @@ ul {
 .userNotes{
     color:grey;
     display: inline;
+}
+
+dropdown-item{
+    cursor: pointer !important;
 }
