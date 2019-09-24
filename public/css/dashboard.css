@@ -2,10 +2,9 @@
     height:40vh;
 }
 .card {
-    display:flex;
     height:40vh;
-    overflow-y:scroll;
 }
+
 .hidden {
     height: 0px;
 }
@@ -27,7 +26,6 @@
 .taskViewGrid {
     display: grid;
     grid-template-columns: repeat(6, minmax(auto, 16.6%));
-    grid-template-rows: auto;
     gap: 0.3em;
 }
 
@@ -50,6 +48,7 @@
 
 .taskItem {
     transition: 100ms ease-in-out;
+    min-height:3em;
     height: 3em;
     font-size: 14px;
     border: 1px solid #214040 !important;
@@ -68,6 +67,7 @@
 .taskItem:hover {
     background: lightgray;
     height: 5em;
+    min-height:5em;
 }
 
 

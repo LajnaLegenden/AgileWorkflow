@@ -8,7 +8,7 @@ function showScrollWhenHover(element){
     );
 }
 
-showScrollWhenHover(".card")
+showScrollWhenHover(".card ul")
 showScrollWhenHover("#allComments");
 showScrollWhenHover("#log");
 
