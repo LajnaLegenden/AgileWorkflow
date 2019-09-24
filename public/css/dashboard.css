@@ -1,6 +1,9 @@
 .desc {
-    overflow: hidden;
     height:40vh;
+}
+.card {
+    height:40vh;
+    overflow-y:scroll;
 }
 .hidden {
     height: 0px;
@@ -50,6 +53,7 @@
     border-radius: 5px !important;
     box-shadow: 1px 2.5px 2px 2.5px #8d8d8d42;
     cursor: grab;
+    overflow:hidden;
 }
 
 .taskItem:active {
@@ -63,9 +67,6 @@
     height: 5em;
 }
 
-.card {
-    height: 40vh;
-}
 
 /* width */
 
