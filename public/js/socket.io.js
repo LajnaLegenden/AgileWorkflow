@@ -23,7 +23,6 @@ function addNewEventListeners(newTask) {
 
     newTask.addEventListener('click', () => {
         let id = $(newTask).attr('id');
-
         socket.emit('moreInfo', id);
         $(".currentTask").removeClass("currentTask");
         $(newTask).addClass("currentTask");
@@ -57,6 +56,7 @@ $(".decline").click(function () {
 //ReviceEvent
 socket.on('allTasks', (data) => {
     //Empty
+    console.log("sdf");
     let currentTask = $(".currentTask")
     if (currentTask.length > 0) currentTask = $(".currentTask").attr("id");
     BACKLOG.empty();
@@ -204,12 +204,13 @@ socket.on('moveThisTask', data => {
 
 socket.on('yourProjects', data => {
     $('.yourProjects').empty();
+    let page = window.location.href.split('/');
+    let startID = page[page.length - 1];
+    page = page[page.length - 2];
     for (let i in data) {
         let obj = data[i];
         prependThisProject(obj);
         $('#' + obj.id).on('click', () => {
-            let page = window.location.href.split('/');
-            page = page[page.length - 2];
 
             if (page == "dashboard") {
                 let project = $('#' + obj.id);
@@ -222,7 +223,17 @@ socket.on('yourProjects', data => {
             }
 
         });
+
     }
+    let allProjects = $('.yourProjects').children();
+
+    for (let i = 0; i < allProjects.length; i++) {
+        let id = $(allProjects[i]).attr('id');
+        if (id == startID) {
+            socket.emit('needTasks', id);
+        }
+    }
+
 });
 
 socket.on('updateProject', data => {
