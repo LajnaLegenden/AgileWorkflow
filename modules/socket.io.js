@@ -16,10 +16,10 @@ module.exports = (https, cookie) => {
 
 function socketIO() {
     let online = 0;
-    io.on('connection', (socket) => {
+    io.on('connection', async (socket) => {
         //Make sure no non auth users are here (they should have dc)
 
-        user = socketioAuth(socket);
+        user = await socketioAuth(socket);
         socket.user = user.user;
         //Online user with timeout to not add non auth people to the list
         setTimeout(() => {
