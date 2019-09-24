@@ -15,6 +15,9 @@ module.exports = (https, cookie) => {
 }
 
 function socketIO() {
+
+    let allUsersOnline = [];
+
     let online = 0;
     io.on('connection', (socket) => {
         //Make sure no non auth users are here (they should have dc)
@@ -30,6 +33,7 @@ function socketIO() {
                 io.emit('onlinePeople', --online);
             }, 100);
         })
+        allUsersOnline.push(socket);
         if (socket.user !== "{}" || socket.user == undefined) {
             //New task
             socket.on('newTask', async (data) => {
@@ -85,12 +89,18 @@ function socketIO() {
 
             });
             socket.on("addComment", async data => {
-                data.author = user.user;
+                data.author = socket.user;
                 data.postDate = new Date();
                 data.userNote = checkIfNote(data.content) || [];
                 data.userNote.forEach(async userTagged => {
                     console.log("eherer", data.taskID)
                     await Storage.addUserNote(userTagged, user.user, data.projectID, data.taskID);
+                    for (let i in allUsersOnline) {
+                        console.log(allUsersOnline[i] == userTagged);
+                        if (allUsersOnline[i] == userTagged) {
+                            io.to(allUsersOnline[i].id).emit('goUpdate');
+                        }
+                    }
                 });
                 await Storage.addComment(data);
                 io.emit("showComment", data);
