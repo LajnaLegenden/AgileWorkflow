@@ -42,3 +42,14 @@
     transform: scale(0.97);
     cursor: pointer;
 }
+.choice{
+    float:right;
+    cursor: pointer;
+    margin:auto;
+}
+.accept i{
+    color:green;
+}
+.decline i{
+    color:red;
+}

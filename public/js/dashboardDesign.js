@@ -15,8 +15,8 @@ showScrollWhenHover("#log");
 let projectId = window.location.href.split("/");
 projectId = projectId[projectId.length - 1];
 $("#" + projectId).addClass("currentProject")
-
-
+$(document).ready(() => {
+});
 function allowDrop(ev) {
     ev.preventDefault();
 }

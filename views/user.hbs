@@ -40,5 +40,22 @@
             </div>
         </div>
         <div id="log" class="border"></div>
+        <div id="invites" class="border">
+            <h4>Project Invites</h4>
+            {{#each allInvites}}
+            <div id={{this.id}} class="invite border"><b>@{{this.fromUser}}</b> invited you to their project called
+                {{this.projectName}}!<button type="button" class="badge choice accept btn btn-outline-primary"><i
+                        class="fas fa-check fa-2x"></i></button><button type="button"
+                    class="badge choice decline btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button></div>
+            {{/each}}
+        </div>
+        <div id="friendInvites" class="border">
+            <h4>Friend Invites</h4>
+            {{#each allInvites}}
+            <div id={{this.id}} class="invite border"><b>@{{this.fromUser}}</b> sent a friend request!<button type="button" class="badge choice accept btn btn-outline-primary"><i
+                        class="fas fa-check fa-2x"></i></button><button type="button"
+                    class="badge choice decline btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button></div>
+            {{/each}}
+        </div>
     </div>
 </main>

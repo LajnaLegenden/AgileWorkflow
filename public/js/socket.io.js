@@ -7,11 +7,7 @@ let INPROGRESS = $('#INPROGRESS');
 let TOVERIFY = $('#TOVERIFY');
 let DONE = $('#DONE');
 let IMPEDIMENTS = $('#IMPEDIMENTS');
-
 $(document).ready(() => {
-    let chatHistory = document.getElementById("log");
-    if(chatHistory != null)
-        chatHistory.scrollTop = chatHistory.scrollHeight;
 });
 
 function addNewEventListeners(newTask) {
@@ -41,9 +37,19 @@ $('#submitTask').on('click', addTask);
 $("#addComment").on("click", addComment);
 $("#addUser").on("click", e => {
     e.preventDefault();
-    console.log("here")
     addUser($("#usernameAdd").val());
 });
+$(".accept").click(function (){
+    let inviteID = $(this).parent().attr("id")
+    acceptProjectInvite(inviteID)
+    $(this).parent().remove();
+});
+$(".decline").click(function (){
+    let inviteID = $(this).parent().attr("id")
+    declineProjectInvite(inviteID)
+    $(this).parent().remove();
+});
+
 
 
 
@@ -124,12 +130,12 @@ socket.on('allTasks', (data) => {
             desc = desc.substring(0, desc.length - 3) + "...";
         }
         $('#' + obj.id + ' p').html(desc);
+        
     }
 });
 
 socket.on('goUpdate', (data) => {
     let projectID = $(".currentProject").attr("id")
-    console.log("got here")
     socket.emit('needTasks', projectID);
 });
 
@@ -154,13 +160,12 @@ socket.on("updateProjects", data => {
 socket.on('log', async (data) => {
     let element = data;
     $('#log').append(element);
-    let chatHistory = document.getElementById("log");
-    chatHistory.scrollTop = chatHistory.scrollHeight;
 });
 socket.on("updateLog", data => {
     $('#log').empty();
     for(i in data)
         $('#log').append(data[i].html);
+    scrollAllWayDown("log");
 });
 socket.on("showComment", data => {
     $("#allComments").append(`<div class="comment border"><h6>@${data.author}</h6><p class="commentContent">${data.content}</p></div>`)
@@ -216,7 +221,6 @@ socket.on('yourProjects', data => {
 });
 
 socket.on('updateProject', data => {
-    console.log(data)
     let allProjects = $('.yourProjects').children();
     for (let i in data) {
         let notes = $('#' + data[i].id + " span");
@@ -265,7 +269,6 @@ function addUser(username){
         users:username.split(","),
         projectID: $(".currentProject").attr("id")
     }
-    console.log(data)
     socket.emit("addUser", data)
 }
 
@@ -283,4 +286,15 @@ function prependThisProject(obj) {
     if (obj.id == id) {
         $('#' + obj.id).addClass('currentProject');
     }
+}
+function scrollAllWayDown(elementID){
+    let chatHistory = document.getElementById(elementID);
+    if(chatHistory != null)
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+}
+function acceptProjectInvite(inviteID){
+    socket.emit("acceptProjectInvite", inviteID);
+}
+function declineProjectInvite(inviteID){
+    socket.emit("declineProjectInvite", inviteID);
 }
