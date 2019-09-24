@@ -104,7 +104,7 @@ function socketIO() {
             });
             socket.on("addUser", async data => {
                 for (let i in data.users) {
-                    if (await Storage.getUserProject({ username: socket.user, projectID: data.projectID }).length > 0)
+                    if((await Storage.getUserProject({ username: data.toUser, projectID: data.projectID })).length == 0)
                         await Storage.sendInvite({ fromUser: socket.user, toUser: data.users[i], projectID: data.projectID });
                 }
             });
