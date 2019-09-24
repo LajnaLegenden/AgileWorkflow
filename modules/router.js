@@ -17,7 +17,6 @@ module.exports = (app) => {
             next();
         } else {
             // request was via http, so redirect to https
-            console.log("asd");
             res.redirect('https://' + req.headers.host + req.url);
         }
     });

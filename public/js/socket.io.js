@@ -23,6 +23,7 @@ function addNewEventListeners(newTask) {
 
     newTask.addEventListener('click', () => {
         let id = $(newTask).attr('id');
+
         socket.emit('moreInfo', id);
         $(".currentTask").removeClass("currentTask");
         $(newTask).addClass("currentTask");
@@ -39,12 +40,12 @@ $("#addUser").on("click", e => {
     e.preventDefault();
     addUser($("#usernameAdd").val());
 });
-$(".accept").click(function (){
+$(".accept").click(function () {
     let inviteID = $(this).parent().attr("id")
     acceptProjectInvite(inviteID)
     $(this).parent().remove();
 });
-$(".decline").click(function (){
+$(".decline").click(function () {
     let inviteID = $(this).parent().attr("id")
     declineProjectInvite(inviteID)
     $(this).parent().remove();
@@ -57,7 +58,7 @@ $(".decline").click(function (){
 socket.on('allTasks', (data) => {
     //Empty
     let currentTask = $(".currentTask")
-    if(currentTask.length > 0) currentTask = $(".currentTask").attr("id");
+    if (currentTask.length > 0) currentTask = $(".currentTask").attr("id");
     BACKLOG.empty();
     TODO.empty();
     INPROGRESS.empty();
@@ -87,7 +88,7 @@ socket.on('allTasks', (data) => {
                 break;
         }
     }
-    if(currentTask.length > 0) $("#" + currentTask).addClass("currentTask");
+    if (currentTask.length > 0) $("#" + currentTask).addClass("currentTask");
     function addToBoard(obj, element) {
         $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border">${obj.name}<span class="badge taskNotes">${obj.notes}</span><p  draggable="false" class="hidden desc">${obj.description}</p></li>`);
         let newTask = document.getElementById(obj.id);
@@ -130,7 +131,7 @@ socket.on('allTasks', (data) => {
             desc = desc.substring(0, desc.length - 3) + "...";
         }
         $('#' + obj.id + ' p').html(desc);
-        
+
     }
 });
 
@@ -152,9 +153,7 @@ socket.on('infoAboutTask', (data) => {
     }
     scrollAllWayDown("allComments");
 });
-socket.on("updateProjects", data => {
-    socket.emit()
-});
+
 socket.on('log', async (data) => {
     let element = data;
     $('#log').append(element);
@@ -162,7 +161,7 @@ socket.on('log', async (data) => {
 });
 socket.on("updateLog", data => {
     $('#log').empty();
-    for(i in data)
+    for (i in data)
         $('#log').append(data[i].html);
     scrollAllWayDown("log");
 });
@@ -209,10 +208,19 @@ socket.on('yourProjects', data => {
         let obj = data[i];
         prependThisProject(obj);
         $('#' + obj.id).on('click', () => {
-            let project = $('#' + obj.id);
-            socket.emit('needTasks', obj.id);
-            $('.currentProject').removeClass('currentProject');
-            project.addClass('currentProject');
+            let page = window.location.href.split('/');
+            page = page[page.length - 2];
+
+            if (page == "dashboard") {
+                let project = $('#' + obj.id);
+                socket.emit('needTasks', obj.id);
+                $('.currentProject').removeClass('currentProject');
+                project.addClass('currentProject');
+                history.pushState('', obj.name, '/dashboard/' + obj.id);
+            } else {
+                window.location.href = "/dashboard/" + obj.id;
+            }
+
         });
     }
 });
@@ -261,9 +269,9 @@ function addComment() {
     socket.emit("addComment", data)
 
 }
-function addUser(username){
+function addUser(username) {
     let data = {
-        users:username.split(","),
+        users: username.split(","),
         projectID: $(".currentProject").attr("id")
     }
     socket.emit("addUser", data)
@@ -284,15 +292,14 @@ function prependThisProject(obj) {
         $('#' + obj.id).addClass('currentProject');
     }
 }
-function scrollAllWayDown(elementID){
+function scrollAllWayDown(elementID) {
     let chatHistory = document.getElementById(elementID);
-    console.log(chatHistory)
-    if(chatHistory != null)
+    if (chatHistory != null)
         chatHistory.scrollTop = chatHistory.scrollHeight;
 }
-function acceptProjectInvite(inviteID){
+function acceptProjectInvite(inviteID) {
     socket.emit("acceptProjectInvite", inviteID);
 }
-function declineProjectInvite(inviteID){
+function declineProjectInvite(inviteID) {
     socket.emit("declineProjectInvite", inviteID);
 }

@@ -34,7 +34,6 @@ btn.on('click', () => {
         data.user[inputs[i].id] = currentVal;
         //Check pass
     }
-    console.log(url)
     if (url == "/signup" && data.user.password != data.user.password2) {
         fail = true;
         inputs[inputs.length - 1].classList.add("missing-info");
