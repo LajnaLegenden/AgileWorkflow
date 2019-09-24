@@ -150,26 +150,23 @@ socket.on('infoAboutTask', (data) => {
         comment = data.comments[comment];
         $("#allComments").append(`<div class="comment border"><h6>@${comment.author}</h6><p class="commentContent">${comment.content}</p></div>`)
     }
-    let chatHistory = document.getElementById("allComments");
-    if (chatHistory != null)
-        chatHistory.scrollTop = chatHistory.scrollHeight;
+    scrollAllWayDown("allComments");
 });
 
 socket.on('log', async (data) => {
     let element = data;
     $('#log').append(element);
+    scrollAllWayDown("log");
 });
 socket.on("updateLog", data => {
     $('#log').empty();
     for (i in data)
         $('#log').append(data[i].html);
-    scrollAllWayDown("#log");
+    scrollAllWayDown("log");
 });
 socket.on("showComment", data => {
     $("#allComments").append(`<div class="comment border"><h6>@${data.author}</h6><p class="commentContent">${data.content}</p></div>`)
-    let chatHistory = document.getElementById("allComments");
-    if (chatHistory != null)
-        chatHistory.scrollTop = chatHistory.scrollHeight;
+    scrollAllWayDown("allComments");
 });
 
 socket.on('onlinePeople', onlineusers => {
