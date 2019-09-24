@@ -165,7 +165,7 @@ socket.on("updateLog", data => {
     $('#log').empty();
     for(i in data)
         $('#log').append(data[i].html);
-    scrollAllWayDown("log");
+    scrollAllWayDown("#log");
 });
 socket.on("showComment", data => {
     $("#allComments").append(`<div class="comment border"><h6>@${data.author}</h6><p class="commentContent">${data.content}</p></div>`)
