@@ -29,11 +29,19 @@ function socketIO() {
             io.emit('onlinePeople', ++online);
         }, 100);
         socket.on('disconnect', () => {
+            for (var i = 0; i < allUsersOnline.length; i++) {
+                if (allUsersOnline[i] === socket) {
+                    allUsersOnline.splice(i, 1);
+                    console.log(allUsersOnline.length)
+
+                }
+            }
             setTimeout(() => {
                 io.emit('onlinePeople', --online);
             }, 100);
         })
         allUsersOnline.push(socket);
+        console.log(allUsersOnline.length)
         if (socket.user !== "{}" || socket.user == undefined) {
             //New task
             socket.on('newTask', async (data) => {
