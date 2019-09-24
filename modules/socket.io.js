@@ -178,8 +178,6 @@ function socketioAuth(socket) {
         socket.disconnect(true)
         return;
     }
-    console.log(user);
-
     if (user == "{}")
         socket.disconnect(true);
     return JSON.parse(user);
