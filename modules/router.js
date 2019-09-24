@@ -27,8 +27,14 @@ module.exports = (app) => {
     app.get('/', async (req, res) => {
         // res.sendFile(file('index.html'), { root: "./" });
         let username = req.session.user;
-        let allProjects = await Storage.getAllProjects(username);
-        res.render('index', { title: "Index", loggedIn: username, allProjects });
+        let allProjects = "";
+        let userNotes = "";
+        if(username){
+            allProjects = await Storage.getAllProjects(username);
+            userNotes = (await Storage.getAllFriendRequests(username)).length + (await Storage.getAllProjectInvites(username)).length;
+            if(userNotes == 0) userNotes = "";
+        }
+        res.render('index', { title: "Index", loggedIn: username, allProjects, userNotes});
     });
 
     app.get('/dashboard/:projectID', auth, async (req, res) => {
@@ -41,7 +47,10 @@ module.exports = (app) => {
             if (allProjects[i].notes == 0) allProjects[i].notes = "";
         }
         let logs = await Storage.getAllLogs(projectID)
-        res.render('dashboard', { title: "Projects", loggedIn: user, project, allProjects, logs});
+        let userNotes = (await Storage.getAllFriendRequests(user)).length + (await Storage.getAllProjectInvites(user)).length;
+        console.log(userNotes)
+        if(userNotes == 0) userNotes = "";
+        res.render('dashboard', { title: "Projects", loggedIn: user, project, allProjects, logs, userNotes});
     });
 
     app.get('/signup', (req, res) => {
@@ -83,7 +92,11 @@ module.exports = (app) => {
         let user = (await Storage.getUser(username))[0];
         let allProjects = await Storage.getAllProjects(username);
         let allInvites = await Storage.getAllProjectInvites(username);
-        res.render("user", { title: username, loggedIn: username, user, allProjects , allInvites})
+        let allFriendRequests = await Storage.getAllFriendRequests(username);
+        let friends = await Storage.getAllFriends(username);
+        let userNotes = (await Storage.getAllFriendRequests(username)).length + (await Storage.getAllProjectInvites(username)).length;
+        if(userNotes == 0) userNotes = "";
+        res.render("user", { title: username, loggedIn: username, user, allProjects , allInvites, allFriendRequests, friends, userNotes})
     });
 }
 

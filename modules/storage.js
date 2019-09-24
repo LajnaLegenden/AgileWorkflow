@@ -37,12 +37,15 @@ const getAllProjectInvites = "SELECT * FROM inviteProject WHERE toUser = ?";
 const getProjectInvite = "SELECT * FROM inviteProject WHERE id = ?";
 const deleteProjectInvite = "DELETE FROM inviteProject WHERE id =  ?";
 
-function storeArray(array, pushItem) {
-    array = JSON.parse(array)
-    array.push(pushItem);
-    array = JSON.stringify(array);
-    return array;
-}
+const sendFriendRequest = "INSERT INTO friendRequest (fromUser, toUser, id) VALUES (?, ?, ?)";
+const getAllFriendRequests = "SELECT * FROM friendRequest WHERE toUser = ?";
+const getFriendRequest = "SELECT * FROM friendRequest WHERE id = ?";
+const deleteFriendRequest = "DELETE FROM friendRequest WHERE id =  ?";
+
+const addFriend = "INSERT INTO friend (username, friendUsername, id) VALUES (?, ?, ?)";
+const getAllFriends = "SELECT * FROM friend WHERE username = ?";
+
+
 class Database {
     /**Adds a task*/
     async addTask({ projectID, name, description }) {
@@ -149,15 +152,32 @@ class Database {
         return await connection.queryP(getProjectInvite, id)
     }
     async deleteProjectInvite(id){
-        console.log("id", id)
         await connection.queryP(deleteProjectInvite, id);
+    }
+    async sendFriendRequest({fromUser, toUser}){
+        await connection.queryP(sendFriendRequest, [fromUser, toUser, (await getNewId())]);
+    }
+    async getAllFriendRequests(username){
+        return await connection.queryP(getAllFriendRequests, username);
+    }
+    async getFriendRequest(id){
+        return await connection.queryP(getFriendRequest, id)
+    }
+    async deleteFriendRequest(id){
+        await connection.queryP(deleteFriendRequest, id);
+    }
+    async addFriend({username, friendUsername}){
+        await connection.queryP(addFriend, [username, friendUsername, (await getNewId())]);
+    }
+    async getAllFriends(username){
+        return await connection.queryP(getAllFriends, username);
     }
 }
 let Storage = new Database();
 async function getNewId() {
     let a = "abcdefghijklmnopkqrtuvwxyzABCDEFGHIJKLMNOPKQRTUVWXYZ0123456789_-";
     let testId = "";
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 16; i++) {
         testId += a[Math.floor(Math.random() * a.length)];
     }
 

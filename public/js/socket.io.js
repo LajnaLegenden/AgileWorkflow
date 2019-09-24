@@ -39,6 +39,12 @@ $("#addUser").on("click", e => {
     e.preventDefault();
     addUser($("#usernameAdd").val());
 });
+$("#addFriend").click(e => {
+    e.preventDefault();
+    let username = $("#usernameAddFriend");
+    if(username.length > 0)
+        addFriend($("#usernameAddFriend").val())
+});
 $(".accept").click(function () {
     let inviteID = $(this).parent().attr("id")
     acceptProjectInvite(inviteID)
@@ -49,6 +55,17 @@ $(".decline").click(function () {
     declineProjectInvite(inviteID)
     $(this).parent().remove();
 });
+$(".acceptFriend").click(function () {
+    let inviteID = $(this).parent().attr("id")
+    acceptFriendRequest(inviteID)
+    $(this).parent().remove();
+});
+$(".declineFriend").click(function () {
+    let inviteID = $(this).parent().attr("id")
+    declineFriendRequest(inviteID)
+    $(this).parent().remove();
+});
+
 
 
 
@@ -164,8 +181,13 @@ socket.on("updateLog", data => {
         $('#log').append(data[i].html);
     scrollAllWayDown("log");
 });
+socket.on("updateComments" ,async data => {
+    $("#allComments").empty();
+        for(i in data)
+            $("#allComments").append(`<div class="comment border"><h6>@${data[i].author}</h6><p class="commentContent">${data[i].content}</p></div>`);
+});
 socket.on("showComment", data => {
-    $("#allComments").append(`<div class="comment border"><h6>@${data.author}</h6><p class="commentContent">${data.content}</p></div>`)
+    $("#allComments").append(`<div class="comment border"><h6>@${data.author}</h6><p class="commentContent">${data.content}</p></div>`);
     scrollAllWayDown("allComments");
 });
 
@@ -212,6 +234,9 @@ socket.on('yourProjects', data => {
         $('#' + obj.id).on('click', () => {
 
             if (page == "dashboard") {
+                $("#form").removeClass("hide")
+                $("#taskDesc").addClass("hide")
+                $("#comments").addClass("hide");
                 let project = $('#' + obj.id);
                 socket.emit('needTasks', obj.id);
                 $('.currentProject').removeClass('currentProject');
@@ -228,7 +253,7 @@ socket.on('yourProjects', data => {
     for (let i = 0; i < allProjects.length; i++) {
         let id = $(allProjects[i]).attr('id');
         if (id == startID) {
-            socket.emit('needTasks', id);
+            socket.emit('needTasks', id); 
         }
     }
 
@@ -306,6 +331,12 @@ function addUser(username) {
     }
     socket.emit("addUser", data)
 }
+function addFriend(username){
+    let data = {
+        username
+    }
+    socket.emit("addFriend", data)
+}
 
 function prependThisProject(obj) {
     let projects = $('.yourProjects');
@@ -315,7 +346,7 @@ function prependThisProject(obj) {
     projects.append(` <div class="project" id="${obj.id}" class="btn btn-secondary" data-toggle="tooltip" data-placement="right"
                 title="${obj.name}">
                 <p>${obj.name.substring(0, 2).toUpperCase()}</p>
-                <span class="badge notes">${obj.notes}</span >
+                <span class="badge notes">${obj.notes}</span>
             </div > `)
     $('#' + obj.id).tooltip({ boundary: 'window' });
     if (obj.id == id) {
@@ -332,4 +363,10 @@ function acceptProjectInvite(inviteID) {
 }
 function declineProjectInvite(inviteID) {
     socket.emit("declineProjectInvite", inviteID);
+}
+function acceptFriendRequest(inviteID) {
+    socket.emit("acceptFriendRequest", inviteID);
+}
+function declineFriendRequest(inviteID) {
+    socket.emit("declineFriendRequest", inviteID);
 }

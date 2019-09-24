@@ -187,3 +187,7 @@ ul {
     float:right;
     font-weight:500;
 }
+.userNotes{
+    color:grey;
+    display: inline;
+}

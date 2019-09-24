@@ -34,9 +34,11 @@
             </div>
             <div id="friends" class="border">
                 <h4>Friends</h4>
+                {{#each friends}}
                 <div class="friend">
-                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-at"></i> Lajna</span>
+                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-at"></i> {{this.friendUsername}}</span>
                 </div>
+                {{/each}}
             </div>
         </div>
         <div id="log" class="border"></div>
@@ -50,12 +52,29 @@
             {{/each}}
         </div>
         <div id="friendInvites" class="border">
-            <h4>Friend Invites</h4>
-            {{#each allInvites}}
-            <div id={{this.id}} class="invite border"><b>@{{this.fromUser}}</b> sent a friend request!<button type="button" class="badge choice accept btn btn-outline-primary"><i
+            <h4 style="display:inline-block">Friend Invites</h4>
+            <button type="button" class="badge choice addFriend btn btn-outline-primary" data-toggle="modal"
+                data-target="#addUserModal">Add friend</button>
+            {{#each allFriendRequests}}
+            <div id={{this.id}} class="invite border"><b>@{{this.fromUser}}</b> sent a friend request!<button
+                    type="button" class="badge choice acceptFriend btn btn-outline-primary"><i
                         class="fas fa-check fa-2x"></i></button><button type="button"
-                    class="badge choice decline btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button></div>
+                    class="badge choice declineFriend btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button>
+            </div>
             {{/each}}
+        </div>
+    </div>
+    <div class="modal fade" id="addUserModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <form class="addNew">
+                    <div class="form-group">
+                        <label for="name">Username</label>
+                        <input type="input" class="form-control" id="usernameAddFriend" placeholder="Enter Username">
+                    </div>
+                    <div class="from-group"><button class="btn btn-primary" id="addFriend">Add Friend</button></div>
+                </form>
+            </div>
         </div>
     </div>
 </main>

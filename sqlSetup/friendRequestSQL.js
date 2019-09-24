@@ -1,11 +1,11 @@
 const connection = require("../modules/mysql");
 
 async function doStuff() {
-    await connection.queryP("drop table if exists friend");
+    await connection.queryP("drop table if exists friendRequest");
     await connection.queryP(`
-    CREATE TABLE friend (
-        username varchar(255),
-        friendUsername varchar(255),
+    CREATE TABLE friendRequest (
+        fromUser varchar(255),
+        toUser varchar(255),
         id varchar(255)
     );`, (error, results, fields) => {
         if(error) {

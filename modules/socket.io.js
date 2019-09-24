@@ -110,6 +110,9 @@ function socketIO() {
                         await Storage.sendInvite({ fromUser: socket.user, toUser: data.users[i], projectID: data.projectID });
                 }
             });
+            socket.on("addFriend", async data => {
+                await Storage.sendFriendRequest({fromUser:socket.user, toUser:data.username});
+            })
             socket.on("acceptProjectInvite", async data => {
                 let invite = (await Storage.getProjectInvite(data))[0];
                 await Storage.addUserProject({ username: socket.user, projectID: invite.projectID })
@@ -120,6 +123,17 @@ function socketIO() {
                 let invite = (await Storage.getProjectInvite(data))[0];
                 await Storage.deleteProjectInvite(invite.id);
             });
+            socket.on("acceptFriendRequest", async data => {
+                let invite = (await Storage.getFriendRequest(data))[0];
+                console.log(invite)
+                await Storage.addFriend({username:invite.fromUser, friendUsername:invite.toUser})
+                await Storage.addFriend({username:invite.toUser, friendUsername:invite.fromUser})
+                await Storage.deleteFriendRequest(invite.id);
+            });
+            socket.on("declineFriendRequest", async data => {
+                let invite = (await Storage.getFriendRequest(data))[0];
+                await Storage.deleteFriendRequest(invite.id);
+            })
         }
         //Logs stuff in a pretty manner
         function log(action, data) {
