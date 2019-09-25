@@ -85,6 +85,8 @@
     <div class="triangle-down"></div>
     {{/if}}
     {{{body}}}
+
+    {{#if loggedIn}}
     {{!-- Add modal --}}
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog modal-sm">
@@ -103,11 +105,18 @@
             </div>
         </div>
     </div>
+
+    <footer>
+        <div class="bar"><span class="barItem" id="online">Online: 3</span></div>
+    </footer>
+    {{/if}}
     <script src="../public/js/popper.js/umd/popper.js" defer></script>
     <script src="../public/js/bootstrap/bootstrap.js" defer></script>
     <script src="../public/js/socket.io/socket.io.js" defer></script>
     <script src="../public/js/socket.io.js" defer></script>
     <script src="../public/js/js.js" defer></script>
+<<<<<<< HEAD
+=======
     <script>
         if ({{ totalNotes }} != 0) {
             document.querySelector("#dropdownMenu2 i").style.color = "red";
@@ -115,6 +124,7 @@
             document.querySelector(".dropdown-menu").innerHTML = "<span style=padding:5px;>No notifications!</span>"
         }
     </script>
+>>>>>>> 63cabe286b4dd2abb1aa1804b94aa1ba0731ef7f
     {{{block 'script'}}}
 </body>
 

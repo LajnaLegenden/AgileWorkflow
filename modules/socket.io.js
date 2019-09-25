@@ -21,6 +21,12 @@ function socketIO() {
     io.on('connection', (socket) => {
         //Make sure no non auth users are here (they should have dc)
         user = socketioAuth(socket);
+        if (!user) {
+            socket.disconnect(true);
+            console.log("asd");
+            return false;
+
+        }
         socket.user = user.user;
         //Online user with timeout to not add non auth people to the list
         setTimeout(() => {
@@ -205,7 +211,7 @@ function socketIO() {
 
             async function addFriend(username) {
                 console.log("got here")
-                await Storage.sendFriendRequest({ fromUser: socket.user, toUser: username});
+                await Storage.sendFriendRequest({ fromUser: socket.user, toUser: username });
                 io.to(socket.id).emit('allGood');
             }
 
@@ -240,8 +246,8 @@ function socketIO() {
             async function acceptFriendRequest(data) {
                 let invite = (await Storage.getFriendRequest(data))[0];
                 let id = (await getNewId());
-                await Storage.addFriend({ username: invite.fromUser, friendUsername: invite.toUser, id:id })
-                await Storage.addFriend({ username: invite.toUser, friendUsername: invite.fromUser, id:id })
+                await Storage.addFriend({ username: invite.fromUser, friendUsername: invite.toUser, id: id })
+                await Storage.addFriend({ username: invite.toUser, friendUsername: invite.fromUser, id: id })
                 await Storage.deleteFriendRequest(invite.id);
             }
             /**
@@ -296,17 +302,22 @@ function socketIO() {
             }
             io.to(socket.id).emit('yourProjects', projects);
         }
-        async function newChat(friendUsername){
-            let id = await Storage.getFriendId({username:socket.user, friendUsername})
+        async function newChat(friendUsername) {
+            let id = await Storage.getFriendId({ username: socket.user, friendUsername })
             let chat = await Storage.getChat(id);
             io.to(socket.id).emit("showChat", chat);
         }
-        async function sendMessage(data){
+        async function sendMessage(data) {
             data.fromUser = socket.user;
             data.date = new Date();
-            data.id = await Storage.getFriendId({username:data.fromUser, friendUsername:data.toUser});
+            data.id = await Storage.getFriendId({ username: data.fromUser, friendUsername: data.toUser });
             console.log(data)
             await Storage.sendMessage(data);
+            for (let i in allUsersOnline) {
+                if (allUsersOnline[i].user == data.toUser) {
+                    io.to(allUsersOnline[i].id).emit('liveChat', data);
+                }
+            }
         }
     });
 
@@ -328,13 +339,13 @@ function socketioAuth(socket) {
         return;
     }
 
-    if (user == "{}" && JSON.parse(user) == undefined) {
+    if (user == "{}" || JSON.parse(user) == undefined) {
         socket.disconnect(true);
         console.log("User: " + user);
     }
     return JSON.parse(user);
 }
-function newTime(){
+function newTime() {
     let d = new Date();
     let hours = d.getHours().toString();
     let minutes = d.getMinutes().toString();
@@ -351,5 +362,5 @@ function newTime(){
         seconds += "0";
         seconds = seconds.split("").reverse().join("");
     }
-    return {hours, minutes, seconds}
+    return { hours, minutes, seconds }
 }

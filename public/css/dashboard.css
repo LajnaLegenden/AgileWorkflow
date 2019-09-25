@@ -150,17 +150,3 @@
     font-family: monospace;
 }
 
-.bar {
-    background: #214040;
-    position: absolute;
-    bottom: 0px;
-    width: 100%;
-    z-index: -10;
-    padding-left: 6em;
-}
-
-.barItem {
-    color: #63BFBF;
-    min-width: 4em;
-    margin: 0px 0.7em 0px 0.7em
-}

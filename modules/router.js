@@ -70,7 +70,10 @@ module.exports = (app) => {
         if (req.session.user !== undefined) {
             res.redirect('/');
         }
-        res.sendFile(file('login.html'), { root: "./", });
+        let totalNotes = 0;
+        res.render('login', {
+            title: "Login", totalNotes
+        });
     });
     app.get("/logout", (req, res) => {
         req.session.user = undefined;
@@ -78,6 +81,9 @@ module.exports = (app) => {
     });
 
     app.post("/signup", async (req, res) => {
+        if (req.session.user !== undefined) {
+            res.redirect('/');
+        }
         let user = req.body.user;
         let result = await Storage.addUser(user);
         if (result == "Added user") {
