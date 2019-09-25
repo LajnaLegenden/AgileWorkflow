@@ -129,8 +129,8 @@ function socketIO() {
                 }
                 io.to(socket.id).emit('allGood');
             });
-            socket.on("addFriend", async data => {
-                await Storage.sendFriendRequest({fromUser:socket.user, toUser:data.username});
+            socket.on("addFriend", async username => {
+                await Storage.sendFriendRequest({fromUser:socket.user, toUser:username});
             })
             socket.on("acceptProjectInvite", async data => {
                 let invite = (await Storage.getProjectInvite(data))[0];
