@@ -13,39 +13,46 @@ isEditing = false;
 //Eventlistners
 $('#submitTask').on('click', addTask);
 $("#addComment").on("click", addComment);
+$("#addMessage").click(addMessage);
 $("#addUser").on("click", e => {
     e.preventDefault();
     addUser($("#usernameAdd").val());
-    $("#usernameAdd").val("")
+    $("#usernameAdd").val("");
 });
 $("#addFriend").click(e => {
     e.preventDefault();
     let username = $("#usernameAddFriend");
     if (username.length > 0) {
-        addFriend($("#usernameAddFriend").val())
-        $("#usernameAddFriend").val("")
+        addFriend($("#usernameAddFriend").val());
+        $("#usernameAddFriend").val("");
     }
 });
 $(".accept").click(function () {
-    let inviteID = $(this).parent().attr("id")
-    acceptProjectInvite(inviteID)
+    let inviteID = $(this).parent().attr("id");
+    acceptProjectInvite(inviteID);
     $(this).parent().remove();
 });
 $(".decline").click(function () {
-    let inviteID = $(this).parent().attr("id")
-    declineProjectInvite(inviteID)
+    let inviteID = $(this).parent().attr("id");
+    declineProjectInvite(inviteID);
     $(this).parent().remove();
 });
 $(".acceptFriend").click(function () {
-    let inviteID = $(this).parent().attr("id")
-    acceptFriendRequest(inviteID)
+    let inviteID = $(this).parent().attr("id");
+    acceptFriendRequest(inviteID);
     $(this).parent().remove();
 });
 $(".declineFriend").click(function () {
-    let inviteID = $(this).parent().attr("id")
-    declineFriendRequest(inviteID)
+    let inviteID = $(this).parent().attr("id");
+    declineFriendRequest(inviteID);
     $(this).parent().remove();
 });
+$(".friend").click(function() {
+    $(".currentChat").removeClass("currentChat");
+    $(this).children().addClass("currentChat");
+    socket.emit("newChat");
+});
+
 
 //ReviceEvent
 socket.on('allTasks', allTasks)
@@ -60,6 +67,7 @@ socket.on('allGood', allGood);
 socket.on('moveThisTask', moveThisTask);
 socket.on('yourProjects', yourProjects)
 socket.on('updateProject',updateProject);
+socket.on("showChat", showChat);
 
 
 /**
@@ -130,6 +138,12 @@ function addComment() {
     $("#Comment").val("");
     socket.emit("addComment", data);
 
+}
+
+function addMessage(){
+    let data = {
+        message : $("#Message").val()
+    }
 }
 /**
  * Sends invite to a project.
@@ -421,6 +435,9 @@ function updateProject(data){
             notes.html(data[i].notes);
         }
     }
+}
+function showChat(data){
+    
 }
 
 /**Adds new eventlistner on a the task as it comes in.

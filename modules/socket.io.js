@@ -39,7 +39,7 @@ function socketIO() {
         })
         allUsersOnline.push(socket);
         console.log(allUsersOnline.length)
-        if (socket.user !== "{}" || socket.user == undefined) {
+        if (socket.user !== "{}" || socket.user != undefined) {
             socket.on('newTask', newTask);
             socket.on('needTasks', needTasks);
             socket.on('currentProject', currentProject);
@@ -188,14 +188,22 @@ function socketIO() {
                 }
                 io.to(socket.id).emit('allGood');
             }
-
+            async function getNewId() {
+                let a = "abcdefghijklmnopkqrtuvwxyzABCDEFGHIJKLMNOPKQRTUVWXYZ0123456789_-";
+                let testId = "";
+                for (let i = 0; i < 32; i++) {
+                    testId += a[Math.floor(Math.random() * a.length)];
+                }
+                return testId;
+            }
             /**
              * Sends a firend request
              * @param {object} data - Who should recive this firend request
              */
 
-            async function addFriend(data) {
-                await Storage.sendFriendRequest({ fromUser: socket.user, toUser: data.username });
+            async function addFriend(username) {
+                console.log("got here")
+                await Storage.sendFriendRequest({ fromUser: socket.user, toUser: username});
                 io.to(socket.id).emit('allGood');
             }
 
@@ -229,8 +237,9 @@ function socketIO() {
 
             async function acceptFriendRequest(data) {
                 let invite = (await Storage.getFriendRequest(data))[0];
-                await Storage.addFriend({ username: invite.fromUser, friendUsername: invite.toUser })
-                await Storage.addFriend({ username: invite.toUser, friendUsername: invite.fromUser })
+                let id = (await getNewId());
+                await Storage.addFriend({ username: invite.fromUser, friendUsername: invite.toUser, id:id })
+                await Storage.addFriend({ username: invite.toUser, friendUsername: invite.fromUser, id:id })
                 await Storage.deleteFriendRequest(invite.id);
             }
             /**

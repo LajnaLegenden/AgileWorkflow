@@ -21,7 +21,8 @@ const addUser = "INSERT INTO user (username, password, firstname, lastname, emai
 const addProcjetToUser = "UPDATE user SET projects = ?";
 
 const addLog = "INSERT INTO log (html, projectID) VALUES (?, ?)";
-const getAllLogs = "SELECT * FROM log WHERE projectID = ?";
+const getAllLogs = "SELECT * FROM log WHERE projectID = ? LIMIT 5";
+const getAllLogsLimit100 = "SELECT * FROM (SELECT * FROM log WHERE projectID = ? ORDER BY id DESC LIMIT 100) sub ORDER BY id ASC;"
 
 const addComment = "INSERT INTO comment (author, content, postDate, taskID) VALUES (?, ?, ?, ?)";
 const getAllComments = "SELECT * FROM comment WHERE taskID = ?";
@@ -45,6 +46,8 @@ const deleteFriendRequest = "DELETE FROM friendRequest WHERE id =  ?";
 
 const addFriend = "INSERT INTO friend (username, friendUsername, id) VALUES (?, ?, ?)";
 const getAllFriends = "SELECT * FROM friend WHERE username = ?";
+
+const getChat = "SELECT * FROM message WHERE id = ?";
 
 
 class Database {
@@ -119,7 +122,7 @@ class Database {
     }
 
     async getAllLogs(projectID) {
-        return await connection.queryP(getAllLogs, projectID);
+        return await connection.queryP(getAllLogsLimit100, projectID);
     }
     async addLog(html, projectID){
         await connection.queryP(addLog, [html, projectID]);
@@ -170,11 +173,14 @@ class Database {
     async deleteFriendRequest(id){
         await connection.queryP(deleteFriendRequest, id);
     }
-    async addFriend({username, friendUsername}){
-        await connection.queryP(addFriend, [username, friendUsername, (await getNewId())]);
+    async addFriend({username, friendUsername, id}){
+        await connection.queryP(addFriend, [username, friendUsername, id]);
     }
     async getAllFriends(username){
         return await connection.queryP(getAllFriends, username);
+    }
+    async getChat(id){
+        return await connection.queryP(getChat, id);
     }
 }
 let Storage = new Database();
