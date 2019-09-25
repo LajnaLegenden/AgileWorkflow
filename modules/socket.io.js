@@ -157,7 +157,7 @@ function socketIO() {
                 data.postDate = new Date();
                 data.userNote = checkIfNote(data.content) || [];
                 data.userNote.forEach(async userTagged => {
-                    await Storage.addUserNote(userTagged, user.user, data.projectID, data.taskID);
+                    await Storage.addUserNote(userTagged, socket.user, data.projectID, data.taskID);
                     for (let i in allUsersOnline) {
                         console.log(allUsersOnline[i] == userTagged);
                         if (allUsersOnline[i] == userTagged) {
