@@ -59,7 +59,7 @@ function socketIO() {
                     if (tasks[i].notes == 0) tasks[i].notes = "";
                 }
                 let logs = await Storage.getAllLogs(projectID);
-                io.emit("updateLog", logs)
+                io.to(socket.id).emit("updateLog", logs)
                 io.to(socket.id).emit('allTasks', tasks);
             });
             //Update the moved task in the db and tell clients that the task has moved
@@ -128,6 +128,7 @@ function socketIO() {
                     if ((await Storage.getUserProject({ username: data.toUser, projectID: data.projectID })).length == 0)
                         await Storage.sendInvite({ fromUser: socket.user, toUser: data.users[i], projectID: data.projectID });
                 }
+                io.to(socket.id).emit('allGood');
             });
             socket.on("acceptProjectInvite", async data => {
                 let invite = (await Storage.getProjectInvite(data))[0];
@@ -199,7 +200,7 @@ function socketioAuth(socket) {
         socket.disconnect(true)
         return;
     }
-    if (user == "{}" && JSON.parse(user) != undefined)
+    if (user == "{}" && JSON.parse(user) == undefined)
         socket.disconnect(true);
     return JSON.parse(user);
 }
