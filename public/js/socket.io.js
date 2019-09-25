@@ -317,7 +317,7 @@ function infoAboutTask(data) {
     $("#allComments").empty();
     for (i in data.comments) {
         i = data.comments[i];
-        $("#allComments").append(`<div class="comment border"><h6>@${comment.author}</h6><p class="commentContent">${comment.content}</p></div>`);
+        $("#allComments").append(`<div class="comment border"><h6>@${i.author}</h6><p class="commentContent">${i.content}</p></div>`);
     }
     scrollAllWayDown("allComments");
 }
