@@ -72,7 +72,7 @@ module.exports = (app) => {
         }
         let totalNotes = 0;
         res.sendFile(file('login.html'), {
-            title: "Login", totalNotes
+            root: "./", title: "Login", totalNotes
         });
     });
     app.get("/logout", (req, res) => {
