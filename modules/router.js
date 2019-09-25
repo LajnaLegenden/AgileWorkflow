@@ -71,7 +71,7 @@ module.exports = (app) => {
             res.redirect('/');
         }
         let totalNotes = 0;
-        res.render('login', {
+        res.sendFile(file('login.html'), {
             title: "Login", totalNotes
         });
     });
