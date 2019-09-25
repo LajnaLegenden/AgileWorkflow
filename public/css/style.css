@@ -2,7 +2,9 @@
     box-sizing: border-box;
     color: #214040;
 }
-
+body{
+    overflow-x:hidden;
+}
 /* width */
 
 ::-webkit-scrollbar {
@@ -106,6 +108,7 @@ ul {
     width: 3em;
     margin:0.5em;
     transition: all 200ms ease-in-out;
+    overflow-y:hidden;
 }
 .project p{
     font-weight: bold;

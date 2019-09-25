@@ -5,7 +5,8 @@ async function doStuff() {
     await connection.queryP(`
     CREATE TABLE log (
         html varchar(255),
-        projectID varchar(255)
+        projectID varchar(255),
+        id INT PRIMARY KEY AUTO_INCREMENT
     );`, (error, results, fields) => {
         if(error) {
             console.log("error creating table topics ", error);
