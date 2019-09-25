@@ -70,7 +70,7 @@ function socketIO() {
                 socket.broadcast.emit('moveThisTask', data);
                 data.name = task[0].name
                 let LOG = log('move', data);
-                io.emit('log', LOG)
+                io.to(socket.id).emit('log', LOG)
 
                 await Storage.addLog(LOG, data.projectID)
             });
@@ -90,7 +90,7 @@ function socketIO() {
                 io.to(socket.id).emit('allGood');
                 let projects = await Storage.getAllProjects(socket.user);
                 for (let i = 0; i < projects.length; i++) {
-                    projects[i].notes = (await Storage.getAllUserNotes(socket.user, projects[i].id)).length;
+                    projects[i].notes = (await Storage.getAllUserNotesWithProject(socket.user, projects[i].id)).length;
                     if (projects[i].notes == 0) projects[i].notes = "";
                 }
                 io.to(socket.id).emit('yourProjects', projects);
@@ -101,7 +101,6 @@ function socketIO() {
                 data.postDate = new Date();
                 data.userNote = checkIfNote(data.content) || [];
                 data.userNote.forEach(async userTagged => {
-                    console.log("eherer", data.taskID)
                     await Storage.addUserNote(userTagged, user.user, data.projectID, data.taskID);
                     for (let i in allUsersOnline) {
                         console.log(allUsersOnline[i] == userTagged);
@@ -111,14 +110,14 @@ function socketIO() {
                     }
                 });
                 await Storage.addComment(data);
-                io.emit("showComment", data);
+                io.to(socket.id).emit("showComment", data);
                 updateProjects();
                 io.emit("goUpdate")
             });
             socket.on('myProjects', async () => {
                 let projects = await Storage.getAllProjects(socket.user);
                 for (let i = 0; i < projects.length; i++) {
-                    projects[i].notes = (await Storage.getAllUserNotes(socket.user, projects[i].id)).length;
+                    projects[i].notes = (await Storage.getAllUserNotesWithProject(socket.user, projects[i].id)).length;
                     if (projects[i].notes == 0) projects[i].notes = "";
                 }
                 io.to(socket.id).emit('yourProjects', projects);
@@ -130,6 +129,9 @@ function socketIO() {
                 }
                 io.to(socket.id).emit('allGood');
             });
+            socket.on("addFriend", async data => {
+                await Storage.sendFriendRequest({fromUser:socket.user, toUser:data.username});
+            })
             socket.on("acceptProjectInvite", async data => {
                 let invite = (await Storage.getProjectInvite(data))[0];
                 await Storage.addUserProject({ username: socket.user, projectID: invite.projectID })
@@ -140,6 +142,17 @@ function socketIO() {
                 let invite = (await Storage.getProjectInvite(data))[0];
                 await Storage.deleteProjectInvite(invite.id);
             });
+            socket.on("acceptFriendRequest", async data => {
+                let invite = (await Storage.getFriendRequest(data))[0];
+                console.log(invite)
+                await Storage.addFriend({username:invite.fromUser, friendUsername:invite.toUser})
+                await Storage.addFriend({username:invite.toUser, friendUsername:invite.fromUser})
+                await Storage.deleteFriendRequest(invite.id);
+            });
+            socket.on("declineFriendRequest", async data => {
+                let invite = (await Storage.getFriendRequest(data))[0];
+                await Storage.deleteFriendRequest(invite.id);
+            })
         }
         //Logs stuff in a pretty manner
         function log(action, data) {
@@ -179,7 +192,7 @@ function socketIO() {
         async function updateProjects() {
             let projects = await Storage.getAllProjects(socket.user);
             for (let i = 0; i < projects.length; i++) {
-                projects[i].notes = (await Storage.getAllUserNotes(socket.user, projects[i].id)).length;
+                projects[i].notes = (await Storage.getAllUserNotesWithProject(socket.user, projects[i].id)).length;
                 if (projects[i].notes == 0) projects[i].notes = "";
             }
             io.to(socket.id).emit('yourProjects', projects);

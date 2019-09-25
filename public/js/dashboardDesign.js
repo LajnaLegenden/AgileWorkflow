@@ -58,8 +58,9 @@ function drop(ev) {
 
 }
 $("#showForm").click(() => {
-    $("#form").toggleClass("hide")
-    $("#taskDesc").toggleClass("hide")
-    $("#comments").toggleClass("hide");
+    if ($(".currentTask").length > 0) {
+        $("#form").toggleClass("hide")
+        $("#taskDesc").toggleClass("hide")
+        $("#comments").toggleClass("hide");
+    }
 });
-

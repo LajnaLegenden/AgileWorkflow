@@ -31,6 +31,9 @@
     border-radius: 0.25rem;
     padding: 0.5em;
 }
+.friend{
+    margin:0.3em;
+}
 .friend p {
     margin:auto;
     display: inline-block;
@@ -51,5 +54,11 @@
     color:green;
 }
 .decline i{
+    color:red;
+}
+.acceptFriend i{
+    color:green;
+}
+.declineFriend i{
     color:red;
 }

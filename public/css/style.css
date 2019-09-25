@@ -1,7 +1,6 @@
 * {
     box-sizing: border-box;
     color: #214040;
-    overflow: hidden;
 }
 
 /* width */
@@ -186,4 +185,12 @@ ul {
     color:#85FFFE;
     float:right;
     font-weight:500;
+}
+.userNotes{
+    color:grey;
+    display: inline;
+}
+
+dropdown-item{
+    cursor: pointer !important;
 }
