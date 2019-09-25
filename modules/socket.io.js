@@ -15,28 +15,22 @@ module.exports = (https, cookie) => {
 }
 
 function socketIO() {
-
-    let allUsersOnline = [];
     let online = 0;
     io.on('connection', (socket) => {
         //Make sure no non auth users are here (they should have dc)
+
         user = socketioAuth(socket);
         socket.user = user.user;
         //Online user with timeout to not add non auth people to the list
         setTimeout(() => {
             io.emit('onlinePeople', ++online);
-        }, 250);
+        }, 100);
         socket.on('disconnect', () => {
-            for (var i = 0; i < allUsersOnline.length; i++) {
-                if (allUsersOnline[i].id === socket.id) {
-                    allUsersOnline.splice(i, 1);
-                    console.log(allUsersOnline.length)
-                }
-            }
             setTimeout(() => {
                 io.emit('onlinePeople', --online);
-            }, 250);
+            }, 100);
         })
+<<<<<<< HEAD
         allUsersOnline.push(socket);
         console.log(allUsersOnline.length)
         if (socket.user !== "{}" || socket.user != undefined) {
@@ -62,73 +56,51 @@ function socketIO() {
              */
 
             async function newTask(data) {
+=======
+        if (socket.user !== "{}" || socket.user == undefined) {
+            //New task
+            socket.on('newTask', async (data) => {
+>>>>>>> 7714d763a6273fba63f5cb3cc971eaa81c5e3194
                 await Storage.addTask(data);
                 let LOG = log("addedTask", data);
                 io.emit('goUpdate', data);
                 await Storage.addLog(LOG, data.projectID)
                 io.emit('log', LOG);
-            }
-
-            /**
-             * Gets the Tasks for a project with a ceratin prjectID
-             * @param {string} projectID - The ID of the requested projects
-             */
-
-            async function needTasks(projectID) {
+            });
+            //Send all task for a certain project id
+            socket.on('needTasks', async (projectID) => {
                 let tasks = await Storage.getAllTasks(projectID);
                 for (let i = 0; i < tasks.length; i++) {
                     tasks[i].notes = (await Storage.getAllUserNotesWithTask(socket.user, tasks[i].id)).length;
                     if (tasks[i].notes == 0) tasks[i].notes = "";
                 }
                 let logs = await Storage.getAllLogs(projectID);
-                io.to(socket.id).emit("updateLog", logs)
+                io.emit("updateLog", logs)
                 io.to(socket.id).emit('allTasks', tasks);
-            }
-
-            /**
-             * Sets the sockets current prject
-             * @param {string} id - The current procect that the socket is in
-             */
-
-            async function currentProject(id) {
-                socket.currentProject = id;
-            }
-
-            /**
-             * Moves a task
-             * @param {object} data - Information about the task to move 
-             */
-
-            async function moveTask(data) {
+            });
+            //Update the moved task in the db and tell clients that the task has moved
+            //Only moves the task to save on network
+            socket.on('moveTask', async data => {
                 await Storage.updateState(data);
                 let task = await Storage.getTask(data.id);
                 socket.broadcast.emit('moveThisTask', data);
                 data.name = task[0].name
                 let LOG = log('move', data);
                 io.to(socket.id).emit('log', LOG)
+
                 await Storage.addLog(LOG, data.projectID)
-            }
-
-            /**
-             * Gets more info about a ceratin task
-             * @param {string} id - The id of the task you would like to know more about
-             */
-
-            async function moreInfo(id) {
+            });
+            //Gets the data for the task to show in the description box
+            socket.on('moreInfo', async (id) => {
                 let task = await Storage.getTask(id);
                 Storage.deleteUserNotes(task[0].id);
                 let comments = await Storage.getAllComments(task[0].id);
                 io.to(socket.id).emit('infoAboutTask', { task: task[0], comments });
                 updateProjects();
                 io.to(socket.id).emit("goUpdate")
-            }
-
-            /**
-             * Creates a new project
-             * @param {object} data - Infomation about the new project
-             */
-
-            async function addProject(data) {
+            });
+            //Makes a new projects
+            socket.on('addProject', async  data => {
                 data.creator = user.user;
                 await Storage.addProject(data);
                 io.to(socket.id).emit('allGood');
@@ -138,130 +110,65 @@ function socketIO() {
                     if (projects[i].notes == 0) projects[i].notes = "";
                 }
                 io.to(socket.id).emit('yourProjects', projects);
-            }
 
-            /**
-             * Add a new comment
-             * @param {object} data - Information about the comment
-             */
-
-            async function addComment(data) {
+            });
+            socket.on("addComment", async data => {
                 data.author = socket.user;
                 data.postDate = new Date();
                 data.userNote = checkIfNote(data.content) || [];
                 data.userNote.forEach(async userTagged => {
                     await Storage.addUserNote(userTagged, user.user, data.projectID, data.taskID);
-                    for (let i in allUsersOnline) {
-                        console.log(allUsersOnline[i] == userTagged);
-                        if (allUsersOnline[i] == userTagged) {
-                            io.to(allUsersOnline[i].id).emit('goUpdate');
-                        }
-                    }
                 });
                 await Storage.addComment(data);
                 io.to(socket.id).emit("showComment", data);
                 updateProjects();
                 io.emit("goUpdate")
-            }
-
-            /**
-             * Gets all the users projects based on the session cookie
-             */
-
-            async function myProjects() {
+            });
+            socket.on('myProjects', async () => {
                 let projects = await Storage.getAllProjects(socket.user);
                 for (let i = 0; i < projects.length; i++) {
                     projects[i].notes = (await Storage.getAllUserNotesWithProject(socket.user, projects[i].id)).length;
                     if (projects[i].notes == 0) projects[i].notes = "";
                 }
                 io.to(socket.id).emit('yourProjects', projects);
-            }
-
-            /**
-             * Invites a new user to a project
-             * @param {object} data - Information about the invite 
-             */
-
-            async function addUser(data) {
+            });
+            socket.on("addUser", async data => {
                 for (let i in data.users) {
                     if ((await Storage.getUserProject({ username: data.toUser, projectID: data.projectID })).length == 0)
                         await Storage.sendInvite({ fromUser: socket.user, toUser: data.users[i], projectID: data.projectID });
                 }
-                io.to(socket.id).emit('allGood');
-            }
-            async function getNewId() {
-                let a = "abcdefghijklmnopkqrtuvwxyzABCDEFGHIJKLMNOPKQRTUVWXYZ0123456789_-";
-                let testId = "";
-                for (let i = 0; i < 32; i++) {
-                    testId += a[Math.floor(Math.random() * a.length)];
-                }
-                return testId;
-            }
-            /**
-             * Sends a firend request
-             * @param {object} data - Who should recive this firend request
-             */
-
-            async function addFriend(username) {
-                console.log("got here")
-                await Storage.sendFriendRequest({ fromUser: socket.user, toUser: username});
-                io.to(socket.id).emit('allGood');
-            }
-
-            /**
-             * Accepts a project invite
-             * @param {object} data  - The invite to accept
-             */
-
-            async function acceptProjectInvite(data) {
+            });
+            socket.on("addFriend", async data => {
+                await Storage.sendFriendRequest({fromUser:socket.user, toUser:data.username});
+            })
+            socket.on("acceptProjectInvite", async data => {
                 let invite = (await Storage.getProjectInvite(data))[0];
                 await Storage.addUserProject({ username: socket.user, projectID: invite.projectID })
                 await Storage.deleteProjectInvite(invite.id);
                 await updateProjects();
-                log("join", { user: socket.user, from: invite.fromUser });
-            }
-
-            /**
-             * Declines a project invite
-             * @param {object} data  - The invite to decline
-             */
-
-            async function declineProjectInvite(data) {
+            });
+            socket.on("declineProjectInvite", async data => {
                 let invite = (await Storage.getProjectInvite(data))[0];
                 await Storage.deleteProjectInvite(invite.id);
-            }
-
-            /**
-             * Accepts a firend invite
-             * @param {object} data  - The invite to accept
-             */
-
-            async function acceptFriendRequest(data) {
+            });
+            socket.on("acceptFriendRequest", async data => {
                 let invite = (await Storage.getFriendRequest(data))[0];
-                let id = (await getNewId());
-                await Storage.addFriend({ username: invite.fromUser, friendUsername: invite.toUser, id:id })
-                await Storage.addFriend({ username: invite.toUser, friendUsername: invite.fromUser, id:id })
+                console.log(invite)
+                await Storage.addFriend({username:invite.fromUser, friendUsername:invite.toUser})
+                await Storage.addFriend({username:invite.toUser, friendUsername:invite.fromUser})
                 await Storage.deleteFriendRequest(invite.id);
-            }
-            /**
-             * Declines a friend invite
-             * @param {object} data  - The invite to decline
-             */
-            async function declineFriendRequest(data) {
+            });
+            socket.on("declineFriendRequest", async data => {
                 let invite = (await Storage.getFriendRequest(data))[0];
                 await Storage.deleteFriendRequest(invite.id);
-            }
+            })
         }
-        /**
-         * Logs something to the project log
-         * @param {string} action - What action shoulf be logged
-         * @param {object} data - Information about the action
-         */
+        //Logs stuff in a pretty manner
         function log(action, data) {
             let d = new Date();
             let hours = d.getHours().toString();
-            let minutes = d.getMinutes().toString();
-            let seconds = d.getSeconds().toString();
+            let minutes = d.getMinutes().toString()
+            let seconds = d.getSeconds().toString()
             if (hours.length == 1) {
                 hours += "0";
                 hours = hours.split("").reverse().join("");
@@ -279,15 +186,8 @@ function socketIO() {
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${socket.user}</b> moved ${data.name} to ${data.state}</div>`;
                 case 'addedTask':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${socket.user}</b> created a task called "${data.name}"</div>`;
-                case 'join':
-                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${data.user}</b> has joined the porject, invied by "${data.from}"</div>`
             }
         }
-
-        /**
-         * Checks if someone @ ed me [pls dont @ me]
-         * @param {string} string - The comment to check if anyone was tagged
-         */
         function checkIfNote(string) {
             let users = [];
             if (!string.includes("@")) return "";
@@ -297,10 +197,6 @@ function socketIO() {
             }
             return users;
         }
-
-        /**
-         * Updates the projects tab for users when they get a notification
-         */
 
         async function updateProjects() {
             let projects = await Storage.getAllProjects(socket.user);
@@ -313,10 +209,7 @@ function socketIO() {
     });
 
 }
-/**
- * Authemticates with socket io
- * @param {socket} socket - The socket to authenticate
- */
+//Checks cookie for atuh
 function socketioAuth(socket) {
     var cookief = socket.handshake.headers.cookie;
     let cookies;
@@ -329,11 +222,8 @@ function socketioAuth(socket) {
         socket.disconnect(true)
         return;
     }
-
-    if (user == "{}" && JSON.parse(user) == undefined) {
+    if (user == "{}" && JSON.parse(user) != undefined)
         socket.disconnect(true);
-        console.log("User: " + user);
-    }
     return JSON.parse(user);
 }
 async function newChat(id){
