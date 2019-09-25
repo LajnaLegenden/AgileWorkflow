@@ -1,5 +1,5 @@
 let inputs = [...document.querySelectorAll('input')];
-let btn = $('#submit');
+let btn = $('#ssubmit');
 let alert = $('#alert');
 
 function validateEmail(email) {

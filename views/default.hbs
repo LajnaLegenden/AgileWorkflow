@@ -50,7 +50,7 @@
                 {{#if loggedIn}}
                 <ul class="navbar-nav mt-2 mt-lg-0" id="userControl">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/user"><span style="float:left"
+                        <a class="nav-link active user" id="{{{loggedIn}}}" href="/user"><span style="float:left"
                                 class="badge notes">{{userNotes}}<i
                                     class="userNotes fas fa-bell"></i></span>{{{loggedIn}}}</a>
                     </li>
@@ -86,6 +86,8 @@
     <div class="triangle-down"></div>
     {{/if}}
     {{{body}}}
+
+    {{#if loggedIn}}
     {{!-- Add modal --}}
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog modal-sm">
@@ -104,10 +106,16 @@
             </div>
         </div>
     </div>
+
+    <footer>
+        <div class="bar"><span class="barItem" id="online">Online: 3</span></div>
+    </footer>
+    {{/if}}
     <script src="../public/js/popper.js/umd/popper.js" defer></script>
     <script src="../public/js/bootstrap/bootstrap.js" defer></script>
     <script src="../public/js/socket.io/socket.io.js" defer></script>
     <script src="../public/js/socket.io.js" defer></script>
+<<<<<<< HEAD
     <script src="../public/js/js.js"></script>
     <script>
             if({{totalNotes}} != 0){
@@ -116,6 +124,9 @@
                  document.querySelector(".dropdown-menu").innerHTML = "<span style=padding:5px;>No notifications!</span>"
             }
     </script>
+=======
+    <script src="../public/js/js.js" defer></script>
+>>>>>>> 2c68c2bb5165e5d918cbafdf0ee0a425a5ee9b3e
     {{{block 'script'}}}
 </body>
 

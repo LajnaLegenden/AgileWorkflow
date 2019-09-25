@@ -7,19 +7,21 @@
 }
 
 .infoGrid {
+    height: 50vh;
     display: grid;
     grid-template-columns: 6fr 3fr;
     gap: 1em;
     width: 100%;
     margin: auto;
 }
-.container{
-    padding:0;
+
+.container {
+    padding: 0;
 }
 
 #mainInfo {
     width: 100%;
-    padding-top:2em;
+    padding-top: 2em;
 }
 
 .comment {
@@ -31,34 +33,98 @@
     border-radius: 0.25rem;
     padding: 0.5em;
 }
-.friend{
-    margin:0.3em;
+
+.friend {
+    margin: 0.3em;
 }
+
 .friend p {
-    margin:auto;
+    margin: auto;
     display: inline-block;
 }
-.friend span{
+
+.friend span {
     transition: all 100ms ease-in-out;
 }
-.friend span:hover{
+
+.friend span:hover {
     transform: scale(0.97);
     cursor: pointer;
 }
-.choice{
-    float:right;
+
+.choice {
+    float: right;
     cursor: pointer;
-    margin:auto;
+    margin: auto;
 }
-.accept i{
-    color:green;
+
+.accept i {
+    color: green;
 }
-.decline i{
-    color:red;
+
+.decline i {
+    color: red;
 }
-.acceptFriend i{
-    color:green;
+
+.acceptFriend i {
+    color: green;
 }
-.declineFriend i{
-    color:red;
+
+.declineFriend i {
+    color: red;
+}
+
+.currentChat {
+    background: #63BFBF;
+}
+
+.fromUser {
+    text-align: right;
+}
+
+.message {
+    width: 300px;
+    margin: 5px auto;
+    background: #63BFBF;
+    padding: 10px;
+    font-weight: 900;
+    color: #fff;
+    font-family: arial;
+    position: relative;
+}
+
+.sb1:before {
+    content: "";
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    border-left: 10px solid #63BFBF;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #63BFBF;
+    border-bottom: 10px solid transparent;
+    right: -20px;
+    top: 6px;
+}
+
+.sb2:before {
+    content: "";
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    border-left: 10px solid transparent;
+    border-right: 10px solid #63BFBF;
+    border-top: 10px solid #63BFBF;
+    border-bottom: 10px solid transparent;
+    left: -19px;
+    top: 6px;
+}
+
+.message p {
+    margin: 0;
+}
+
+#allMessages {
+    height: 45vh;
+    overflow-y: auto;
+    overflow-x:hidden;
 }
