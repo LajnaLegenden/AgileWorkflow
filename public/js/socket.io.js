@@ -56,8 +56,7 @@ $("#addMessage").on("click", function () {
         message: $("#Message").val(),
         toUser: $(".currentChat").attr("id")
     }
-    console.log("hererere", data)
-    $("#allMessages").append(`<div class="message right"><p class="fromUser">${data.message}</p></div>`);
+    $("#allMessages").append(`<div class="message sb1"><p class="fromUser">${data.message}</p></div>`);
     $("#Message").val("");
     socket.emit("addMessage", data)
     scrollAllWayDown("allMessages");
