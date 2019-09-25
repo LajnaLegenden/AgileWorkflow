@@ -13,7 +13,6 @@ isEditing = false;
 //Eventlistners
 $('#submitTask').on('click', addTask);
 $("#addComment").on("click", addComment);
-$("#addMessage").click(addMessage);
 $("#addUser").on("click", e => {
     e.preventDefault();
     addUser($("#usernameAdd").val());
@@ -47,10 +46,21 @@ $(".declineFriend").click(function () {
     declineFriendRequest(inviteID);
     $(this).parent().remove();
 });
-$(".friend").click(function() {
+$(".friend").click(function () {
     $(".currentChat").removeClass("currentChat");
     $(this).children().addClass("currentChat");
-    socket.emit("newChat");
+    socket.emit("newChat", $(this).children().attr("id"));
+});
+$("#addMessage").on("click", function () {
+    let data = {
+        message: $("#Message").val(),
+        toUser: $(".currentChat").attr("id")
+    }
+    console.log("hererere", data)
+    $("#allMessages").append(`<div class="message right"><p class="fromUser">${data.message}</p></div>`);
+    $("#Message").val("");
+    socket.emit("addMessage", data)
+    scrollAllWayDown("allMessages");
 });
 
 
@@ -66,7 +76,7 @@ socket.on('onlinePeople', onlinePeople);
 socket.on('allGood', allGood);
 socket.on('moveThisTask', moveThisTask);
 socket.on('yourProjects', yourProjects)
-socket.on('updateProject',updateProject);
+socket.on('updateProject', updateProject);
 socket.on("showChat", showChat);
 
 
@@ -140,11 +150,7 @@ function addComment() {
 
 }
 
-function addMessage(){
-    let data = {
-        message : $("#Message").val()
-    }
-}
+
 /**
  * Sends invite to a project.
  * @param {string} username a string of usernames that is divided by ','
@@ -428,7 +434,7 @@ function yourProjects(data) {
 /**updates notifications on projects
  * @param {object} data a list of all projects from the user.
 */
-function updateProject(data){
+function updateProject(data) {
     for (let i in data) {
         let notes = $('#' + data[i].id + " span");
         if (notes != data[i].notes) {
@@ -436,8 +442,17 @@ function updateProject(data){
         }
     }
 }
-function showChat(data){
-    
+function showChat(data) {
+    let user = $(".user").attr("id");
+    let allMessages = $("#allMessages");
+    for (i in data) {
+        if (data[i].fromUser == user) {
+            allMessages.append(`<div class="message right"><p class="fromUser">${data[i].message}</p></div>`);
+        } else {
+            allMessages.append(`<div class="message"><p class="toUser"><b>@${data[i].fromUser}:</b>${data[i].message}</p></div>`)
+        }
+    }
+    scrollAllWayDown("allMessages");
 }
 
 /**Adds new eventlistner on a the task as it comes in.

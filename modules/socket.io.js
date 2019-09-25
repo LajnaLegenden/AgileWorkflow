@@ -60,6 +60,8 @@ function socketIO() {
             socket.on("declineProjectInvite", declineProjectInvite);
             socket.on("acceptFriendRequest", acceptFriendRequest);
             socket.on("declineFriendRequest", declineFriendRequest);
+            socket.on("newChat", newChat);
+            socket.on("addMessage", sendMessage)
 
             /**
              * Adds a new task
@@ -263,29 +265,14 @@ function socketIO() {
          * @param {object} data - Information about the action
          */
         function log(action, data) {
-            let d = new Date();
-            let hours = d.getHours().toString();
-            let minutes = d.getMinutes().toString();
-            let seconds = d.getSeconds().toString();
-            if (hours.length == 1) {
-                hours += "0";
-                hours = hours.split("").reverse().join("");
-            }
-            if (minutes.length == 1) {
-                minutes += "0";
-                minutes = minutes.split("").reverse().join("");
-            }
-            if (seconds.length == 1) {
-                seconds += "0";
-                seconds = seconds.split("").reverse().join("");
-            }
+            let time = newTime();
             switch (action) {
                 case 'move':
-                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${socket.user}</b> moved ${data.name} to ${data.state}</div>`;
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${socket.user}</b> moved ${data.name} to ${data.state}</div>`;
                 case 'addedTask':
-                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${socket.user}</b> created a task called "${data.name}"</div>`;
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${socket.user}</b> created a task called "${data.name}"</div>`;
                 case 'join':
-                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${hours}.${minutes}.${seconds}]</span> <b>@${data.user}</b> has joined the porject, invied by "${data.from}"</div>`
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> has joined the porject, invied by "${data.from}"</div>`
             }
         }
 
@@ -315,6 +302,23 @@ function socketIO() {
             }
             io.to(socket.id).emit('yourProjects', projects);
         }
+        async function newChat(friendUsername) {
+            let id = await Storage.getFriendId({ username: socket.user, friendUsername })
+            let chat = await Storage.getChat(id);
+            io.to(socket.id).emit("showChat", chat);
+        }
+        async function sendMessage(data) {
+            data.fromUser = socket.user;
+            data.date = new Date();
+            data.id = await Storage.getFriendId({ username: data.fromUser, friendUsername: data.toUser });
+            console.log(data)
+            await Storage.sendMessage(data);
+            for (let i in allUsersOnline) {
+                if (allUsersOnline[i].user == data.toUser) {
+                    io.to(allUsersOnline[i].id).emit('liveChat', data);
+                }
+            }
+        }
     });
 
 }
@@ -340,4 +344,23 @@ function socketioAuth(socket) {
         console.log("User: " + user);
     }
     return JSON.parse(user);
+}
+function newTime() {
+    let d = new Date();
+    let hours = d.getHours().toString();
+    let minutes = d.getMinutes().toString();
+    let seconds = d.getSeconds().toString();
+    if (hours.length == 1) {
+        hours += "0";
+        hours = hours.split("").reverse().join("");
+    }
+    if (minutes.length == 1) {
+        minutes += "0";
+        minutes = minutes.split("").reverse().join("");
+    }
+    if (seconds.length == 1) {
+        seconds += "0";
+        seconds = seconds.split("").reverse().join("");
+    }
+    return { hours, minutes, seconds }
 }

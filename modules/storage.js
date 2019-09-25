@@ -46,8 +46,10 @@ const deleteFriendRequest = "DELETE FROM friendRequest WHERE id =  ?";
 
 const addFriend = "INSERT INTO friend (username, friendUsername, id) VALUES (?, ?, ?)";
 const getAllFriends = "SELECT * FROM friend WHERE username = ?";
+const getFriendId = "SELECT * FROM friend WHERE (username = ? AND friendUsername = ?)";
 
 const getChat = "SELECT * FROM message WHERE id = ?";
+const sendMessage = "INSERT INTO message (message, toUser, fromUser, date, id) VALUES (?, ?, ?, ? ,?)";
 
 
 class Database {
@@ -179,9 +181,20 @@ class Database {
     async getAllFriends(username){
         return await connection.queryP(getAllFriends, username);
     }
+
+    async getFriendId({username, friendUsername}){
+        let id = await connection.queryP(getFriendId, [username, friendUsername]);
+        if(id.length > 0) id = id[0].id
+        else return "";
+        return id;
+    }
     async getChat(id){
         return await connection.queryP(getChat, id);
     }
+    async sendMessage({message, toUser, fromUser,date, id}){
+        await connection.queryP(sendMessage, [message, toUser, fromUser ,date, id]);
+    }
+
 }
 let Storage = new Database();
 async function getNewId() {

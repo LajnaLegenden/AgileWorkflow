@@ -7,6 +7,7 @@
 }
 
 .infoGrid {
+    height:50vh;
     display: grid;
     grid-template-columns: 6fr 3fr;
     gap: 1em;
@@ -64,4 +65,17 @@
 }
 .currentChat{
     background:#63BFBF;
+}
+.fromUser{
+    text-align: right;
+}
+.message{
+    width:100%;
+}
+.message p {
+    margin:0;
+}
+#allMessages{
+    height:45vh;
+    overflow:auto;
 }

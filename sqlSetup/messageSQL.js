@@ -7,7 +7,8 @@ async function doStuff() {
         message varchar(255),
         fromUser varchar(255),
         toUser varchar(255),
-        date varchar(255)
+        date varchar(255),
+        id varchar(255)
     );`, (error, results, fields) => {
         if(error) {
             console.log("error creating table topics ", error);
