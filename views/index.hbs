@@ -1,5 +1,12 @@
 {{#contentFor 'script'}}
 <script src="../public/js/index.js"></script>
+<script>
+    if ({{ totalNotes }} != 0) {
+        document.querySelector("#dropdownMenu2 i").style.color = "red";
+    } else {
+        document.querySelector(".dropdown-menu").innerHTML = "<span style=padding:5px;>No notifications!</span>"
+    }
+</script>
 {{/contentFor}}
 {{!< default}}
 <main class="container">

@@ -4,6 +4,13 @@
 {{/contentFor}}
 {{#contentFor 'script'}}
 <script src="../public/js/dashboardDesign.js"></script>
+<script>
+    if ({{ totalNotes }} != 0) {
+        document.querySelector("#dropdownMenu2 i").style.color = "red";
+    } else {
+        document.querySelector(".dropdown-menu").innerHTML = "<span style=padding:5px;>No notifications!</span>"
+    }
+</script>
 {{/contentFor}}
 <main>
     <div class="tasks">
@@ -24,7 +31,7 @@
                 <ul id="TODO" class="list-group list-group-flush" ondrop="drop(event)" ondragover="allowDrop(event)">
                 </ul>
             </div>
-            <div class="card" >
+            <div class="card">
                 <ul id="INPROGRESS" class="list-group list-group-flush" ondrop="drop(event)"
                     ondragover="allowDrop(event)">
 
@@ -118,6 +125,3 @@
         </div>
     </div>
 </main>
-<footer>
-    <div class="bar"><span class="barItem" id="online">Online: 3</span></div>
-</footer>

@@ -21,6 +21,12 @@ function socketIO() {
     io.on('connection', (socket) => {
         //Make sure no non auth users are here (they should have dc)
         user = socketioAuth(socket);
+        if (!user) {
+            socket.disconnect(true);
+            console.log("asd");
+            return false;
+
+        }
         socket.user = user.user;
         //Online user with timeout to not add non auth people to the list
         setTimeout(() => {
@@ -203,7 +209,7 @@ function socketIO() {
 
             async function addFriend(username) {
                 console.log("got here")
-                await Storage.sendFriendRequest({ fromUser: socket.user, toUser: username});
+                await Storage.sendFriendRequest({ fromUser: socket.user, toUser: username });
                 io.to(socket.id).emit('allGood');
             }
 
@@ -238,8 +244,8 @@ function socketIO() {
             async function acceptFriendRequest(data) {
                 let invite = (await Storage.getFriendRequest(data))[0];
                 let id = (await getNewId());
-                await Storage.addFriend({ username: invite.fromUser, friendUsername: invite.toUser, id:id })
-                await Storage.addFriend({ username: invite.toUser, friendUsername: invite.fromUser, id:id })
+                await Storage.addFriend({ username: invite.fromUser, friendUsername: invite.toUser, id: id })
+                await Storage.addFriend({ username: invite.toUser, friendUsername: invite.fromUser, id: id })
                 await Storage.deleteFriendRequest(invite.id);
             }
             /**
@@ -329,7 +335,7 @@ function socketioAuth(socket) {
         return;
     }
 
-    if (user == "{}" && JSON.parse(user) == undefined) {
+    if (user == "{}" || JSON.parse(user) == undefined) {
         socket.disconnect(true);
         console.log("User: " + user);
     }
