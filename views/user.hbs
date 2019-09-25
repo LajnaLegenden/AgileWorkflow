@@ -3,11 +3,11 @@
 <link rel="stylesheet" href="./public/css/user.css">
 {{/contentFor}}
 {{#contentFor 'script'}}
-<script src="./public/js/userScript.js"></script>
+<script src="./public/js/user.js" defer></script>
 {{/contentFor}}
 
 <main class="container">
-    
+
     <div class="infoGrid" id="mainInfo">
         <div class="infoGrid">
             <div id="taskDesc" class="border">
@@ -38,13 +38,26 @@
                 <h4>Friends</h4>
                 {{#each friends}}
                 <div class="friend">
-                    <span class="input-group-text" id="basic-addon1"><i class="fas fa-at"></i>
+                    <span class="input-group-text" id="{{this.friendUsername}}"><i class="fas fa-at"></i>
                         {{this.friendUsername}}</span>
                 </div>
                 {{/each}}
             </div>
         </div>
-        <div id="log" class="border"></div>
+        <div id="chat" class="border">
+            <div id="allMessages">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="far fa-comment"></i></span>
+                </div>
+                <input type="text" id="Message" class="form-control" id="taskNameInput" placeholder="Message"
+                    aria-label="Comment" aria-describedby="basic-addon1">
+                <div class="input-group-prepend">
+                    <button type="button" class="input-group-text btn btn-outline-primary" id="addMessage">Send</button>
+                </div>
+            </div>
+        </div>
         <div id="invites" class="border">
             <h4>Project Invites</h4>
             {{#each allInvites}}

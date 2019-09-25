@@ -50,9 +50,8 @@
                 {{#if loggedIn}}
                 <ul class="navbar-nav mt-2 mt-lg-0" id="userControl">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/user"><span style="float:left"
-                                class="badge notes">{{userNotes}}<i
-                                    class="userNotes fas fa-bell"></i></span>{{{loggedIn}}}</a>
+                        <a class="nav-link active user" id="{{{loggedIn}}}"href="/user"><span style="float:left"
+                                class="badge notes">{{userNotes}}<i class="userNotes fas fa-bell"></i></span>{{{loggedIn}}}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="/logout">Log out</a>
@@ -110,11 +109,11 @@
     <script src="../public/js/socket.io.js" defer></script>
     <script src="../public/js/js.js" defer></script>
     <script>
-            if({{totalNotes}} != 0){
-                document.querySelector("#dropdownMenu2 i").style.color = "red";
-            } else{
-                 document.querySelector(".dropdown-menu").innerHTML = "<span style=padding:5px;>No notifications!</span>"
-            }
+        if ({{ totalNotes }} != 0) {
+            document.querySelector("#dropdownMenu2 i").style.color = "red";
+        } else {
+            document.querySelector(".dropdown-menu").innerHTML = "<span style=padding:5px;>No notifications!</span>"
+        }
     </script>
     {{{block 'script'}}}
 </body>
