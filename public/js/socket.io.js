@@ -393,6 +393,7 @@ function yourProjects(data) {
                 $("#comments").addClass("hide");
                 let project = $('#' + obj.id);
                 socket.emit('needTasks', obj.id);
+                socket.emit('currentProject', obj.id);
                 $('.currentProject').removeClass('currentProject');
                 project.addClass('currentProject');
                 history.pushState('', obj.name, '/dashboard/' + obj.id);
