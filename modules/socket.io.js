@@ -314,6 +314,7 @@ function socketIO() {
             console.log(data)
             await Storage.sendMessage(data);
             for (let i in allUsersOnline) {
+
                 if (allUsersOnline[i].user == data.toUser) {
                     io.to(allUsersOnline[i].id).emit('liveChat', data);
                 }
