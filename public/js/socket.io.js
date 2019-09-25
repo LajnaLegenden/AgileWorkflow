@@ -78,6 +78,7 @@ socket.on('moveThisTask', moveThisTask);
 socket.on('yourProjects', yourProjects)
 socket.on('updateProject', updateProject);
 socket.on("showChat", showChat);
+socket.on("liveChat", liveChat)
 
 
 /**
@@ -453,6 +454,9 @@ function showChat(data) {
         }
     }
     scrollAllWayDown("allMessages");
+}
+function liveChat(data){
+    allMessages.append(`<div class="message"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
 }
 
 /**Adds new eventlistner on a the task as it comes in.
