@@ -30,7 +30,6 @@ function socketIO() {
                 io.emit('onlinePeople', --online);
             }, 100);
         })
-<<<<<<< HEAD
         allUsersOnline.push(socket);
         console.log(allUsersOnline.length)
         if (socket.user !== "{}" || socket.user != undefined) {
@@ -56,11 +55,6 @@ function socketIO() {
              */
 
             async function newTask(data) {
-=======
-        if (socket.user !== "{}" || socket.user == undefined) {
-            //New task
-            socket.on('newTask', async (data) => {
->>>>>>> 7714d763a6273fba63f5cb3cc971eaa81c5e3194
                 await Storage.addTask(data);
                 let LOG = log("addedTask", data);
                 io.emit('goUpdate', data);
