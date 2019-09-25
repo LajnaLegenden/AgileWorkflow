@@ -200,6 +200,8 @@ socket.on('onlinePeople', onlineusers => {
 
 socket.on('allGood', function () {
     $('#myModal').modal('hide');
+    $('#addUserModal').modal('hide');
+
 });
 
 socket.on('moveThisTask', data => {

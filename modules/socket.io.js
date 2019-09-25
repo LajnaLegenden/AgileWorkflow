@@ -15,6 +15,9 @@ module.exports = (https, cookie) => {
 }
 
 function socketIO() {
+
+    let allUsersOnline = [];
+
     let online = 0;
     io.on('connection', (socket) => {
         //Make sure no non auth users are here (they should have dc)
@@ -26,10 +29,19 @@ function socketIO() {
             io.emit('onlinePeople', ++online);
         }, 100);
         socket.on('disconnect', () => {
+            for (var i = 0; i < allUsersOnline.length; i++) {
+                if (allUsersOnline[i] === socket) {
+                    allUsersOnline.splice(i, 1);
+                    console.log(allUsersOnline.length)
+
+                }
+            }
             setTimeout(() => {
                 io.emit('onlinePeople', --online);
             }, 100);
         })
+        allUsersOnline.push(socket);
+        console.log(allUsersOnline.length)
         if (socket.user !== "{}" || socket.user == undefined) {
             //New task
             socket.on('newTask', async (data) => {
@@ -47,7 +59,7 @@ function socketIO() {
                     if (tasks[i].notes == 0) tasks[i].notes = "";
                 }
                 let logs = await Storage.getAllLogs(projectID);
-                io.emit("updateLog", logs)
+                io.to(socket.id).emit("updateLog", logs)
                 io.to(socket.id).emit('allTasks', tasks);
             });
             //Update the moved task in the db and tell clients that the task has moved
@@ -90,6 +102,12 @@ function socketIO() {
                 data.userNote = checkIfNote(data.content) || [];
                 data.userNote.forEach(async userTagged => {
                     await Storage.addUserNote(userTagged, user.user, data.projectID, data.taskID);
+                    for (let i in allUsersOnline) {
+                        console.log(allUsersOnline[i] == userTagged);
+                        if (allUsersOnline[i] == userTagged) {
+                            io.to(allUsersOnline[i].id).emit('goUpdate');
+                        }
+                    }
                 });
                 await Storage.addComment(data);
                 io.to(socket.id).emit("showComment", data);
@@ -109,6 +127,7 @@ function socketIO() {
                     if ((await Storage.getUserProject({ username: data.toUser, projectID: data.projectID })).length == 0)
                         await Storage.sendInvite({ fromUser: socket.user, toUser: data.users[i], projectID: data.projectID });
                 }
+                io.to(socket.id).emit('allGood');
             });
             socket.on("addFriend", async data => {
                 await Storage.sendFriendRequest({fromUser:socket.user, toUser:data.username});
@@ -194,7 +213,7 @@ function socketioAuth(socket) {
         socket.disconnect(true)
         return;
     }
-    if (user == "{}" && JSON.parse(user) != undefined)
+    if (user == "{}" && JSON.parse(user) == undefined)
         socket.disconnect(true);
     return JSON.parse(user);
 }
