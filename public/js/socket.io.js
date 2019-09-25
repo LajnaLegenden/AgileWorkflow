@@ -446,17 +446,19 @@ function updateProject(data) {
 function showChat(data) {
     let user = $(".user").attr("id");
     let allMessages = $("#allMessages");
+    $("#allMessages").empty();
     for (i in data) {
         if (data[i].fromUser == user) {
-            allMessages.append(`<div class="message right"><p class="fromUser">${data[i].message}</p></div>`);
+            allMessages.append(`<div class="message sb1"><p class="fromUser">${data[i].message}</p></div>`);
         } else {
-            allMessages.append(`<div class="message"><p class="toUser"><b>@${data[i].fromUser}:</b>${data[i].message}</p></div>`)
+            allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data[i].fromUser}:</b>${data[i].message}</p></div>`)
         }
     }
     scrollAllWayDown("allMessages");
 }
 function liveChat(data){
-    allMessages.append(`<div class="message"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
+    let allMessages = $("#allMessages");
+    allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
 }
 
 /**Adds new eventlistner on a the task as it comes in.
