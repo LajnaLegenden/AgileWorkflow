@@ -27,18 +27,17 @@ function socketIO() {
         //Online user with timeout to not add non auth people to the list
         setTimeout(() => {
             io.emit('onlinePeople', ++online);
-        }, 100);
+        }, 250);
         socket.on('disconnect', () => {
             for (var i = 0; i < allUsersOnline.length; i++) {
-                if (allUsersOnline[i] === socket) {
+                if (allUsersOnline[i].id === socket.id) {
                     allUsersOnline.splice(i, 1);
                     console.log(allUsersOnline.length)
-
                 }
             }
             setTimeout(() => {
                 io.emit('onlinePeople', --online);
-            }, 100);
+            }, 250);
         })
         allUsersOnline.push(socket);
         console.log(allUsersOnline.length)
@@ -130,7 +129,8 @@ function socketIO() {
                 io.to(socket.id).emit('allGood');
             });
             socket.on("addFriend", async data => {
-                await Storage.sendFriendRequest({fromUser:socket.user, toUser:data.username});
+                await Storage.sendFriendRequest({ fromUser: socket.user, toUser: data.username });
+                io.to(socket.id).emit('allGood');
             })
             socket.on("acceptProjectInvite", async data => {
                 let invite = (await Storage.getProjectInvite(data))[0];
@@ -145,14 +145,15 @@ function socketIO() {
             socket.on("acceptFriendRequest", async data => {
                 let invite = (await Storage.getFriendRequest(data))[0];
                 console.log(invite)
-                await Storage.addFriend({username:invite.fromUser, friendUsername:invite.toUser})
-                await Storage.addFriend({username:invite.toUser, friendUsername:invite.fromUser})
+                await Storage.addFriend({ username: invite.fromUser, friendUsername: invite.toUser })
+                await Storage.addFriend({ username: invite.toUser, friendUsername: invite.fromUser })
                 await Storage.deleteFriendRequest(invite.id);
             });
             socket.on("declineFriendRequest", async data => {
                 let invite = (await Storage.getFriendRequest(data))[0];
                 await Storage.deleteFriendRequest(invite.id);
             })
+            socket
         }
         //Logs stuff in a pretty manner
         function log(action, data) {
@@ -213,7 +214,10 @@ function socketioAuth(socket) {
         socket.disconnect(true)
         return;
     }
-    if (user == "{}" && JSON.parse(user) == undefined)
+
+    if (user == "{}" && JSON.parse(user) == undefined) {
         socket.disconnect(true);
+        console.log("User: " + user);
+    }
     return JSON.parse(user);
 }

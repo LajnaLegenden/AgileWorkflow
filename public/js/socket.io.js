@@ -43,7 +43,7 @@ $("#addUser").on("click", e => {
 $("#addFriend").click(e => {
     e.preventDefault();
     let username = $("#usernameAddFriend");
-    if(username.length > 0){
+    if (username.length > 0) {
         addFriend($("#usernameAddFriend").val())
         $("#usernameAddFriend").val("")
     }
@@ -184,10 +184,10 @@ socket.on("updateLog", data => {
         $('#log').append(data[i].html);
     scrollAllWayDown("log");
 });
-socket.on("updateComments" ,async data => {
+socket.on("updateComments", async data => {
     $("#allComments").empty();
-        for(i in data)
-            $("#allComments").append(`<div class="comment border"><h6>@${data[i].author}</h6><p class="commentContent">${data[i].content}</p></div>`);
+    for (i in data)
+        $("#allComments").append(`<div class="comment border"><h6>@${data[i].author}</h6><p class="commentContent">${data[i].content}</p></div>`);
 });
 socket.on("showComment", data => {
     $("#allComments").append(`<div class="comment border"><h6>@${data.author}</h6><p class="commentContent">${data.content}</p></div>`);
@@ -237,13 +237,13 @@ socket.on('yourProjects', data => {
         let obj = data[i];
         prependThisProject(obj);
         $('#' + obj.id).on('click', () => {
-
             if (page == "dashboard") {
                 $("#form").removeClass("hide")
                 $("#taskDesc").addClass("hide")
                 $("#comments").addClass("hide");
                 let project = $('#' + obj.id);
                 socket.emit('needTasks', obj.id);
+                socket.emit('currentProject', obj.id);
                 $('.currentProject').removeClass('currentProject');
                 project.addClass('currentProject');
                 history.pushState('', obj.name, '/dashboard/' + obj.id);
@@ -258,13 +258,14 @@ socket.on('yourProjects', data => {
     for (let i = 0; i < allProjects.length; i++) {
         let id = $(allProjects[i]).attr('id');
         if (id == startID) {
-            socket.emit('needTasks', id); 
+            socket.emit('needTasks', id);
         }
     }
-
 });
 
-socket.on('updateProject', data => {
+socket.on('updateProject', updateProject);
+
+function updateProject(data) {
     let allProjects = $('.yourProjects').children();
     for (let i in data) {
         let notes = $('#' + data[i].id + " span");
@@ -272,7 +273,7 @@ socket.on('updateProject', data => {
             notes.html(data[i].notes);
         }
     }
-});
+}
 
 //Functions
 function addTask() {
@@ -331,12 +332,12 @@ function addComment() {
 }
 function addUser(username) {
     let data = {
-        users: username.replace(/ /g,'').split(","),
+        users: username.replace(/ /g, '').split(","),
         projectID: $(".currentProject").attr("id")
     }
     socket.emit("addUser", data)
 }
-function addFriend(username){
+function addFriend(username) {
     let data = {
         username
     }
