@@ -46,6 +46,7 @@ const deleteFriendRequest = "DELETE FROM friendRequest WHERE id =  ?";
 
 const addFriend = "INSERT INTO friend (username, friendUsername, id) VALUES (?, ?, ?)";
 const getAllFriends = "SELECT * FROM friend WHERE username = ?";
+const getFriendId = "SELECT * FROM friend WHERE (username = ? AND friendUsername = ?)";
 
 const getChat = "SELECT * FROM message WHERE id = ?";
 
@@ -178,6 +179,9 @@ class Database {
     }
     async getAllFriends(username){
         return await connection.queryP(getAllFriends, username);
+    }
+    async getFriendId({username, friendUsername}){
+        return await connection.queryP(getFriendId, [username, friendUsername]);
     }
     async getChat(id){
         return await connection.queryP(getChat, id);

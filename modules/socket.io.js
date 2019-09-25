@@ -54,6 +54,7 @@ function socketIO() {
             socket.on("declineProjectInvite", declineProjectInvite);
             socket.on("acceptFriendRequest", acceptFriendRequest);
             socket.on("declineFriendRequest", declineFriendRequest);
+            socket.on("newChat", newChat);
 
             /**
              * Adds a new task
@@ -334,4 +335,8 @@ function socketioAuth(socket) {
         console.log("User: " + user);
     }
     return JSON.parse(user);
+}
+async function newChat(id){
+    let chat = await Storage.getChat(id);
+    io.to(socket.id).emit("showChat", chat);
 }
