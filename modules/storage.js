@@ -136,7 +136,8 @@ class Database {
         return await connection.queryP(getAllComments, taskID);
     }
     async addUserNote(username, fromUser, projectID, taskID){
-        await connection.queryP(addUserNote, [username, fromUser, projectID, taskID, (await getNewId())]);
+        if((await this.getUserProject({username, projectID})).length > 0)
+            await connection.queryP(addUserNote, [username, fromUser, projectID, taskID, (await getNewId())])
     }
     async getAllUserNotes(username){
         return await connection.queryP(getAllUserNotes, username)
