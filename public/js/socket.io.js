@@ -57,7 +57,7 @@ $("#addMessage").on("click", function () {
         toUser: $(".currentChat").attr("id")
     }
     console.log("hererere", data)
-    $("#allMessages").append(`<div class="message right"><p class="fromUser">${data.message}</p></div>`);
+    $("#allMessages").append(`<div class="message sb1 right"><p class="fromUser">${data.message}</p></div>`);
     $("#Message").val("");
     socket.emit("addMessage", data)
     scrollAllWayDown("allMessages");
@@ -456,7 +456,7 @@ function showChat(data) {
     }
     scrollAllWayDown("allMessages");
 }
-function liveChat(data){
+function liveChat(data) {
     let allMessages = $("#allMessages");
     allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
 }
