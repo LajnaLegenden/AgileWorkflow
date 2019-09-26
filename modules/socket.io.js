@@ -213,7 +213,6 @@ function socketIO() {
              */
 
             async function addFriend(username) {
-                console.log("got here")
                 await Storage.sendFriendRequest({ fromUser: socket.user, toUser: username });
                 io.to(socket.id).emit('allGood');
             }
