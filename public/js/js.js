@@ -16,5 +16,13 @@ $("#submit").click(e => {
     addProject(name, desc)
   }
 });
-
+function pressEnterToSubmit(inputElementID, submitBtnID){
+  $("#" + inputElementID).on('keypress',function(e) {
+    console.log("pressed", e)
+    if(e.code == "Enter") {
+        $(submitBtnID).trigger("click");
+    }
+});
+}
+pressEnterToSubmit("Message", "addMessage");
 
