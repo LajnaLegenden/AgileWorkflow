@@ -18,7 +18,7 @@ function socketIO() {
 
     let allUsersOnline = [];
     let online = 0;
-    io.on('connection', (socket) => {
+    io.on('connection', async (socket) => {
         //Make sure no non auth users are here (they should have dc)
         user = socketioAuth(socket);
         if (!user) {
