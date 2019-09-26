@@ -38,6 +38,9 @@ function socketIO() {
 
 
         if (socket.user !== "{}" || socket.user != undefined) {
+
+            io.to(socket.id).emit('goUpdate');
+
             socket.on('newTask', newTask);
             socket.on("editTask", editTask);
             socket.on('needTasks', needTasks);
@@ -56,6 +59,7 @@ function socketIO() {
             socket.on("newChat", newChat);
             socket.on("addMessage", sendMessage);
             socket.on("removeTask", removeTask);
+            socket.on('updateNotesList', updateNotesList);
 
 
             /**
@@ -70,7 +74,7 @@ function socketIO() {
                 await Storage.addLog(LOG, data.projectID)
                 io.emit('log', LOG);
             }
-            async function editTask(data){
+            async function editTask(data) {
                 console.log(data)
                 await Storage.editTask(data)
                 io.to(data.projectID).emit("goUpdate");
@@ -84,6 +88,8 @@ function socketIO() {
             async function needTasks(projectID) {
                 let tasks = await Storage.getAllTasks(projectID);
                 currentProject(projectID);
+                if (tasks == undefined)
+                    return false;
                 for (let i = 0; i < tasks.length; i++) {
                     tasks[i].notes = (await Storage.getAllUserNotesWithTask(socket.user, tasks[i].id)).length;
                     if (tasks[i].notes == 0) tasks[i].notes = "";
@@ -99,8 +105,19 @@ function socketIO() {
              */
 
             async function currentProject(id) {
+                let oldProject = socket.currentProject;
                 socket.currentProject = id;
                 socket.join(id);
+                function online(id) {
+                    let online = 0;
+                    for (let i in allUsersOnline) {
+                        if (allUsersOnline[i].currentProject == id)
+                            online++
+                    }
+                    return online;
+                }
+                io.to(id).emit('onlinePeople', online(id));
+                io.to(oldProject).emit('onlinePeople', online(oldProject));
             }
 
             /**
@@ -159,7 +176,7 @@ function socketIO() {
                 data.postDate = new Date();
                 data.userNote = checkIfNote(data.content) || [];
                 data.userNote.forEach(async userTagged => {
-                    await Storage.addUserNote(userTagged, user.user, data.projectID, data.taskID);
+                    await Storage.addUserNote(userTagged, socket.user, data.projectID, data.taskID);
                     for (let i in allUsersOnline) {
                         console.log(allUsersOnline[i] == userTagged);
                         if (allUsersOnline[i] == userTagged) {
@@ -171,7 +188,7 @@ function socketIO() {
                 await Storage.addComment(data);
                 io.to(socket.id).emit("showComment", data);
                 updateProjects();
-                io.emit("goUpdate")
+                io.emit("goUpdate");
             }
 
             /**
@@ -209,12 +226,18 @@ function socketIO() {
             }
             /**
              * Sends a firend request
-             * @param {object} data - Who should recive this firend request
+             * @param {string} username - Who should recive this firend request
              */
 
             async function addFriend(username) {
                 await Storage.sendFriendRequest({ fromUser: socket.user, toUser: username });
                 io.to(socket.id).emit('allGood');
+                for (let i in allUsersOnline) {
+                    if (allUsersOnline[i].user == username) {
+                        socket.to(allUsersOnline[i]).emit('goUpdate');
+                        return;
+                    }
+                }
             }
 
             /**
@@ -230,6 +253,8 @@ function socketIO() {
                 let LOG = log("join", { user: socket.user, from: invite.fromUser });
                 io.to(invite.projectID).emit('log', LOG);
                 await Storage.addLog(LOG, invite.projectID);
+                io.emit(socket.id).emit('goUpdate');
+
             }
 
             /**
@@ -240,6 +265,8 @@ function socketIO() {
             async function declineProjectInvite(data) {
                 let invite = (await Storage.getProjectInvite(data))[0];
                 await Storage.deleteProjectInvite(invite.id);
+                io.emit(socket.id).emit('goUpdate');
+
             }
 
             /**
@@ -253,6 +280,7 @@ function socketIO() {
                 await Storage.addFriend({ username: invite.fromUser, friendUsername: invite.toUser, id: id })
                 await Storage.addFriend({ username: invite.toUser, friendUsername: invite.fromUser, id: id })
                 await Storage.deleteFriendRequest(invite.id);
+                io.to(socket.id).emit("goUpdate")
             }
             /**
              * Declines a friend invite
@@ -261,6 +289,7 @@ function socketIO() {
             async function declineFriendRequest(data) {
                 let invite = (await Storage.getFriendRequest(data))[0];
                 await Storage.deleteFriendRequest(invite.id);
+                io.emit(socket.id).emit('goUpdate');
             }
         }
         /**
@@ -322,9 +351,18 @@ function socketIO() {
                 }
             }
         }
-        async function removeTask({taskID, projectID}){
+        async function removeTask({ taskID, projectID }) {
             await Storage.removeTask(taskID);
             io.to(projectID).emit("goUpdate");
+        }
+
+        async function updateNotesList() {
+            let username = socket.user;
+            let projectAndTaskNotes = await Storage.getAllUserNotes(username);
+            let allInvites = await Storage.getAllProjectInvites(username);
+            let allFriendRequests = await Storage.getAllFriendRequests(username);
+            console.log("ad");
+            io.to(socket.id).emit('yourNotes', { projectAndTaskNotes, allInvites, allFriendRequests });
         }
     });
 
