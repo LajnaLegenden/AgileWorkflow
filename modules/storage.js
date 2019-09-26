@@ -11,7 +11,7 @@ const getProject = "SELECT * FROM project WHERE id = ?"
 const verifyProcjetID = "SELECT * FROM project WHERE id = ?";
 const addProject = "INSERT INTO project (name, creator, id) VALUES (?, ?, ?)"
 const addUserToProjcet = "UPDATE project SET users = ?";
-const getAllProjects = "SELECT * FROM userProject WHERE username = ?";
+const getAllProjects = "SELECT * FROM userProject WHERE username = ?"; 
 
 const addUserProject = "INSERT INTO userProject (username, projectID, admin) VALUES (?, ?, ?)";
 const getUserProject = "SELECT * FROM userProject WHERE (username = ? AND projectID = ?)"
@@ -50,6 +50,7 @@ const getFriendId = "SELECT * FROM friend WHERE (username = ? AND friendUsername
 
 const getChat = "SELECT * FROM message WHERE id = ?";
 const sendMessage = "INSERT INTO message (message, toUser, fromUser, date, id) VALUES (?, ?, ?, ? ,?)";
+
 
 
 class Database {

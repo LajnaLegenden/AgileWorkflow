@@ -225,7 +225,9 @@ function socketIO() {
                 await Storage.addUserProject({ username: socket.user, projectID: invite.projectID })
                 await Storage.deleteProjectInvite(invite.id);
                 await updateProjects();
-                log("join", { user: socket.user, from: invite.fromUser });
+                let LOG = log("join", { user: socket.user, from: invite.fromUser });
+                io.to(socket.id).emit('log', LOG);
+                await Storage.addLog(LOG, data.projectID);
             }
 
             /**
