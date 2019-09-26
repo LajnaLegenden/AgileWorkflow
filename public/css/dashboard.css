@@ -4,6 +4,9 @@
 .card {
     height:40vh;
 }
+.card ul{
+    overflow: hidden;
+}
 
 .hidden {
     display:none;
@@ -148,5 +151,15 @@
     height: 23vh;
     overflow-y: scroll;
     font-family: monospace;
+}
+#remove, #edit{
+    transition: all ease-in-out 100ms;
+    cursor:pointer;
+}
+#remove:hover{
+    color:red;
+}
+#edit:hover{
+    color:#63BFBF;
 }
 

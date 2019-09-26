@@ -61,7 +61,7 @@ $("#addMessage").on("click", function () {
     socket.emit("addMessage", data)
     scrollAllWayDown("allMessages");
 });
-
+$("#remove").click(removeTask);
 
 //ReviceEvent
 socket.on('allTasks', allTasks)
@@ -459,6 +459,13 @@ function liveChat(data){
     let allMessages = $("#allMessages");
     allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
     scrollAllWayDown("allMessages");
+}
+function removeTask(){
+    let data = {
+        taskID :$(".currentTask").attr("id"),
+        projectID: $(".currentProject").attr("id")
+    }
+    socket.emit("removeTask", data);
 }
 
 /**Adds new eventlistner on a the task as it comes in.

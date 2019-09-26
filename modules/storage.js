@@ -5,7 +5,8 @@ const bcryptjs = require("bcryptjs");
 const addTask = "INSERT INTO task (name, description, state, postDate, id, projectID) VALUES (?, ?, ?, ?, ?, ?)";
 const getAllTasks = "SELECT * FROM task WHERE projectID = ?";
 const updateState = "UPDATE task SET state = ? WHERE id = ?";
-const getTask = "SELECT * FROM task WHERE id = ?"
+const getTask = "SELECT * FROM task WHERE id = ?";
+const removeTask = "DELETE FROM task WHERE id = ?";
 
 const getProject = "SELECT * FROM project WHERE id = ?"
 const verifyProcjetID = "SELECT * FROM project WHERE id = ?";
@@ -68,6 +69,9 @@ class Database {
     /**Returns single task*/
     async getTask(id) {
         return await connection.queryP(getTask, id);
+    }
+    async removeTask(id){
+        await connection.queryP(removeTask, id);
     }
     /**Updates the tasks state with the specified id*/
     async updateState({ state, id }) {
