@@ -7,6 +7,7 @@ const getAllTasks = "SELECT * FROM task WHERE projectID = ?";
 const updateState = "UPDATE task SET state = ? WHERE id = ?";
 const getTask = "SELECT * FROM task WHERE id = ?";
 const removeTask = "DELETE FROM task WHERE id = ?";
+const editTask = "UPDATE task SET name = ?, description = ? WHERE id = ?";
 
 const getProject = "SELECT * FROM project WHERE id = ?"
 const verifyProcjetID = "SELECT * FROM project WHERE id = ?";
@@ -73,6 +74,9 @@ class Database {
     }
     async removeTask(id){
         await connection.queryP(removeTask, id);
+    }
+    async editTask({name, description, taskID}){
+        await connection.queryP(editTask, [name, description, taskID]);
     }
     /**Updates the tasks state with the specified id*/
     async updateState({ state, id }) {

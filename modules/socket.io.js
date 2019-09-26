@@ -23,7 +23,6 @@ function socketIO() {
         user = socketioAuth(socket);
         if (!user) {
             socket.disconnect(true);
-            console.log("asd");
             return false;
 
         }
@@ -47,6 +46,7 @@ function socketIO() {
         console.log(allUsersOnline.length)
         if (socket.user !== "{}" || socket.user != undefined) {
             socket.on('newTask', newTask);
+            socket.on("editTask", editTask);
             socket.on('needTasks', needTasks);
             socket.on('currentProject', currentProject);
             socket.on('moveTask', moveTask);
@@ -76,6 +76,11 @@ function socketIO() {
                 await Storage.addLog(LOG, data.projectID)
                 io.emit('log', LOG);
             }
+            async function editTask(data){
+                console.log(data)
+                await Storage.editTask(data)
+                io.to(data.projectID).emit("goUpdate");
+            }
 
             /**
              * Gets the Tasks for a project with a ceratin prjectID
@@ -84,6 +89,7 @@ function socketIO() {
 
             async function needTasks(projectID) {
                 let tasks = await Storage.getAllTasks(projectID);
+                currentProject(projectID);
                 for (let i = 0; i < tasks.length; i++) {
                     tasks[i].notes = (await Storage.getAllUserNotesWithTask(socket.user, tasks[i].id)).length;
                     if (tasks[i].notes == 0) tasks[i].notes = "";
@@ -100,6 +106,7 @@ function socketIO() {
 
             async function currentProject(id) {
                 socket.currentProject = id;
+                socket.join(id);
             }
 
             /**

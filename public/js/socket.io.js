@@ -62,6 +62,15 @@ $("#addMessage").on("click", function () {
     scrollAllWayDown("allMessages");
 });
 $("#remove").click(removeTask);
+$("#showForm").click(() => {
+    if ($(".currentTask").length > 0) {
+        isEditing = false;
+        $("#form").toggleClass("hide")
+        $("#taskDesc").toggleClass("hide")
+        $("#comments").toggleClass("hide");
+    }
+});
+$("#edit").click(editTask);
 
 //ReviceEvent
 socket.on('allTasks', allTasks)
@@ -86,6 +95,9 @@ socket.on("liveChat", liveChat)
 function addTask() {
     let data = {};
     data.projectID = $(".currentProject").attr("id");
+    data.taskID = $(".currentTask").attr("id");
+    console.log(data)
+    console.log("id", data.taskID)
     let fail = false;
     if ($('#taskNameInput').val() != "") {
         data.name = $('#taskNameInput').val();
@@ -110,8 +122,9 @@ function addTask() {
     }, 5000)
 
     if (!fail) {
-        if (isEditing)
-            socket.emit('editTask', data);
+        if (isEditing){
+            socket.emit("editTask", data)
+        }
         else
             socket.emit('newTask', data);
     }
@@ -194,7 +207,7 @@ function appendThisProject(obj) {
  * @param {element} element a html element
  */
 function addToBoard(obj, element) {
-    $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border">${obj.name}<span class="badge taskNotes">${obj.notes}</span><p  draggable="false" class="hidden desc">${obj.description}</p></li>`);
+    $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border"><span class="taskName">${obj.name}</span><span class="badge taskNotes">${obj.notes}</span><p  draggable="false" name="${obj.description}"class="hidden desc"></p></li>`);
     let newTask = document.getElementById(obj.id);
     addNewEventListeners(newTask);
 
@@ -317,7 +330,7 @@ function infoAboutTask(data) {
     $("#allComments").empty();
     for (i in data.comments) {
         i = data.comments[i];
-        $("#allComments").append(`<div class="comment border"><h6>@${comment.author}</h6><p class="commentContent">${comment.content}</p></div>`);
+        $("#allComments").append(`<div class="comment border"><h6>@${i.author}</h6><p class="commentContent">${i.content}</p></div>`);
     }
     scrollAllWayDown("allComments");
 }
@@ -460,12 +473,22 @@ function liveChat(data) {
     allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
     scrollAllWayDown("allMessages");
 }
-function removeTask(){
+function removeTask() {
     let data = {
-        taskID :$(".currentTask").attr("id"),
+        taskID: $(".currentTask").attr("id"),
         projectID: $(".currentProject").attr("id")
     }
     socket.emit("removeTask", data);
+}
+function editTask() {
+    let desc = $(".currentTask p").attr("name");
+    let name = $(".currentTask .taskName").html();
+    $("#taskNameInput").val(name);
+    $("#taskDescriptionInput").val(desc);
+    $("#form").removeClass("hide");
+    $("#taskDesc").addClass("hide");
+    $("#comments").addClass("hide");
+    isEditing = true;
 }
 
 /**Adds new eventlistner on a the task as it comes in.

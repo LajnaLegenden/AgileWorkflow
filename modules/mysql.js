@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 const util = require("util");
-require('dotenv').config({ path: './env' });
+require('dotenv').config({ path: '../env' });
 console.log(process.env.DBADDR)
 let connection;
 function connectDB() {
