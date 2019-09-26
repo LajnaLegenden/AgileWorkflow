@@ -57,7 +57,7 @@ $("#addMessage").on("click", function () {
         message: $("#Message").val(),
         toUser: $(".currentChat").attr("id")
     }
-    if(data.message = "") return;
+    if(data.message == "") return;
     $("#allMessages").append(`<div class="message sb1"><p class="fromUser">${data.message}</p></div>`);
     $("#Message").val("");
     socket.emit("addMessage", data)
