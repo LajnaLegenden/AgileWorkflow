@@ -46,21 +46,26 @@ module.exports = (app) => {
 
     app.get('/dashboard/:projectID', auth, async (req, res) => {
         let projectID = req.params.projectID;
-        let project = (await Storage.getProject(projectID))[0];
         let user = req.session.user;
-        let allProjects = await Storage.getAllProjects(user);
-        for (let i = 0; i < allProjects.length; i++) {
-            allProjects[i].notes = (await Storage.getAllUserNotesWithProject(user, allProjects[i].id)).length;
-            if (allProjects[i].notes == 0) allProjects[i].notes = "";
+        let hasAcess = (await Storage.getUserProject({ username: user, projectID })).length != 0;
+        if (!hasAcess) {
+            res.redirect('/');
+        } else {
+            let project = (await Storage.getProject(projectID))[0];
+            let allProjects = await Storage.getAllProjects(user);
+            for (let i = 0; i < allProjects.length; i++) {
+                allProjects[i].notes = (await Storage.getAllUserNotesWithProject(user, allProjects[i].id)).length;
+                if (allProjects[i].notes == 0) allProjects[i].notes = "";
+            }
+            let logs = await Storage.getAllLogs(projectID)
+            let userNotes = (await Storage.getAllFriendRequests(user)).length + (await Storage.getAllProjectInvites(user)).length;
+            let projectAndTaskNotes = await Storage.getAllUserNotes(user);
+            let totalNotes = userNotes + projectAndTaskNotes.length;
+            let allInvites = await Storage.getAllProjectInvites(user);
+            let allFriendRequests = await Storage.getAllFriendRequests(user);
+            if (userNotes == 0) userNotes = "";
+            res.render('dashboard', { title: "Projects", loggedIn: user, project, allProjects, logs, userNotes, projectAndTaskNotes, totalNotes, allInvites, allFriendRequests });
         }
-        let logs = await Storage.getAllLogs(projectID)
-        let userNotes = (await Storage.getAllFriendRequests(user)).length + (await Storage.getAllProjectInvites(user)).length;
-        let projectAndTaskNotes = await Storage.getAllUserNotes(user);
-        let totalNotes = userNotes + projectAndTaskNotes.length;
-        let allInvites = await Storage.getAllProjectInvites(user);
-        let allFriendRequests = await Storage.getAllFriendRequests(user);
-        if (userNotes == 0) userNotes = "";
-        res.render('dashboard', { title: "Projects", loggedIn: user, project, allProjects, logs, userNotes, projectAndTaskNotes, totalNotes, allInvites, allFriendRequests });
     });
 
     app.get('/signup', (req, res) => {

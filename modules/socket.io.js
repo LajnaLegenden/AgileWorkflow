@@ -163,6 +163,7 @@ function socketIO() {
                         console.log(allUsersOnline[i] == userTagged);
                         if (allUsersOnline[i] == userTagged) {
                             io.to(allUsersOnline[i].id).emit('goUpdate');
+                            console.log(allUsersOnline[i].id);
                         }
                     }
                 });
@@ -226,7 +227,9 @@ function socketIO() {
                 await Storage.addUserProject({ username: socket.user, projectID: invite.projectID })
                 await Storage.deleteProjectInvite(invite.id);
                 await updateProjects();
-                log("join", { user: socket.user, from: invite.fromUser });
+                let LOG = log("join", { user: socket.user, from: invite.fromUser });
+                io.to(socket.id).emit('log', LOG);
+                await Storage.addLog(LOG, data.projectID);
             }
 
             /**
