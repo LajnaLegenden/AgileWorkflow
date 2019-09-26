@@ -483,6 +483,7 @@ function showChat(data) {
     scrollAllWayDown("allMessages");
 }
 function liveChat(data) {
+    if($(".currentChat".length == 0)) return;
     let allMessages = $("#allMessages");
     allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
     scrollAllWayDown("allMessages");
