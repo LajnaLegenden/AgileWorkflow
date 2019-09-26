@@ -57,7 +57,7 @@ $("#addMessage").on("click", function () {
         message: $("#Message").val(),
         toUser: $(".currentChat").attr("id")
     }
-    if(data.message = "") return;
+    if (data.message == "") return;
     $("#allMessages").append(`<div class="message sb1"><p class="fromUser">${data.message}</p></div>`);
     $("#Message").val("");
     socket.emit("addMessage", data)
@@ -129,8 +129,8 @@ function addTask() {
         }
         else
             socket.emit('newTask', data);
-        $('#taskNameInput').val('');    
-        $('#taskDescriptionInput').val('');   
+        $('#taskNameInput').val('');
+        $('#taskDescriptionInput').val('');
     }
 }
 /**
@@ -487,7 +487,7 @@ function showChat(data) {
     scrollAllWayDown("allMessages");
 }
 function liveChat(data) {
-    if($(".currentChat".length == 0)) return;
+    if ($(".currentChat".length == 0)) return;
     let allMessages = $("#allMessages");
     allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
     scrollAllWayDown("allMessages");
