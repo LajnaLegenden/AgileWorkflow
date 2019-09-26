@@ -36,6 +36,10 @@ nav>ul {
     width: 100%;
 }
 
+.nav-item {
+    padding-right: 20px;
+}
+
 .nav-link {
     color: #63BFBF !important;
     transition: 100ms ease-in-out;
@@ -50,11 +54,18 @@ li.active>a {
 }
 
 .navbar {
-    background: #214040;
+    background: #214040 !important;
 }
 
-.right {
-    float: right;
+.navbar-nav {
+    width: 100%;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+.userControl {
+    display: flex;
+    flex-direction: row;
 }
 
 .hide {

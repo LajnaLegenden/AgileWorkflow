@@ -17,34 +17,26 @@ module.exports = (https, cookie) => {
 function socketIO() {
 
     let allUsersOnline = [];
-    let online = 0;
     io.on('connection', async (socket) => {
+        allUsersOnline.push(socket);
+        io.emit('onlinePeople', allUsersOnline.length);
+
         //Make sure no non auth users are here (they should have dc)
         user = socketioAuth(socket);
         if (!user) {
             socket.disconnect(true);
-            console.log("asd");
             return false;
 
         }
         socket.user = user.user;
-        //Online user with timeout to not add non auth people to the list
-        setTimeout(() => {
-            io.emit('onlinePeople', ++online);
-        }, 250);
-        socket.on('disconnect', () => {
-            for (var i = 0; i < allUsersOnline.length; i++) {
-                if (allUsersOnline[i].id === socket.id) {
-                    allUsersOnline.splice(i, 1);
-                    console.log(allUsersOnline.length)
-                }
-            }
-            setTimeout(() => {
-                io.emit('onlinePeople', --online);
-            }, 250);
-        })
-        allUsersOnline.push(socket);
-        console.log(allUsersOnline.length)
+
+        socket.on('disconnect', disconnect);
+
+        async function disconnect() {
+            removeSocket(socket);
+        }
+
+
         if (socket.user !== "{}" || socket.user != undefined) {
             socket.on('newTask', newTask);
             socket.on('needTasks', needTasks);
@@ -62,6 +54,7 @@ function socketIO() {
             socket.on("declineFriendRequest", declineFriendRequest);
             socket.on("newChat", newChat);
             socket.on("addMessage", sendMessage)
+
 
             /**
              * Adds a new task
@@ -227,8 +220,8 @@ function socketIO() {
                 await Storage.deleteProjectInvite(invite.id);
                 await updateProjects();
                 let LOG = log("join", { user: socket.user, from: invite.fromUser });
-                io.to(socket.id).emit('log', LOG);
-                await Storage.addLog(LOG, data.projectID);
+                io.to(invite.projectID).emit('log', LOG);
+                await Storage.addLog(LOG, invite.projectID);
             }
 
             /**
@@ -325,29 +318,42 @@ function socketIO() {
         }
     });
 
-}
-/**
- * Authemticates with socket io
- * @param {socket} socket - The socket to authenticate
- */
-function socketioAuth(socket) {
-    var cookief = socket.handshake.headers.cookie;
-    let cookies;
-    let user;
-    try {
-        cookies = cookie.parse(socket.handshake.headers.cookie);
-        user = Buffer.from(cookies['express:sess'], 'base64').toString();
-    } catch (err) {
-        console.log(err);
-        socket.disconnect(true)
-        return;
+    function removeSocket(socket) {
+        for (var i = 0; i < allUsersOnline.length; i++) {
+            if (allUsersOnline[i].id === socket.id) {
+                allUsersOnline.splice(i, 1);
+            }
+        }
+
+        io.emit('onlinePeople', allUsersOnline.length);
     }
 
-    if (user == "{}" || JSON.parse(user) == undefined) {
-        socket.disconnect(true);
-        console.log("User: " + user);
+
+    /**
+     * Authemticates with socket io
+     * @param {socket} socket - The socket to authenticate
+     */
+    function socketioAuth(socket) {
+        var cookief = socket.handshake.headers.cookie;
+        let cookies;
+        let user;
+        try {
+            cookies = cookie.parse(socket.handshake.headers.cookie);
+            user = Buffer.from(cookies['express:sess'], 'base64').toString();
+        } catch (err) {
+            console.log(err);
+            socket.disconnect(true)
+            removeSocket(socket)
+            return;
+        }
+
+        if (user == "{}" || JSON.parse(user) == undefined) {
+            socket.disconnect(true);
+            removeSocket(socket)
+        }
+        return JSON.parse(user);
     }
-    return JSON.parse(user);
+
 }
 function newTime() {
     let d = new Date();
@@ -368,3 +374,4 @@ function newTime() {
     }
     return { hours, minutes, seconds }
 }
+
