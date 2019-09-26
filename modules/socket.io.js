@@ -346,7 +346,6 @@ function socketIO() {
             data.date = new Date();
             data.id = await Storage.getFriendId({ username: data.fromUser, friendUsername: data.toUser });
             await Storage.sendMessage(data);
-            console.log("asd");
             emitToUser('liveChat', 'user', data.toUser, data);
         }
         async function removeTask({ taskID, projectID }) {
@@ -359,7 +358,6 @@ function socketIO() {
             let projectAndTaskNotes = await Storage.getAllUserNotes(username);
             let allInvites = await Storage.getAllProjectInvites(username);
             let allFriendRequests = await Storage.getAllFriendRequests(username);
-            console.log("ad");
             io.to(socket.id).emit('yourNotes', { projectAndTaskNotes, allInvites, allFriendRequests });
         }
 
