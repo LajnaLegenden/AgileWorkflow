@@ -16,13 +16,16 @@ $("#submit").click(e => {
     addProject(name, desc)
   }
 });
-function pressEnterToSubmit(inputElementID, submitBtnID){
-  $("#" + inputElementID).on('keypress',function(e) {
-    console.log("pressed", e)
-    if(e.code == "Enter") {
-        $(submitBtnID).trigger("click");
+function pressEnterToSubmit(inputElementID, submitBtnID) {
+  $("#" + inputElementID).on('keypress', function (e) {
+    if (e.key == "Enter") {
+      $("#" + submitBtnID).trigger("click");
     }
-});
+  });
 }
 pressEnterToSubmit("Message", "addMessage");
+pressEnterToSubmit("taskNameInput", "submitTask");
+pressEnterToSubmit("taskDescriptionInput", "submitTask");
+pressEnterToSubmit("name", "submit");
+pressEnterToSubmit("Comment", "addComment");
 

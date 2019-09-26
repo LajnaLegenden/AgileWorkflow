@@ -116,7 +116,7 @@ class Database {
     /**Adds a user*/
     async addUser({ username, password, firstname, lastname, email }) {
         let testUsername = await this.getUser(username);
-        if (testUsername == undefined || testUsername == "") {
+        if (testUsername == undefined|| testUsername == "") {
             await connection.queryP(addUser, [username, await bcryptjs.hash(password, 10), firstname, lastname, email, "[]"]);
             return "Added user";
         }
@@ -173,7 +173,8 @@ class Database {
         await connection.queryP(deleteProjectInvite, id);
     }
     async sendFriendRequest({fromUser, toUser}){
-        await connection.queryP(sendFriendRequest, [fromUser, toUser, (await getNewId())]);
+        if(await this.getFriendId({username:fromUser, friendUsername:toUser}) == "")
+            await connection.queryP(sendFriendRequest, [fromUser, toUser, (await getNewId())]);
     }
     async getAllFriendRequests(username){
         return await connection.queryP(getAllFriendRequests, username);

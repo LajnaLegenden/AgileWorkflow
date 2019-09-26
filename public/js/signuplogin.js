@@ -34,7 +34,7 @@ btn.on('click', () => {
         data.user[inputs[i].id] = currentVal;
         //Check pass
     }
-    if (url == "/signup" && data.user.password != data.user.password2) {
+    if (url == "/signup" && data.user.password != data.user.password2 || url == "/signup" && data.user.password.length <= 6) {
         fail = true;
         inputs[inputs.length - 1].classList.add("missing-info");
         inputs[inputs.length - 2].classList.add("missing-info");
@@ -51,17 +51,19 @@ btn.on('click', () => {
     }).done((res) => {
         if (res.includes("<head>")) {
             var urlParams = new URLSearchParams(window.location.search);
-            let asd = urlParams.get('returnUrl');
-            if (!asd) {
-                asd = "/"
+            let returnUrl = urlParams.get('returnUrl');
+            if (!returnUrl) {
+                returnUrl = "/"
             }
-            document.location.href = asd;
+            document.location.href = returnUrl;
 
         }
-        alert.show();
-        alert.html(res);
         setTimeout(() => {
-            alert.hide();
-        }, 10000);
+            alert.removeClass("hide");
+            alert.html(res);
+        }, 1000);
+        setTimeout(() => {
+            alert.addClass("hide");
+        }, 6000);
     });
 });

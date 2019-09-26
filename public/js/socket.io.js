@@ -47,6 +47,7 @@ $(".declineFriend").click(function () {
     $(this).parent().remove();
 });
 $(".friend").click(function () {
+    $(".inputAndBtnChatHide").removeClass("inputAndBtnChatHide");
     $(".currentChat").removeClass("currentChat");
     $(this).children().addClass("currentChat");
     socket.emit("newChat", $(this).children().attr("id"));
@@ -102,7 +103,6 @@ function addTask() {
     let fail = false;
     if ($('#taskNameInput').val() != "") {
         data.name = $('#taskNameInput').val();
-        $('#taskNameInput').val('');
     } else {
         $('#taskNameInput').addClass("missing-info");
         fail = true
@@ -128,6 +128,8 @@ function addTask() {
         }
         else
             socket.emit('newTask', data);
+        $('#taskNameInput').val('');    
+        $('#taskDescriptionInput').val('');   
     }
 }
 /**
@@ -248,8 +250,20 @@ function addToBoard(obj, element) {
     if (hasBeenCut) {
         desc = desc.substring(0, desc.length - 3) + "...";
     }
-    $('#' + obj.id + ' p').html(desc);
 
+    $('#' + obj.id + ' p').html(desc);
+    hasBeenCut = false;
+    targetWidth = Math.floor($(document.getElementsByClassName('taskItem')[0]).width());
+    fontSize = $(document.getElementsByClassName('taskName')[0]).css('font-size');
+    let name = obj.name;
+    while (measureText(name, fontSize, "").width >= targetWidth) {
+        name = name.substring(0, name.length - 3);
+        hasBeenCut = true;
+    }
+    if (hasBeenCut) {
+        name = name.substring(0, name.length - 3) + "...";
+    }
+    $('#' + obj.id + ' .taskName').html(name);
 }
 /**
  * Scrolls all the way down on a html element

@@ -128,3 +128,6 @@
     overflow-y: auto;
     overflow-x:hidden;
 }
+.inputAndBtnChatHide{
+    display:none;
+}
