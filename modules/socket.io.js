@@ -178,10 +178,8 @@ function socketIO() {
                 data.userNote.forEach(async userTagged => {
                     await Storage.addUserNote(userTagged, socket.user, data.projectID, data.taskID);
                     for (let i in allUsersOnline) {
-                        console.log(allUsersOnline[i] == userTagged);
                         if (allUsersOnline[i] == userTagged) {
                             io.to(allUsersOnline[i].id).emit('goUpdate');
-                            console.log(allUsersOnline[i].id);
                         }
                     }
                 });
