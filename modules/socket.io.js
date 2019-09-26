@@ -215,6 +215,7 @@ function socketIO() {
                         await Storage.sendInvite({ fromUser: socket.user, toUser: data.users[i], projectID: data.projectID });
                 }
                 io.to(socket.id).emit('allGood');
+                io.to(socket.id).emit('goUpdate');
             }
             async function getNewId() {
                 let a = "abcdefghijklmnopkqrtuvwxyzABCDEFGHIJKLMNOPKQRTUVWXYZ0123456789_-";
@@ -238,6 +239,8 @@ function socketIO() {
                         return;
                     }
                 }
+                emitToUser('goUpdate', 'user', username);
+
             }
 
             /**
@@ -253,7 +256,7 @@ function socketIO() {
                 let LOG = log("join", { user: socket.user, from: invite.fromUser });
                 io.to(invite.projectID).emit('log', LOG);
                 await Storage.addLog(LOG, invite.projectID);
-                io.emit(socket.id).emit('goUpdate');
+                io.to(socket.id).emit('goUpdate');
 
             }
 
@@ -265,7 +268,7 @@ function socketIO() {
             async function declineProjectInvite(data) {
                 let invite = (await Storage.getProjectInvite(data))[0];
                 await Storage.deleteProjectInvite(invite.id);
-                io.emit(socket.id).emit('goUpdate');
+                io.to(socket.id).emit('goUpdate');
 
             }
 
@@ -289,7 +292,7 @@ function socketIO() {
             async function declineFriendRequest(data) {
                 let invite = (await Storage.getFriendRequest(data))[0];
                 await Storage.deleteFriendRequest(invite.id);
-                io.emit(socket.id).emit('goUpdate');
+                io.to(socket.id).emit('goUpdate');
             }
         }
         /**
@@ -345,11 +348,8 @@ function socketIO() {
             data.date = new Date();
             data.id = await Storage.getFriendId({ username: data.fromUser, friendUsername: data.toUser });
             await Storage.sendMessage(data);
-            for (let i in allUsersOnline) {
-                if (allUsersOnline[i].user == data.toUser) {
-                    io.to(allUsersOnline[i].id).emit('liveChat', data);
-                }
-            }
+            console.log("asd");
+            emitToUser('liveChat', 'user', data.toUser, data);
         }
         async function removeTask({ taskID, projectID }) {
             await Storage.removeTask(taskID);
@@ -364,6 +364,8 @@ function socketIO() {
             console.log("ad");
             io.to(socket.id).emit('yourNotes', { projectAndTaskNotes, allInvites, allFriendRequests });
         }
+
+
     });
 
     function removeSocket(socket) {
@@ -374,6 +376,18 @@ function socketIO() {
         }
 
         io.emit('onlinePeople', allUsersOnline.length);
+    }
+    function emitToUser(event, prop, propValue, data) {
+        if (data == undefined) {
+            data = {};
+        }
+        for (let i in allUsersOnline) {
+            if (allUsersOnline[i][prop] == propValue) {
+
+                io.to(allUsersOnline[i].id).emit(event, data);
+                return;
+            }
+        }
     }
 
 
