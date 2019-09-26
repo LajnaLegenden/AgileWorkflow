@@ -86,7 +86,8 @@ socket.on('moveThisTask', moveThisTask);
 socket.on('yourProjects', yourProjects)
 socket.on('updateProject', updateProject);
 socket.on("showChat", showChat);
-socket.on("liveChat", liveChat)
+socket.on("liveChat", liveChat);
+socket.on('yourNotes', yourNotes);
 
 
 /**
@@ -122,7 +123,7 @@ function addTask() {
     }, 5000)
 
     if (!fail) {
-        if (isEditing){
+        if (isEditing) {
             socket.emit("editTask", data)
         }
         else
@@ -316,6 +317,8 @@ function allTasks(data) {
 function goUpdate(data) {
     let projectID = $(".currentProject").attr("id");
     socket.emit('needTasks', projectID);
+    socket.emit('myProjects');
+    socket.emit('updateNotesList');
 }
 /**
  * shows new info about a task and show new comments
@@ -491,6 +494,46 @@ function editTask() {
     isEditing = true;
 }
 
+function yourNotes(data) {
+    let list = $('#userNotesDropdown');
+    let icon = $("#dropdownMenu2 i");
+    let number = $("#dropdownMenu2 span");
+
+    list.empty();
+    for (let i in data.projectAndTaskNotes) {
+        let obj = data.projectAndTaskNotes[i];
+        list.append(`<a class="dropdown-item" href="/dashboard/${obj.id}"><b>@${obj.fromUser}</b> tagged you in a project!</a>`);
+    }
+    for (let i in data.allInvites) {
+        let obj = data.allInvites[i];
+        list.append(`<a class="dropdown-item" href="/user"><b>@${obj.fromUser}</b>has invited you to the project ${obj.projectName}</a>`);
+    }
+    for (let i in data.allFriendRequests) {
+        let obj = data.allFriendRequests[i];
+        list.append(`<a class="dropdown-item" href="/user">Friend Request From <b>@${obj.fromUser}</b></a>`);
+    }
+
+    number.html(list.children().length);
+    number.css('color', '#85FFFE');
+
+    if (list.children().length == 0) {
+        list.append(`<a class="dropdown-item" href="#">No notifications</a>`)
+        icon.css('color', 'darkslategrey');
+
+    } else {
+        icon.css('color', 'red');
+    }
+
+    //USER ICON
+
+    let userIconNotes = $('#userIconNotes');
+    let userNotes = (data.allInvites.length) + (data.allFriendRequests.length);
+    console.log(userNotes)
+    userIconNotes.text(userNotes);
+    userIconNotes.append(`<i class="userNotes fas fa-bell"></i>`);
+
+}
+
 /**Adds new eventlistner on a the task as it comes in.
  * @param {htmlElement} data -jquery element that
 */
@@ -508,6 +551,7 @@ function addNewEventListeners(newTask) {
     newTask.addEventListener('click', () => {
         let id = $(newTask).attr('id');
         socket.emit('moreInfo', id);
+        socket.emit('updateNotesList');
         $(".currentTask").removeClass("currentTask");
         $(newTask).addClass("currentTask");
         $("#form").addClass("hide");
