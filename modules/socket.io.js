@@ -342,7 +342,6 @@ function socketIO() {
             io.to(socket.id).emit("showChat", chat);
         }
         async function sendMessage(data) {
-            if (data.message == "") return false;
             data.fromUser = socket.user;
             data.date = new Date();
             data.id = await Storage.getFriendId({ username: data.fromUser, friendUsername: data.toUser });
