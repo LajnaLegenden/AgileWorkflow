@@ -53,7 +53,8 @@ function socketIO() {
             socket.on("acceptFriendRequest", acceptFriendRequest);
             socket.on("declineFriendRequest", declineFriendRequest);
             socket.on("newChat", newChat);
-            socket.on("addMessage", sendMessage)
+            socket.on("addMessage", sendMessage);
+            socket.on("removeTask", removeTask);
 
 
             /**
@@ -307,14 +308,16 @@ function socketIO() {
             data.fromUser = socket.user;
             data.date = new Date();
             data.id = await Storage.getFriendId({ username: data.fromUser, friendUsername: data.toUser });
-            console.log(data)
             await Storage.sendMessage(data);
             for (let i in allUsersOnline) {
-
                 if (allUsersOnline[i].user == data.toUser) {
                     io.to(allUsersOnline[i].id).emit('liveChat', data);
                 }
             }
+        }
+        async function removeTask({taskID, projectID}){
+            await Storage.removeTask(taskID);
+            io.to(projectID).emit("goUpdate");
         }
     });
 
