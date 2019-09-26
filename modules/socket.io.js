@@ -162,6 +162,7 @@ function socketIO() {
                         console.log(allUsersOnline[i] == userTagged);
                         if (allUsersOnline[i] == userTagged) {
                             io.to(allUsersOnline[i].id).emit('goUpdate');
+                            console.log(allUsersOnline[i].id);
                         }
                     }
                 });
