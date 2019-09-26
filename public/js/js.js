@@ -28,4 +28,6 @@ pressEnterToSubmit("taskNameInput", "submitTask");
 pressEnterToSubmit("taskDescriptionInput", "submitTask");
 pressEnterToSubmit("name", "submit");
 pressEnterToSubmit("Comment", "addComment");
+pressEnterToSubmit("username", "ssubmit");
+pressEnterToSubmit("password", "ssubmit");
 
