@@ -9,8 +9,8 @@ function sanitize(string) {
         "/": '&#x2F;',
     };
     const reg = /[&<>"'/]/ig;
-    return string.replace(reg, (match)=>(map[match]));
-  }
+    return string.replace(reg, (match) => (map[match]));
+}
 //Cards
 let BACKLOG = $('#BACKLOG');
 let TODO = $('#TODO');
@@ -37,14 +37,14 @@ $("#addFriend").click(e => {
         $("#usernameAddFriend").val("");
     }
 });
-function addEventListenerToInvites(){
+function addEventListenerToInvites() {
     $(".accept").click(function () {
         let inviteID = $(this).parent().attr("id");
         acceptProjectInvite(inviteID);
         $(this).parent().remove();
     });
     $(".decline").click(function () {
-        let inviteID = $(this).parent().attr("id"); 
+        let inviteID = $(this).parent().attr("id");
         declineProjectInvite(inviteID);
         $(this).parent().remove();
     });
@@ -461,6 +461,8 @@ function yourProjects(data) {
                 let project = $('#' + obj.id);
                 socket.emit('needTasks', obj.id);
                 socket.emit('currentProject', obj.id);
+                $('#title').html(obj.name);
+                $('#desc').html(obj.description);
                 $('.currentProject').removeClass('currentProject');
                 project.addClass('currentProject');
                 history.pushState('', obj.name, '/dashboard/' + obj.id);
