@@ -12,6 +12,14 @@ main {
     padding-left: 4em !important;
 }
 
+.lightblue {
+    color: #85FFFE;
+}
+
+#title {
+    padding-left: 3em;
+}
+
 /* width */
 
 ::-webkit-scrollbar {
@@ -222,6 +230,7 @@ ul {
 
 #userNotesDropdown {
     z-index: 6;
+    left: 4em;
 }
 
 #DropDownMenu2 {
@@ -247,4 +256,11 @@ dropdown-item {
     color: #63BFBF;
     min-width: 4em;
     margin: 0px 0.7em 0px 0.7em
+}
+
+#notifications {
+    width: 20em;
+    position: fixed;
+    bottom: 1em;
+    right: 0px;
 }

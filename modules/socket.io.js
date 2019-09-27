@@ -13,8 +13,8 @@ function sanitize(string) {
         "/": '&#x2F;',
     };
     const reg = /[&<>"'/]/ig;
-    return string.replace(reg, (match)=>(map[match]));
-  }
+    return string.replace(reg, (match) => (map[match]));
+}
 let io;
 
 module.exports = (https, cookie) => {
@@ -39,7 +39,7 @@ function socketIO() {
             return false;
 
         }
-        if(user.user != undefined)
+        if (user.user != undefined)
             socket.user = sanitize(user.user);
 
         socket.on('disconnect', disconnect);
@@ -169,7 +169,7 @@ function socketIO() {
              */
 
             async function addProject(data) {
-                data.creator = user.user;
+                data.creator = socket.user;
                 await Storage.addProject(data);
                 io.to(socket.id).emit('allGood');
                 let projects = await Storage.getAllProjects(socket.user);
@@ -177,6 +177,7 @@ function socketIO() {
                     projects[i].notes = (await Storage.getAllUserNotesWithProject(socket.user, projects[i].id)).length;
                     if (projects[i].notes == 0) projects[i].notes = "";
                 }
+
                 io.to(socket.id).emit('yourProjects', projects);
             }
 
@@ -223,7 +224,7 @@ function socketIO() {
 
             async function addUser(data) {
                 for (let i in data.users) {
-                    if ((await Storage.getUserProject({ username: data.toUser, projectID: data.projectID })).length == 0){
+                    if ((await Storage.getUserProject({ username: data.toUser, projectID: data.projectID })).length == 0) {
                         await Storage.sendInvite({ fromUser: socket.user, toUser: data.users[i], projectID: data.projectID });
                         console.log("got here")
                         allInvites(data.users[i]);
@@ -395,12 +396,12 @@ function socketIO() {
 
         io.emit('onlinePeople', allUsersOnline.length);
     }
-    async function allInvites(toUser){
+    async function allInvites(toUser) {
         let fInvites = await Storage.getAllFriendRequests(toUser);
         let pInvites = await Storage.getAllProjectInvites(toUser);
         let data = {
-            projectInvites:pInvites,
-            friendRequests:fInvites
+            projectInvites: pInvites,
+            friendRequests: fInvites
         }
         console.log(data)
         emitToUser("updateInvites", "user", toUser, data);
@@ -431,7 +432,7 @@ function socketIO() {
             cookies = cookie.parse(socket.handshake.headers.cookie);
             user = Buffer.from(cookies['express:sess'], 'base64').toString();
         } catch (err) {
-            console.log(err);
+            //console.log(err);
             socket.disconnect(true)
             removeSocket(socket)
             return;
@@ -443,7 +444,6 @@ function socketIO() {
         }
         return JSON.parse(user);
     }
-
 }
 function newTime() {
     let d = new Date();
@@ -464,4 +464,3 @@ function newTime() {
     }
     return { hours, minutes, seconds }
 }
-

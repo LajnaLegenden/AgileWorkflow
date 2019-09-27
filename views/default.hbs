@@ -81,7 +81,6 @@
     <div class="triangle-down"></div>
     {{/if}}
     {{{body}}}
-
     {{#if loggedIn}}
     {{!-- Add modal --}}
     <div class="modal fade" id="myModal" role="dialog">
@@ -92,14 +91,14 @@
                         <label for="name">Project Name</label>
                         <input type="input" class="form-control" id="name" placeholder="Enter a project name">
                     </div>
-                    <div class="form-group">
-                        <label for="description">Project Description</label>
-                        <textarea class="form-control" id="description" rows="3"></textarea>
-                    </div>
                     <div class="from-group"><button class="btn btn-primary" id="submit">Add Project</button></div>
                 </form>
             </div>
         </div>
+    </div>
+
+    <div id="notifications">
+        
     </div>
 
     <footer>
