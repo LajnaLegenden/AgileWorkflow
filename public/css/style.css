@@ -112,7 +112,7 @@ ul {
     overflow: auto;
     position: fixed;
     width: 4em;
-    height: 100vh;
+    height: 96vh;
     background: #214040;
     z-index: 4;
 }
@@ -152,17 +152,12 @@ ul {
     width: 3em;
     margin: 0.5em;
     float: bottom;
-}
-
-#addProject i {
-    transition: all 200ms ease-in-out;
-    border-radius: 100%;
-}
-
-#addProject:hover i {
-    color: #85FFFE !important;
-    background: #214040;
+    transition: all 100ms ease-in-out;
     cursor: pointer;
+}
+
+#addProject:hover {
+    background: #85FFFE;
 }
 
 .project:hover {
