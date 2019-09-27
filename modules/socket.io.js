@@ -75,7 +75,9 @@ function socketIO() {
                 io.emit('log', LOG);
             }
             async function editTask(data) {
-                console.log(data)
+                let LOG = log('edit', { user: socket.user, name: data.name });
+                io.to(data.projectID).emit('log', LOG)
+                await Storage.addLog(LOG, data.projectID)
                 await Storage.editTask(data)
                 io.to(data.projectID).emit("goUpdate");
             }
@@ -307,6 +309,10 @@ function socketIO() {
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${socket.user}</b> created a task called "${data.name}"</div>`;
                 case 'join':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> has joined the porject, invied by "${data.from}"</div>`
+                case 'remove':
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> removed the task "${data.name}"</div>`
+                case 'edit':
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> edited the task "${data.name}"</div>`
             }
         }
 
@@ -349,6 +355,10 @@ function socketIO() {
             emitToUser('liveChat', 'user', data.toUser, data);
         }
         async function removeTask({ taskID, projectID }) {
+            let task = await Storage.getTask(taskID);
+            let LOG = log('remove', { user: socket.user, name: task[0].name });
+            io.to(projectID).emit('log', LOG)
+            await Storage.addLog(LOG, projectID)
             await Storage.removeTask(taskID);
             io.to(projectID).emit("goUpdate");
         }
