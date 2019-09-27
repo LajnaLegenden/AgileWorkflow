@@ -26,14 +26,14 @@ $('#submitTask').on('click', addTask);
 $("#addComment").on("click", addComment);
 $("#addUser").on("click", e => {
     e.preventDefault();
-    addUser($("#usernameAdd").val());
+    addUser(sanitize($("#usernameAdd").val()));
     $("#usernameAdd").val("");
 });
 $("#addFriend").click(e => {
     e.preventDefault();
     let username = $("#usernameAddFriend");
     if (username.length > 0) {
-        addFriend($("#usernameAddFriend").val());
+        addFriend(sanitize($("#usernameAddFriend").val()));
         $("#usernameAddFriend").val("");
     }
 });
@@ -118,14 +118,14 @@ function addTask() {
     console.log(data)
     console.log("id", data.taskID)
     let fail = false;
-    if ($('#taskNameInput').val() != "") {
+    if (sanitize($('#taskNameInput').val()) != "") {
         data.name = sanitize($('#taskNameInput').val());
     } else {
         $('#taskNameInput').addClass("missing-info");
         fail = true
     }
 
-    if ($('#taskDescriptionInput').val() != "") {
+    if (sanitize($('#taskDescriptionInput').val()) != "") {
         data.description = sanitize($('#taskDescriptionInput').val());
         $('#taskDescriptionInput').val('');
 
@@ -175,8 +175,8 @@ async function addProject(name, desc) {
 function addComment() {
     let data = {
         content: sanitize($("#Comment").val()),
-        taskID: sanitize($(".currentTask").attr("id")),
-        projectID: sanitize($(".currentProject").attr("id"))
+        taskID: $(".currentTask").attr("id"),
+        projectID: $(".currentProject").attr("id")
     }
     $("#Comment").val("");
     socket.emit("addComment", data);
@@ -190,7 +190,7 @@ function addComment() {
  */
 function addUser(username) {
     let data = {
-        users: username.replace(/ /g, '').split(","),
+        users: sanitize(username).replace(/ /g, '').split(","),
         projectID: $(".currentProject").attr("id")
     }
     socket.emit("addUser", data);
@@ -520,8 +520,8 @@ function removeTask() {
 function editTask() {
     let desc = $(".currentTask p").attr("name");
     let name = $(".currentTask .taskName").html();
-    $("#taskNameInput").val(name);
-    $("#taskDescriptionInput").val(desc);
+    sanitize($("#taskNameInput").val(name));
+    sanitize($("#taskDescriptionInput").val(desc));
     $("#form").removeClass("hide");
     $("#taskDesc").addClass("hide");
     $("#comments").addClass("hide");
