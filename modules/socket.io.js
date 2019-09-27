@@ -72,6 +72,7 @@ function socketIO() {
             socket.on("addMessage", sendMessage);
             socket.on("removeTask", removeTask);
             socket.on('updateNotesList', updateNotesList);
+            socket.on("removeMessageNotes", removeMessageNotes)
 
 
             /**
@@ -352,6 +353,9 @@ function socketIO() {
                 if (projects[i].notes == 0) projects[i].notes = "";
             }
             io.to(socket.id).emit('yourProjects', projects);
+        }
+        async function removeMessageNotes(id){
+            await Storage.removeMessageNotes(id);
         }
         async function newChat(friendUsername) {
             let id = await Storage.getFriendId({ username: socket.user, friendUsername });

@@ -472,6 +472,7 @@ function showChat(data) {
 function liveChat(data) {
     console.log("sdfsd");
     if (!$(".currentChat").length == 0) {
+        socket.emit("removeMessageNotes", $(".currentChat").attr("id"));
         let allMessages = $("#allMessages");
         allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
         scrollAllWayDown("allMessages");
