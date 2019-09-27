@@ -166,8 +166,8 @@ function move(element, taskID) {
  * @param {string} name name of prorject
  * @param {string} desc description of project
  */
-async function addProject(name, desc) {
-    socket.emit("addProject", { name, desc });
+async function addProject(name) {
+    socket.emit("addProject", { name });
 }
 /**
  * adds a comment
@@ -452,7 +452,10 @@ function yourProjects(data) {
     page = page[page.length - 2];
     for (let i in data) {
         let obj = data[i];
-        appendThisProject(obj);
+        appendThisProject(obj); if (obj.id == startID) {
+            socket.emit('needTasks', obj.id);
+            $('#title').html(obj.name);
+        }
         $('#' + obj.id).on('click', () => {
             if (page == "dashboard") {
                 $("#form").removeClass("hide");
@@ -462,7 +465,6 @@ function yourProjects(data) {
                 socket.emit('needTasks', obj.id);
                 socket.emit('currentProject', obj.id);
                 $('#title').html(obj.name);
-                $('#desc').html(obj.description);
                 $('.currentProject').removeClass('currentProject');
                 project.addClass('currentProject');
                 history.pushState('', obj.name, '/dashboard/' + obj.id);
@@ -470,13 +472,6 @@ function yourProjects(data) {
                 window.location.href = "/dashboard/" + obj.id;
             }
         });
-    }
-    let allProjects = $('.yourProjects').children();
-    for (let i = 0; i < allProjects.length; i++) {
-        let id = $(allProjects[i]).attr('id');
-        if (id == startID) {
-            socket.emit('needTasks', id);
-        }
     }
 
 }
@@ -509,6 +504,7 @@ function liveChat(data) {
     let allMessages = $("#allMessages");
     allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
     scrollAllWayDown("allMessages");
+    console.log("data: " + data);
 }
 function removeTask() {
     let data = {
