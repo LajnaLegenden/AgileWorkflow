@@ -131,7 +131,7 @@ function socketIO() {
                 socket.broadcast.emit('moveThisTask', data);
                 data.name = task[0].name
                 let LOG = log('move', data);
-                io.to(socket.id).emit('log', LOG)
+                io.to(data.projectID).emit('log', LOG)
                 await Storage.addLog(LOG, data.projectID)
             }
 
@@ -209,11 +209,14 @@ function socketIO() {
 
             async function addUser(data) {
                 for (let i in data.users) {
-                    if ((await Storage.getUserProject({ username: data.toUser, projectID: data.projectID })).length == 0)
+                    if ((await Storage.getUserProject({ username: data.toUser, projectID: data.projectID })).length == 0){
                         await Storage.sendInvite({ fromUser: socket.user, toUser: data.users[i], projectID: data.projectID });
+                        console.log("got here")
+                        allInvites(data.users[i]);
+                        emitToUser("goUpdate", "user", data.users[i], data)
+                    }
                 }
                 io.to(socket.id).emit('allGood');
-                io.to(socket.id).emit('goUpdate');
             }
             async function getNewId() {
                 let a = "abcdefghijklmnopkqrtuvwxyzABCDEFGHIJKLMNOPKQRTUVWXYZ0123456789_-";
@@ -231,13 +234,9 @@ function socketIO() {
             async function addFriend(username) {
                 await Storage.sendFriendRequest({ fromUser: socket.user, toUser: username });
                 io.to(socket.id).emit('allGood');
-                for (let i in allUsersOnline) {
-                    if (allUsersOnline[i].user == username) {
-                        socket.to(allUsersOnline[i]).emit('goUpdate');
-                        return;
-                    }
-                }
                 emitToUser('goUpdate', 'user', username);
+                console.log("should be called")
+                allInvites(username);
 
             }
 
@@ -372,6 +371,16 @@ function socketIO() {
         }
 
         io.emit('onlinePeople', allUsersOnline.length);
+    }
+    async function allInvites(toUser){
+        let fInvites = await Storage.getAllFriendRequests(toUser);
+        let pInvites = await Storage.getAllProjectInvites(toUser);
+        let data = {
+            projectInvites:pInvites,
+            friendRequests:fInvites
+        }
+        console.log(data)
+        emitToUser("updateInvites", "user", toUser, data);
     }
     function emitToUser(event, prop, propValue, data) {
         if (data == undefined) {

@@ -26,26 +26,30 @@ $("#addFriend").click(e => {
         $("#usernameAddFriend").val("");
     }
 });
-$(".accept").click(function () {
-    let inviteID = $(this).parent().attr("id");
-    acceptProjectInvite(inviteID);
-    $(this).parent().remove();
-});
-$(".decline").click(function () {
-    let inviteID = $(this).parent().attr("id");
-    declineProjectInvite(inviteID);
-    $(this).parent().remove();
-});
-$(".acceptFriend").click(function () {
-    let inviteID = $(this).parent().attr("id");
-    acceptFriendRequest(inviteID);
-    $(this).parent().remove();
-});
-$(".declineFriend").click(function () {
-    let inviteID = $(this).parent().attr("id");
-    declineFriendRequest(inviteID);
-    $(this).parent().remove();
-});
+function addEventListenerToInvites(){
+    $(".accept").click(function () {
+        let inviteID = $(this).parent().attr("id");
+        acceptProjectInvite(inviteID);
+        $(this).parent().remove();
+    });
+    $(".decline").click(function () {
+        let inviteID = $(this).parent().attr("id"); 
+        declineProjectInvite(inviteID);
+        $(this).parent().remove();
+    });
+    $(".acceptFriend").click(function () {
+        let inviteID = $(this).parent().attr("id");
+        acceptFriendRequest(inviteID);
+        $(this).parent().remove();
+    });
+    $(".declineFriend").click(function () {
+        let inviteID = $(this).parent().attr("id");
+        console.log(inviteID)
+        declineFriendRequest(inviteID);
+        $(this).parent().remove();
+    });
+}
+addEventListenerToInvites();
 $(".friend").click(function () {
     $(".inputAndBtnChatHide").removeClass("inputAndBtnChatHide");
     $(".currentChat").removeClass("currentChat");
@@ -57,7 +61,7 @@ $("#addMessage").on("click", function () {
         message: $("#Message").val(),
         toUser: $(".currentChat").attr("id")
     }
-    if(data.message == "") return;
+    if (data.message == "") return;
     $("#allMessages").append(`<div class="message sb1"><p class="fromUser">${data.message}</p></div>`);
     $("#Message").val("");
     socket.emit("addMessage", data)
@@ -90,6 +94,7 @@ socket.on('updateProject', updateProject);
 socket.on("showChat", showChat);
 socket.on("liveChat", liveChat);
 socket.on('yourNotes', yourNotes);
+socket.on("updateInvites", updateInvites);
 
 
 /**
@@ -129,8 +134,8 @@ function addTask() {
         }
         else
             socket.emit('newTask', data);
-        $('#taskNameInput').val('');    
-        $('#taskDescriptionInput').val('');   
+        $('#taskNameInput').val('');
+        $('#taskDescriptionInput').val('');
     }
 }
 /**
@@ -430,7 +435,7 @@ function moveThisTask(data) {
  * @param {object} data a list of all projects from the user
 */
 function yourProjects(data) {
-    $('.yourProjects').empty();
+    $('.yourProjects').children("div").remove();
     let page = window.location.href.split('/');
     let startID = page[page.length - 1];
     page = page[page.length - 2];
@@ -487,7 +492,7 @@ function showChat(data) {
     scrollAllWayDown("allMessages");
 }
 function liveChat(data) {
-    if($(".currentChat").length == 0) return;
+    if ($(".currentChat").length == 0) return;
     let allMessages = $("#allMessages");
     allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
     scrollAllWayDown("allMessages");
@@ -548,6 +553,20 @@ function yourNotes(data) {
     userIconNotes.text(userNotes);
     userIconNotes.append(`<i class="userNotes fas fa-bell"></i>`);
 
+}
+function updateInvites(data) {
+    $("#invites").children("div").remove();
+    $("#friendInvites").children("div").remove();
+    console.log("client", data)
+    for (i in data.projectInvites) {
+        let invite = data.projectInvites[i];
+        $("#invites").append(`<div id=${invite.id} class="invite border"><b>@${invite.fromUser}</b> invited you to their project called ${invite.projectName}!<button type="button" class="badge choice accept btn btn-outline-primary"><i class="fas fa-check fa-2x"></i></button><button type="button"class="badge choice decline btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button></div>`)
+    }
+    for (i in data.friendRequests) {
+        let invite = data.friendRequests[i];
+        $("#friendInvites").append(`<div id=${invite.id} class="invite border"><b>@${invite.fromUser}</b> sent a friend request!<button type="button" class="badge choice acceptFriend btn btn-outline-primary"><i class="fas fa-check fa-2x"></i></button><button type="button"class="badge choice declineFriend btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button></div>`)
+    }
+    addEventListenerToInvites();
 }
 
 /**Adds new eventlistner on a the task as it comes in.

@@ -16,60 +16,6 @@
 
 <body>
     <header>
-        {{!-- <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    {{#if loggedIn}}
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="userNotes fas fa-bell"></i>{{totalNotes}}
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                            {{#each allInvites}}
-                            <a class="dropdown-item" href="/user">Project invite to
-                                '{{this.projectName}}' from <b>@{{this.fromUser}}</b></a>
-                            {{/each}}
-                            {{#each allFriendRequests}}
-                            <a class="dropdown-item" href="/user">Friend Request From
-                                <b>@{{this.fromUser}}</b></a>
-                            {{/each}}
-                            {{#each projectAndTaskNotes}}
-                            <a class="dropdown-item" href="/dashboard/{{this.projectID}}"><b>@{{this.fromUser}}</b>
-                                tagged you in a project!</a>
-                            {{/each}}
-
-                        </div>
-
-                    </div>
-                    {{/if}}
-                </ul>
-                {{#if loggedIn}}
-                <ul class="navbar-nav mt-2 mt-lg-0" id="userControl">
-                    <li class="nav-item">
-                        <a class="nav-link active user" id="{{{loggedIn}}}" href="/user"><span style="float:left"
-                                class="badge notes">{{userNotes}}<i
-                                    class="userNotes fas fa-bell"></i></span>{{{loggedIn}}}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/logout">Log out</a>
-                    </li>
-                </ul>
-                {{else}}
-                <ul class="navbar-nav mt-2 mt-lg-0" id="userControl">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Log In</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/signup">Sign Up</a>
-                    </li>
-                </ul>
-                {{/if}}
-            </div>
-        </nav> --}}
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             {{#if loggedIn}}
@@ -93,8 +39,8 @@
                         {{#if loggedIn}}
 
                         <li class="nav-item" style="float: right">
-                            <a class="nav-link active user" id="{{{loggedIn}}}" href="/user"><span id="userIconNotes" style="float:left"
-                                    class="badge notes">{{userNotes}}</span>{{{loggedIn}}}</a>
+                            <a class="nav-link active user" id="{{{loggedIn}}}" href="/user"><span id="userIconNotes"
+                                    style="float:left" class="badge notes">{{userNotes}}</span>{{{loggedIn}}}</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" style="float: right" href="/logout">Log out</a>
@@ -121,11 +67,11 @@
     <div class="triangle"></div>
     <div class="projects">
         <div class="yourProjects" id="yourProjects">
+            <button class="" id="addProject" type="button" class="btn btn-secondary" data-toggle="modal"
+                data-target="#myModal">
+                <i class="fas fa-plus-circle fa-2x"></i>
+            </button>
         </div>
-        <button class="" id="addProject" type="button" class="btn btn-secondary" data-toggle="modal"
-            data-target="#myModal">
-            <i class="fas fa-plus-circle fa-2x"></i>
-        </button>
     </div>
     <div class="triangle-down"></div>
     {{/if}}

@@ -39,12 +39,14 @@ const deleteUserNotes = "DELETE FROM userNote WHERE taskID = ?";
 const sendInvite = "INSERT INTO inviteProject (fromUser, toUser, projectID,projectName, id) VALUES (?, ?, ?, ?, ?)";
 const getAllProjectInvites = "SELECT * FROM inviteProject WHERE toUser = ?";
 const getProjectInvite = "SELECT * FROM inviteProject WHERE id = ?";
+const getProjectInvitebyProjectID = "SELECT * FROM inviteProject WHERE projectID = ?";
 const deleteProjectInvite = "DELETE FROM inviteProject WHERE id =  ?";
 
 const sendFriendRequest = "INSERT INTO friendRequest (fromUser, toUser, id) VALUES (?, ?, ?)";
 const getAllFriendRequests = "SELECT * FROM friendRequest WHERE toUser = ?";
 const getFriendRequest = "SELECT * FROM friendRequest WHERE id = ?";
 const deleteFriendRequest = "DELETE FROM friendRequest WHERE id =  ?";
+const getFriendRequestByFromUser = "SELECT * FROM friendRequest WHERE fromUser = ?";
 
 const addFriend = "INSERT INTO friend (username, friendUsername, id) VALUES (?, ?, ?)";
 const getAllFriends = "SELECT * FROM friend WHERE username = ?";
@@ -160,6 +162,10 @@ class Database {
         await connection.queryP(deleteUserNotes, taskID)
     }
     async sendInvite({fromUser, toUser, projectID}){
+        if((await this.getUserProject({username:toUser, projectID})).length > 0 || (await this.getProjectInvitebyProjectID(projectID)).length > 0){
+            console.log("fround project or invite already")
+            return false;
+        } 
         let project = (await this.getProject(projectID))[0];
         await connection.queryP(sendInvite, [fromUser, toUser, projectID, project.name, (await getNewId())]);
     }
@@ -169,11 +175,14 @@ class Database {
     async getProjectInvite(id){
         return await connection.queryP(getProjectInvite, id)
     }
+    async getProjectInvitebyProjectID(projectID){
+        return await connection.queryP(getProjectInvitebyProjectID, projectID);
+    }
     async deleteProjectInvite(id){
         await connection.queryP(deleteProjectInvite, id);
     }
     async sendFriendRequest({fromUser, toUser}){
-        if(await this.getFriendId({username:fromUser, friendUsername:toUser}) == "")
+        if(await this.getFriendId({username:fromUser, friendUsername:toUser}) == "" || await this.getFriendRequestByFromUser(fromUser).length == 0)
             await connection.queryP(sendFriendRequest, [fromUser, toUser, (await getNewId())]);
     }
     async getAllFriendRequests(username){
@@ -181,6 +190,9 @@ class Database {
     }
     async getFriendRequest(id){
         return await connection.queryP(getFriendRequest, id)
+    }
+    async getFriendRequestByFromUser(fromUser){
+        return await connection.queryP(getFriendRequestByFromUser, fromUser)
     }
     async deleteFriendRequest(id){
         await connection.queryP(deleteFriendRequest, id);
