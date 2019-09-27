@@ -7,6 +7,11 @@ body {
     overflow-x: hidden;
 }
 
+main {
+    padding-top: 3em !important;
+    padding-left: 4em !important;
+}
+
 /* width */
 
 ::-webkit-scrollbar {
@@ -218,6 +223,14 @@ ul {
 .userNotes {
     color: grey;
     display: inline;
+}
+
+#userNotesDropdown {
+    z-index: 6;
+}
+
+#DropDownMenu2 {
+    z-index: 5;
 }
 
 dropdown-item {
