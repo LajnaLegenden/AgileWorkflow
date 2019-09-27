@@ -480,18 +480,43 @@ function liveChat(data) {
         console.log(data);
     }
 
-
     function displayNotification(data) {
         notifications = $('#notifications');
-        let msgLength = 0;
-        let targetLenght = notifications.width();
-        let msg = data.message;
-        do {
-            msgLength = measureText(`Message from @${data.fromUser}: ` + msg);
-
-        } while (msgLength > targetLenght)
-        notifications.append(`<div id="${data.id}" class="alert fadeout notification alert-info">Message from @${data.fromUser}: ${}
+        let id = getNewId();
+        notifications.append(`<div id="${id}" style="display:none" class="alert notification alert-info">Message from @${data.fromUser}: <span></span>
         </div>`)
+
+        hasBeenCut = false;
+        targetWidth = Math.floor(notifications.width());
+        fontSize = $(document.getElementById('notifications')[0]).css('font-size');
+        let msg = data.message;
+        let msgLength = measureText(`Message from @${data.fromUser}: ` + msg, fontSize, "").width;
+        while (msgLength >= targetWidth) {
+            msgLength = measureText(`Message from @${data.fromUser}: ` + msg, fontSize, "").width;
+            msg = msg.substring(0, msg.length - 3);
+            hasBeenCut = true;
+        }
+        if (hasBeenCut) {
+            msg = msg.substring(0, msg.length - 3) + "...";
+        }
+        //$('#' + data.date + " span").html(msg);
+        document.querySelector("#" + id + " span").innerHTML = msg;
+        let element = $('#' + id);
+        element.fadeIn('slow');
+        setTimeout(() => {
+            element.fadeOut('slow', () => {
+                element.remove();
+            })
+        }, 5000);
+    }
+
+    function getNewId() {
+        let a = "abcdefghijklmnopkqrtuvwxyzABCDEFGHIJKLMNOPKQRTUVWXYZ0123456789_-";
+        let testId = "";
+        for (let i = 0; i < 32; i++) {
+            testId += a[Math.floor(Math.random() * a.length)];
+        }
+        return testId;
     }
 
 
