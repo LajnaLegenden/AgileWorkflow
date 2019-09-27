@@ -280,7 +280,6 @@ function socketIO() {
                 let invite = (await Storage.getProjectInvite(data))[0];
                 await Storage.deleteProjectInvite(invite.id);
                 io.to(socket.id).emit('goUpdate');
-
             }
 
             /**
@@ -354,7 +353,8 @@ function socketIO() {
             io.to(socket.id).emit('yourProjects', projects);
         }
         async function newChat(friendUsername) {
-            let id = await Storage.getFriendId({ username: socket.user, friendUsername })
+            let id = await Storage.getFriendId({ username: socket.user, friendUsername });
+            await Storage.deleteMessageNote(id);
             let chat = await Storage.getChat(id);
             io.to(socket.id).emit("showChat", chat);
         }
@@ -362,6 +362,7 @@ function socketIO() {
             data.fromUser = socket.user;
             data.date = new Date();
             data.id = await Storage.getFriendId({ username: data.fromUser, friendUsername: data.toUser });
+            await Storage.addMessegeNote(data);
             await Storage.sendMessage(data);
             emitToUser('liveChat', 'user', data.toUser, data);
         }

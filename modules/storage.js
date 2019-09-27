@@ -55,6 +55,12 @@ const getFriendId = "SELECT * FROM friend WHERE (username = ? AND friendUsername
 const getChat = "SELECT * FROM message WHERE id = ?";
 const sendMessage = "INSERT INTO message (message, toUser, fromUser, date, id) VALUES (?, ?, ?, ? ,?)";
 
+const addMessgeNote = "INSERT INTO messageNote (fromUser, toUser, id) VALUES (?, ?, ?)";
+const getAllMessageNote = "SELECT * FROM messageNote WHERE toUser = ?";
+const deleteMessageNote = "DELETE FROM messageNote WHERE id = ?";
+const getAllMessageNoteFromFriend = "SELECT * FROM messageNote WHERE (fromUser = ? AND toUser = ?)";
+const getAllMessageNoteFromId = "SELECT * FROM messageNote WHERE id = ?";
+
 
 
 class Database {
@@ -203,7 +209,6 @@ class Database {
     async getAllFriends(username){
         return await connection.queryP(getAllFriends, username);
     }
-
     async getFriendId({username, friendUsername}){
         let id = await connection.queryP(getFriendId, [username, friendUsername]);
         if(id.length > 0) id = id[0].id
@@ -216,7 +221,21 @@ class Database {
     async sendMessage({message, toUser, fromUser,date, id}){
         await connection.queryP(sendMessage, [message, toUser, fromUser ,date, id]);
     }
-
+    async addMessegeNote({fromUser, toUser, id}){
+        await connection.queryP(addMessgeNote, [fromUser, toUser, id]);
+    }
+    async getAllMessageNote(toUser){
+        return await connection.queryP(getAllMessageNote, toUser);
+    }
+    async deleteMessageNote(id){
+        await connection.queryP(deleteMessageNote, id);
+    }
+    async getAllMessageNoteFromFriend({fromUser, toUser}){
+        return await connection.queryP(getAllMessageNoteFromFriend, [fromUser, toUser])
+    }
+    async getAllMessageNoteFromId(id){
+        return await connection.queryP(getAllMessageNoteFromId, id);
+    }
 }
 let Storage = new Database();
 async function getNewId() {
