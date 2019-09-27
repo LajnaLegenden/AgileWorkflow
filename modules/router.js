@@ -38,7 +38,9 @@ module.exports = (app) => {
     })
     app.get('/', async (req, res) => {
         // res.sendFile(file('index.html'), { root: "./" });
-        let username = sanitize(req.session.user);
+        let username;
+        if(req.session.user != undefined)
+            username = sanitize(req.session.user);
         let allProjects = "";
         let userNotes = "";
         let allInvites = ""
@@ -101,7 +103,13 @@ module.exports = (app) => {
         if (req.session.user !== undefined) {
             res.redirect('/');
         }
-        let user = sanitize(req.body.user);
+        let user = req.body.user
+        user["firstname"] = sanitize(user["firstname"]);
+        user["lastname"] = sanitize(user["lastname"]);
+        user["email"] = sanitize(user["email"]);
+        user["username"] = sanitize(user["username"]);
+        user["password"] = sanitize(user["password"]);
+        user["password2"] = sanitize(user["password2"]);
         let result = await Storage.addUser(user);
         if (result == "Added user") {
             req.session.user = user.username;
@@ -112,7 +120,7 @@ module.exports = (app) => {
     });
     app.post("/login", async (req, res) => {
 
-        let user = sanitize(req.body.user);
+        let user = req.body.user;
         if (await Storage.verifyUser(user)) {
             req.session.user = user.username;
             res.redirect("/");

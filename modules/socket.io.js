@@ -39,7 +39,8 @@ function socketIO() {
             return false;
 
         }
-        socket.user = sanitize(user.user);
+        if(user.user != undefined)
+            socket.user = sanitize(user.user);
 
         socket.on('disconnect', disconnect);
 
