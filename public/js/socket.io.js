@@ -487,12 +487,12 @@ function liveChat(data) {
         let msgLength = 0;
         let targetLenght = notifications.width();
         let msg = data.message;
-        do {
-            msgLength = measureText(`Message from @${data.fromUser}: ` + msg);
+        // do {
+        //     msgLength = measureText(`Message from @${data.fromUser}: ` + msg);
 
-        } while (msgLength > targetLenght)
-        notifications.append(`<div id="${data.id}" class="alert fadeout notification alert-info">Message from @${data.fromUser}: ${}
-        </div>`)
+        // } while (msgLength > targetLenght)
+        // notifications.append(`<div id="${data.id}" class="alert fadeout notification alert-info">Message from @${data.fromUser}: ${}
+        // </div>`)
     }
 
 
@@ -520,6 +520,10 @@ function yourNotes(data) {
     let number = $("#dropdownMenu2 span");
 
     list.empty();
+    if (data.allMessageNotes && data.allMessageNotes > 1)
+        list.append(`<a class="dropdown-item" href="/user">You have <b>${data.allMessageNotes}</b> new messages!</a>`)
+    else if (data.allMessageNotes)
+        list.append(`<a class="dropdown-item" href="/user">You have <b>${data.allMessageNotes}</b> new message!</a>`)
     for (let i in data.projectAndTaskNotes) {
         let obj = data.projectAndTaskNotes[i];
         list.append(`<a class="dropdown-item" href="/dashboard/${obj.id}"><b>@${obj.fromUser}</b> tagged you in a project!</a>`);
@@ -547,7 +551,7 @@ function yourNotes(data) {
     //USER ICON
 
     let userIconNotes = $('#userIconNotes');
-    let userNotes = (data.allInvites.length) + (data.allFriendRequests.length);
+    let userNotes = (data.allInvites.length) + (data.allFriendRequests.length) + data.allMessageNotes;
     userIconNotes.text(userNotes);
     userIconNotes.append(`<i class="userNotes fas fa-bell"></i>`);
 

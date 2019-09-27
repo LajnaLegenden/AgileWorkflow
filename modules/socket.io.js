@@ -354,14 +354,16 @@ function socketIO() {
             }
             io.to(socket.id).emit('yourProjects', projects);
         }
-        async function removeMessageNotes(id){
-            await Storage.removeMessageNotes(id);
+        async function removeMessageNotes(friendUsername){
+            let id = await Storage.getFriendId({username:socket.user, friendUsername})
+            await Storage.deleteMessageNote(id);
         }
         async function newChat(friendUsername) {
             let id = await Storage.getFriendId({ username: socket.user, friendUsername });
             await Storage.deleteMessageNote(id);
             let chat = await Storage.getChat(id);
             io.to(socket.id).emit("showChat", chat);
+            updateNotesList();
         }
         async function sendMessage(data) {
             data.fromUser = socket.user;
@@ -370,6 +372,13 @@ function socketIO() {
             await Storage.addMessegeNote(data);
             await Storage.sendMessage(data);
             emitToUser('liveChat', 'user', data.toUser, data);
+            let notes = {
+                projectAndTaskNotes : await Storage.getAllUserNotes(data.toUser),
+                allInvites : await Storage.getAllProjectInvites(data.toUser),
+                allFriendRequests : await Storage.getAllFriendRequests(data.toUser),
+                allMessageNotes : (await Storage.getAllMessageNote(data.toUser)).length
+            }
+            emitToUser("yourNotes", "user", data.toUser, notes);
         }
         async function removeTask({ taskID, projectID }) {
             let task = await Storage.getTask(taskID);
@@ -385,7 +394,8 @@ function socketIO() {
             let projectAndTaskNotes = await Storage.getAllUserNotes(username);
             let allInvites = await Storage.getAllProjectInvites(username);
             let allFriendRequests = await Storage.getAllFriendRequests(username);
-            io.to(socket.id).emit('yourNotes', { projectAndTaskNotes, allInvites, allFriendRequests });
+            let allMessageNotes = (await Storage.getAllMessageNote(username)).length
+            io.to(socket.id).emit('yourNotes', { projectAndTaskNotes, allInvites, allFriendRequests, allMessageNotes });
         }
 
 
