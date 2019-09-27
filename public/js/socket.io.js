@@ -1,5 +1,16 @@
 var socket = io();
-
+function sanitize(string) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        "/": '&#x2F;',
+    };
+    const reg = /[&<>"'/]/ig;
+    return string.replace(reg, (match)=>(map[match]));
+  }
 //Cards
 let BACKLOG = $('#BACKLOG');
 let TODO = $('#TODO');
@@ -58,7 +69,7 @@ $(".friend").click(function () {
 });
 $("#addMessage").on("click", function () {
     let data = {
-        message: $("#Message").val(),
+        message: sanitize($("#Message").val()),
         toUser: $(".currentChat").attr("id")
     }
     if (data.message == "") return;
@@ -108,14 +119,14 @@ function addTask() {
     console.log("id", data.taskID)
     let fail = false;
     if ($('#taskNameInput').val() != "") {
-        data.name = $('#taskNameInput').val();
+        data.name = sanitize($('#taskNameInput').val());
     } else {
         $('#taskNameInput').addClass("missing-info");
         fail = true
     }
 
     if ($('#taskDescriptionInput').val() != "") {
-        data.description = $('#taskDescriptionInput').val();
+        data.description = sanitize($('#taskDescriptionInput').val());
         $('#taskDescriptionInput').val('');
 
     } else {
@@ -163,9 +174,9 @@ async function addProject(name, desc) {
  */
 function addComment() {
     let data = {
-        content: $("#Comment").val(),
-        taskID: $(".currentTask").attr("id"),
-        projectID: $(".currentProject").attr("id")
+        content: sanitize($("#Comment").val()),
+        taskID: sanitize($(".currentTask").attr("id")),
+        projectID: sanitize($(".currentProject").attr("id"))
     }
     $("#Comment").val("");
     socket.emit("addComment", data);
