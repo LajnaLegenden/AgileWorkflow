@@ -1,12 +1,12 @@
 const connection = require("../modules/mysql");
 
 async function doStuff() {
-    await connection.queryP("drop table if exists userFriend");
+    await connection.queryP("drop table if exists messageNote");
     await connection.queryP(`
-    CREATE TABLE userFriend (
-        username varchar(255),
-        friendUsername,
-        date
+    CREATE TABLE messageNote (
+        toUser varchar(255),
+        fromUser varchar(255),
+        id varchar(255)
     );`, (error, results, fields) => {
         if(error) {
             console.log("error creating table topics ", error);

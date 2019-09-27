@@ -10,7 +10,6 @@ const cookieSession = require("cookie-session");
 const socketIO = require('./modules/socket.io');
 const router = require('./modules/router.js');
 const hbs = require('express-hbs');
-const redirectToHTTPS = require('express-http-to-https').redirectToHTTPS
 const fs = require('fs');
 
 
@@ -28,8 +27,7 @@ let server = https.createServer(options, app);
 app.engine('hbs', hbs.express4());
 app.set('view engine', 'hbs');
 app.set('views', __dirname + '/views');
-//http2https
-app.use(redirectToHTTPS([], [/\/insecure/], 301));
+
 
 //Cookie secret
 app.use(cookieSession({
@@ -52,8 +50,4 @@ app.use('/public', express.static('public'));
 
 server.listen(port, () => {
   console.log('Server Listening on port ' + port);
-});
-
-app.listen(8080, function () {
-  console.log('Example app listening on port 8080 insecurely!');
 });

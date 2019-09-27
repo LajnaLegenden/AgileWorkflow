@@ -1,5 +1,16 @@
 var socket = io();
-
+function sanitize(string) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        "/": '&#x2F;',
+    };
+    const reg = /[&<>"'/]/ig;
+    return string.replace(reg, (match) => (map[match]));
+}
 //Cards
 let BACKLOG = $('#BACKLOG');
 let TODO = $('#TODO');
@@ -15,53 +26,68 @@ $('#submitTask').on('click', addTask);
 $("#addComment").on("click", addComment);
 $("#addUser").on("click", e => {
     e.preventDefault();
-    addUser($("#usernameAdd").val());
+    addUser(sanitize($("#usernameAdd").val()));
     $("#usernameAdd").val("");
 });
 $("#addFriend").click(e => {
     e.preventDefault();
     let username = $("#usernameAddFriend");
     if (username.length > 0) {
-        addFriend($("#usernameAddFriend").val());
+        addFriend(sanitize($("#usernameAddFriend").val()));
         $("#usernameAddFriend").val("");
     }
 });
-$(".accept").click(function () {
-    let inviteID = $(this).parent().attr("id");
-    acceptProjectInvite(inviteID);
-    $(this).parent().remove();
-});
-$(".decline").click(function () {
-    let inviteID = $(this).parent().attr("id");
-    declineProjectInvite(inviteID);
-    $(this).parent().remove();
-});
-$(".acceptFriend").click(function () {
-    let inviteID = $(this).parent().attr("id");
-    acceptFriendRequest(inviteID);
-    $(this).parent().remove();
-});
-$(".declineFriend").click(function () {
-    let inviteID = $(this).parent().attr("id");
-    declineFriendRequest(inviteID);
-    $(this).parent().remove();
-});
+function addEventListenerToInvites() {
+    $(".accept").click(function () {
+        let inviteID = $(this).parent().attr("id");
+        acceptProjectInvite(inviteID);
+        $(this).parent().remove();
+    });
+    $(".decline").click(function () {
+        let inviteID = $(this).parent().attr("id");
+        declineProjectInvite(inviteID);
+        $(this).parent().remove();
+    });
+    $(".acceptFriend").click(function () {
+        let inviteID = $(this).parent().attr("id");
+        acceptFriendRequest(inviteID);
+        $(this).parent().remove();
+    });
+    $(".declineFriend").click(function () {
+        let inviteID = $(this).parent().attr("id");
+        console.log(inviteID)
+        declineFriendRequest(inviteID);
+        $(this).parent().remove();
+    });
+}
+addEventListenerToInvites();
 $(".friend").click(function () {
+    $(".inputAndBtnChatHide").removeClass("inputAndBtnChatHide");
     $(".currentChat").removeClass("currentChat");
     $(this).children().addClass("currentChat");
     socket.emit("newChat", $(this).children().attr("id"));
 });
 $("#addMessage").on("click", function () {
     let data = {
-        message: $("#Message").val(),
+        message: sanitize($("#Message").val()),
         toUser: $(".currentChat").attr("id")
     }
+    if (data.message == "") return;
     $("#allMessages").append(`<div class="message sb1"><p class="fromUser">${data.message}</p></div>`);
     $("#Message").val("");
     socket.emit("addMessage", data)
     scrollAllWayDown("allMessages");
 });
-
+$("#remove").click(removeTask);
+$("#showForm").click(() => {
+    if ($(".currentTask").length > 0) {
+        isEditing = false;
+        $("#form").toggleClass("hide")
+        $("#taskDesc").toggleClass("hide")
+        $("#comments").toggleClass("hide");
+    }
+});
+$("#edit").click(editTask);
 
 //ReviceEvent
 socket.on('allTasks', allTasks)
@@ -77,26 +103,28 @@ socket.on('moveThisTask', moveThisTask);
 socket.on('yourProjects', yourProjects)
 socket.on('updateProject', updateProject);
 socket.on("showChat", showChat);
-socket.on("liveChat", liveChat)
-
-
+socket.on("liveChat", liveChat);
+socket.on('yourNotes', yourNotes);
+socket.on("updateInvites", updateInvites);
 /**
  * Adds a task
  */
 function addTask() {
     let data = {};
     data.projectID = $(".currentProject").attr("id");
+    data.taskID = $(".currentTask").attr("id");
+    console.log(data)
+    console.log("id", data.taskID)
     let fail = false;
-    if ($('#taskNameInput').val() != "") {
-        data.name = $('#taskNameInput').val();
-        $('#taskNameInput').val('');
+    if (sanitize($('#taskNameInput').val()) != "") {
+        data.name = sanitize($('#taskNameInput').val());
     } else {
         $('#taskNameInput').addClass("missing-info");
         fail = true
     }
 
-    if ($('#taskDescriptionInput').val() != "") {
-        data.description = $('#taskDescriptionInput').val();
+    if (sanitize($('#taskDescriptionInput').val()) != "") {
+        data.description = sanitize($('#taskDescriptionInput').val());
         $('#taskDescriptionInput').val('');
 
     } else {
@@ -110,10 +138,13 @@ function addTask() {
     }, 5000)
 
     if (!fail) {
-        if (isEditing)
-            socket.emit('editTask', data);
+        if (isEditing) {
+            socket.emit("editTask", data)
+        }
         else
             socket.emit('newTask', data);
+        $('#taskNameInput').val('');
+        $('#taskDescriptionInput').val('');
     }
 }
 /**
@@ -133,15 +164,15 @@ function move(element, taskID) {
  * @param {string} name name of prorject
  * @param {string} desc description of project
  */
-async function addProject(name, desc) {
-    socket.emit("addProject", { name, desc });
+async function addProject(name) {
+    socket.emit("addProject", { name });
 }
 /**
  * adds a comment
  */
 function addComment() {
     let data = {
-        content: $("#Comment").val(),
+        content: sanitize($("#Comment").val()),
         taskID: $(".currentTask").attr("id"),
         projectID: $(".currentProject").attr("id")
     }
@@ -149,15 +180,13 @@ function addComment() {
     socket.emit("addComment", data);
 
 }
-
-
 /**
  * Sends invite to a project.
  * @param {string} username a string of usernames that is divided by ','
  */
 function addUser(username) {
     let data = {
-        users: username.replace(/ /g, '').split(","),
+        users: sanitize(username).replace(/ /g, '').split(","),
         projectID: $(".currentProject").attr("id")
     }
     socket.emit("addUser", data);
@@ -194,35 +223,9 @@ function appendThisProject(obj) {
  * @param {element} element a html element
  */
 function addToBoard(obj, element) {
-    $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border">${obj.name}<span class="badge taskNotes">${obj.notes}</span><p  draggable="false" class="hidden desc">${obj.description}</p></li>`);
+    $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border"><span class="taskName">${obj.name}</span><span class="badge taskNotes">${obj.notes}</span><p  draggable="false" name="${obj.description}"class="hidden desc"></p></li>`);
     let newTask = document.getElementById(obj.id);
     addNewEventListeners(newTask);
-
-    function measureText(pText, pFontSize, pStyle) {
-        var lDiv = document.createElement('div');
-
-        document.body.appendChild(lDiv);
-
-        if (pStyle != null) {
-            lDiv.style = pStyle;
-        }
-        lDiv.style.fontSize = "" + pFontSize + "px";
-        lDiv.style.position = "absolute";
-        lDiv.style.left = -1000;
-        lDiv.style.top = -1000;
-
-        lDiv.innerHTML = pText;
-
-        var lResult = {
-            width: lDiv.clientWidth,
-            height: lDiv.clientHeight
-        };
-
-        document.body.removeChild(lDiv);
-        lDiv = null;
-
-        return lResult;
-    }
     let hasBeenCut = false;
     let targetWidth = Math.floor($(document.getElementsByClassName('taskItem')[0]).width());
     let fontSize = $(document.getElementsByClassName('desc')[0]).css('font-size');
@@ -234,8 +237,20 @@ function addToBoard(obj, element) {
     if (hasBeenCut) {
         desc = desc.substring(0, desc.length - 3) + "...";
     }
-    $('#' + obj.id + ' p').html(desc);
 
+    $('#' + obj.id + ' p').html(desc);
+    hasBeenCut = false;
+    targetWidth = Math.floor($(document.getElementsByClassName('taskItem')[0]).width());
+    fontSize = $(document.getElementsByClassName('taskName')[0]).css('font-size');
+    let name = obj.name;
+    while (measureText(name, fontSize, "").width >= targetWidth) {
+        name = name.substring(0, name.length - 3);
+        hasBeenCut = true;
+    }
+    if (hasBeenCut) {
+        name = name.substring(0, name.length - 3) + "...";
+    }
+    $('#' + obj.id + ' .taskName').html(name);
 }
 /**
  * Scrolls all the way down on a html element
@@ -303,6 +318,8 @@ function allTasks(data) {
 function goUpdate(data) {
     let projectID = $(".currentProject").attr("id");
     socket.emit('needTasks', projectID);
+    socket.emit('myProjects');
+    socket.emit('updateNotesList');
 }
 /**
  * shows new info about a task and show new comments
@@ -399,13 +416,16 @@ function moveThisTask(data) {
  * @param {object} data a list of all projects from the user
 */
 function yourProjects(data) {
-    $('.yourProjects').empty();
+    $('.yourProjects').children("div").remove();
     let page = window.location.href.split('/');
     let startID = page[page.length - 1];
     page = page[page.length - 2];
     for (let i in data) {
         let obj = data[i];
-        appendThisProject(obj);
+        appendThisProject(obj); if (obj.id == startID) {
+            socket.emit('needTasks', obj.id);
+            $('#title').html(obj.name);
+        }
         $('#' + obj.id).on('click', () => {
             if (page == "dashboard") {
                 $("#form").removeClass("hide");
@@ -414,6 +434,7 @@ function yourProjects(data) {
                 let project = $('#' + obj.id);
                 socket.emit('needTasks', obj.id);
                 socket.emit('currentProject', obj.id);
+                $('#title').html(obj.name);
                 $('.currentProject').removeClass('currentProject');
                 project.addClass('currentProject');
                 history.pushState('', obj.name, '/dashboard/' + obj.id);
@@ -421,13 +442,6 @@ function yourProjects(data) {
                 window.location.href = "/dashboard/" + obj.id;
             }
         });
-    }
-    let allProjects = $('.yourProjects').children();
-    for (let i = 0; i < allProjects.length; i++) {
-        let id = $(allProjects[i]).attr('id');
-        if (id == startID) {
-            socket.emit('needTasks', id);
-        }
     }
 
 }
@@ -455,12 +469,132 @@ function showChat(data) {
     }
     scrollAllWayDown("allMessages");
 }
-function liveChat(data){
-    let allMessages = $("#allMessages");
-    allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
-    scrollAllWayDown("allMessages");
-}
+function liveChat(data) {
+    console.log("sdfsd");
+    if (!$(".currentChat").length == 0) {
+        socket.emit("removeMessageNotes", $(".currentChat").attr("id"));
+        let allMessages = $("#allMessages");
+        allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
+        scrollAllWayDown("allMessages");
+    } else {
+        displayNotification(data);
+        console.log(data);
+    }
 
+    function displayNotification(data) {
+        notifications = $('#notifications');
+        let id = getNewId();
+        notifications.append(`<div id="${id}" style="display:none" class="alert notification alert-info">Message from @${data.fromUser}: <span></span>
+        </div>`)
+
+        hasBeenCut = false;
+        targetWidth = Math.floor(notifications.width());
+        fontSize = $(document.getElementById('notifications')[0]).css('font-size');
+        let msg = data.message;
+        let msgLength = measureText(`Message from @${data.fromUser}: ` + msg, fontSize, "").width;
+        while (msgLength >= targetWidth) {
+            msgLength = measureText(`Message from @${data.fromUser}: ` + msg, fontSize, "").width;
+            msg = msg.substring(0, msg.length - 3);
+            hasBeenCut = true;
+        }
+        if (hasBeenCut) {
+            msg = msg.substring(0, msg.length - 3) + "...";
+        }
+        //$('#' + data.date + " span").html(msg);
+        document.querySelector("#" + id + " span").innerHTML = msg;
+        let element = $('#' + id);
+        element.fadeIn('slow');
+        setTimeout(() => {
+            element.fadeOut('slow', () => {
+                element.remove();
+            })
+        }, 5000);
+    }
+
+    function getNewId() {
+        let a = "abcdefghijklmnopkqrtuvwxyzABCDEFGHIJKLMNOPKQRTUVWXYZ0123456789_-";
+        let testId = "";
+        for (let i = 0; i < 32; i++) {
+            testId += a[Math.floor(Math.random() * a.length)];
+        }
+        return testId;
+    }
+
+
+}
+function removeTask() {
+    let data = {
+        taskID: $(".currentTask").attr("id"),
+        projectID: $(".currentProject").attr("id")
+    }
+    socket.emit("removeTask", data);
+}
+function editTask() {
+    let desc = $(".currentTask p").attr("name");
+    let name = $(".currentTask .taskName").html();
+    sanitize($("#taskNameInput").val(name));
+    sanitize($("#taskDescriptionInput").val(desc));
+    $("#form").removeClass("hide");
+    $("#taskDesc").addClass("hide");
+    $("#comments").addClass("hide");
+    isEditing = true;
+}
+function yourNotes(data) {
+    let list = $('#userNotesDropdown');
+    let icon = $("#dropdownMenu2 i");
+    let number = $("#dropdownMenu2 span");
+
+    list.empty();
+    if (data.allMessageNotes && data.allMessageNotes > 1)
+        list.append(`<a class="dropdown-item" href="/user">You have <b>${data.allMessageNotes}</b> new messages!</a>`)
+    else if (data.allMessageNotes)
+        list.append(`<a class="dropdown-item" href="/user">You have <b>${data.allMessageNotes}</b> new message!</a>`)
+    for (let i in data.projectAndTaskNotes) {
+        let obj = data.projectAndTaskNotes[i];
+        list.append(`<a class="dropdown-item" href="/dashboard/${obj.id}"><b>@${obj.fromUser}</b> tagged you in a project!</a>`);
+    }
+    for (let i in data.allInvites) {
+        let obj = data.allInvites[i];
+        list.append(`<a class="dropdown-item" href="/user"><b>@${obj.fromUser}</b>has invited you to the project ${obj.projectName}</a>`);
+    }
+    for (let i in data.allFriendRequests) {
+        let obj = data.allFriendRequests[i];
+        list.append(`<a class="dropdown-item" href="/user">Friend Request From <b>@${obj.fromUser}</b></a>`);
+    }
+
+    number.html(list.children().length);
+    number.css('color', '#85FFFE');
+
+    if (list.children().length == 0) {
+        list.append(`<a class="dropdown-item" href="#">No notifications</a>`)
+        icon.css('color', 'darkslategrey');
+
+    } else {
+        icon.css('color', 'red');
+    }
+
+    //USER ICON
+
+    let userIconNotes = $('#userIconNotes');
+    let userNotes = (data.allInvites.length) + (data.allFriendRequests.length) + data.allMessageNotes;
+    userIconNotes.text(userNotes);
+    userIconNotes.append(`<i class="userNotes fas fa-bell"></i>`);
+
+}
+function updateInvites(data) {
+    $("#invites").children("div").remove();
+    $("#friendInvites").children("div").remove();
+    console.log("client", data)
+    for (i in data.projectInvites) {
+        let invite = data.projectInvites[i];
+        $("#invites").append(`<div id=${invite.id} class="invite border"><b>@${invite.fromUser}</b> invited you to their project called ${invite.projectName}!<button type="button" class="badge choice accept btn btn-outline-primary"><i class="fas fa-check fa-2x"></i></button><button type="button"class="badge choice decline btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button></div>`)
+    }
+    for (i in data.friendRequests) {
+        let invite = data.friendRequests[i];
+        $("#friendInvites").append(`<div id=${invite.id} class="invite border"><b>@${invite.fromUser}</b> sent a friend request!<button type="button" class="badge choice acceptFriend btn btn-outline-primary"><i class="fas fa-check fa-2x"></i></button><button type="button"class="badge choice declineFriend btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button></div>`)
+    }
+    addEventListenerToInvites();
+}
 /**Adds new eventlistner on a the task as it comes in.
  * @param {htmlElement} data -jquery element that
 */
@@ -478,10 +612,36 @@ function addNewEventListeners(newTask) {
     newTask.addEventListener('click', () => {
         let id = $(newTask).attr('id');
         socket.emit('moreInfo', id);
+        socket.emit('updateNotesList');
         $(".currentTask").removeClass("currentTask");
         $(newTask).addClass("currentTask");
         $("#form").addClass("hide");
         $("#taskDesc").removeClass("hide");
         $("#comments").removeClass("hide");
     });
+}
+function measureText(pText, pFontSize, pStyle) {
+    var lDiv = document.createElement('div');
+
+    document.body.appendChild(lDiv);
+
+    if (pStyle != null) {
+        lDiv.style = pStyle;
+    }
+    lDiv.style.fontSize = "" + pFontSize + "px";
+    lDiv.style.position = "absolute";
+    lDiv.style.left = -1000;
+    lDiv.style.top = -1000;
+
+    lDiv.innerHTML = pText;
+
+    var lResult = {
+        width: lDiv.clientWidth,
+        height: lDiv.clientHeight
+    };
+
+    document.body.removeChild(lDiv);
+    lDiv = null;
+
+    return lResult;
 }
