@@ -17,8 +17,8 @@ function sanitize(string) {
         "/": '&#x2F;',
     };
     const reg = /[&<>"'/]/ig;
-    return string.replace(reg, (match)=>(map[match]));
-  }
+    return string.replace(reg, (match) => (map[match]));
+}
 
 
 module.exports = (app) => {
@@ -32,14 +32,13 @@ module.exports = (app) => {
             res.redirect('https://' + req.headers.host + req.url);
         }
     });
-
     app.get("/favicon.ico", (req, res) => {
         res.sendStatus(404);
     })
     app.get('/', async (req, res) => {
         // res.sendFile(file('index.html'), { root: "./" });
         let username;
-        if(req.session.user != undefined)
+        if (req.session.user != undefined)
             username = sanitize(req.session.user);
         let allProjects = "";
         let userNotes = "";
@@ -57,7 +56,6 @@ module.exports = (app) => {
         }
         res.render('index', { title: "Index", loggedIn: username, allProjects, userNotes, allInvites, allFriendRequests, totalNotes });
     });
-
     app.get('/dashboard/:projectID', auth, async (req, res) => {
         let projectID = req.params.projectID;
         let user = sanitize(req.session.user);
@@ -81,7 +79,6 @@ module.exports = (app) => {
             res.render('dashboard', { title: "Projects", loggedIn: user, project, allProjects, logs, userNotes, projectAndTaskNotes, totalNotes, allInvites, allFriendRequests });
         }
     });
-
     app.get('/signup', (req, res) => {
         res.sendFile(file('signup.html'), { root: "./" });
     });
@@ -98,7 +95,6 @@ module.exports = (app) => {
         req.session.user = undefined;
         res.redirect("/");
     });
-
     app.post("/signup", async (req, res) => {
         if (req.session.user !== undefined) {
             res.redirect('/');

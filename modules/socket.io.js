@@ -39,7 +39,7 @@ function socketIO() {
             return false;
 
         }
-        if(user.user != undefined)
+        if (user.user != undefined)
             socket.user = sanitize(user.user);
 
         socket.on('disconnect', disconnect);
@@ -431,7 +431,7 @@ function socketIO() {
             cookies = cookie.parse(socket.handshake.headers.cookie);
             user = Buffer.from(cookies['express:sess'], 'base64').toString();
         } catch (err) {
-            console.log(err);
+            //console.log(err);
             socket.disconnect(true)
             removeSocket(socket)
             return;
@@ -443,7 +443,6 @@ function socketIO() {
         }
         return JSON.parse(user);
     }
-
 }
 function newTime() {
     let d = new Date();
@@ -464,4 +463,3 @@ function newTime() {
     }
     return { hours, minutes, seconds }
 }
-

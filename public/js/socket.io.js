@@ -106,8 +106,6 @@ socket.on("showChat", showChat);
 socket.on("liveChat", liveChat);
 socket.on('yourNotes', yourNotes);
 socket.on("updateInvites", updateInvites);
-
-
 /**
  * Adds a task
  */
@@ -182,8 +180,6 @@ function addComment() {
     socket.emit("addComment", data);
 
 }
-
-
 /**
  * Sends invite to a project.
  * @param {string} username a string of usernames that is divided by ','
@@ -230,32 +226,6 @@ function addToBoard(obj, element) {
     $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border"><span class="taskName">${obj.name}</span><span class="badge taskNotes">${obj.notes}</span><p  draggable="false" name="${obj.description}"class="hidden desc"></p></li>`);
     let newTask = document.getElementById(obj.id);
     addNewEventListeners(newTask);
-
-    function measureText(pText, pFontSize, pStyle) {
-        var lDiv = document.createElement('div');
-
-        document.body.appendChild(lDiv);
-
-        if (pStyle != null) {
-            lDiv.style = pStyle;
-        }
-        lDiv.style.fontSize = "" + pFontSize + "px";
-        lDiv.style.position = "absolute";
-        lDiv.style.left = -1000;
-        lDiv.style.top = -1000;
-
-        lDiv.innerHTML = pText;
-
-        var lResult = {
-            width: lDiv.clientWidth,
-            height: lDiv.clientHeight
-        };
-
-        document.body.removeChild(lDiv);
-        lDiv = null;
-
-        return lResult;
-    }
     let hasBeenCut = false;
     let targetWidth = Math.floor($(document.getElementsByClassName('taskItem')[0]).width());
     let fontSize = $(document.getElementsByClassName('desc')[0]).css('font-size');
@@ -500,11 +470,31 @@ function showChat(data) {
     scrollAllWayDown("allMessages");
 }
 function liveChat(data) {
-    if ($(".currentChat").length == 0) return;
-    let allMessages = $("#allMessages");
-    allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
-    scrollAllWayDown("allMessages");
-    console.log("data: " + data);
+    console.log("sdfsd");
+    if (!$(".currentChat").length == 0) {
+        let allMessages = $("#allMessages");
+        allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
+        scrollAllWayDown("allMessages");
+    } else {
+        displayNotification(data);
+        console.log(data);
+    }
+
+
+    function displayNotification(data) {
+        notifications = $('#notifications');
+        let msgLength = 0;
+        let targetLenght = notifications.width();
+        let msg = data.message;
+        do {
+            msgLength = measureText(`Message from @${data.fromUser}: ` + msg);
+
+        } while (msgLength > targetLenght)
+        notifications.append(`<div id="${data.id}" class="alert fadeout notification alert-info">Message from @${data.fromUser}: ${}
+        </div>`)
+    }
+
+
 }
 function removeTask() {
     let data = {
@@ -523,7 +513,6 @@ function editTask() {
     $("#comments").addClass("hide");
     isEditing = true;
 }
-
 function yourNotes(data) {
     let list = $('#userNotesDropdown');
     let icon = $("#dropdownMenu2 i");
@@ -558,7 +547,6 @@ function yourNotes(data) {
 
     let userIconNotes = $('#userIconNotes');
     let userNotes = (data.allInvites.length) + (data.allFriendRequests.length);
-    console.log(userNotes)
     userIconNotes.text(userNotes);
     userIconNotes.append(`<i class="userNotes fas fa-bell"></i>`);
 
@@ -577,7 +565,6 @@ function updateInvites(data) {
     }
     addEventListenerToInvites();
 }
-
 /**Adds new eventlistner on a the task as it comes in.
  * @param {htmlElement} data -jquery element that
 */
@@ -602,4 +589,29 @@ function addNewEventListeners(newTask) {
         $("#taskDesc").removeClass("hide");
         $("#comments").removeClass("hide");
     });
+}
+function measureText(pText, pFontSize, pStyle) {
+    var lDiv = document.createElement('div');
+
+    document.body.appendChild(lDiv);
+
+    if (pStyle != null) {
+        lDiv.style = pStyle;
+    }
+    lDiv.style.fontSize = "" + pFontSize + "px";
+    lDiv.style.position = "absolute";
+    lDiv.style.left = -1000;
+    lDiv.style.top = -1000;
+
+    lDiv.innerHTML = pText;
+
+    var lResult = {
+        width: lDiv.clientWidth,
+        height: lDiv.clientHeight
+    };
+
+    document.body.removeChild(lDiv);
+    lDiv = null;
+
+    return lResult;
 }

@@ -257,3 +257,10 @@ dropdown-item {
     min-width: 4em;
     margin: 0px 0.7em 0px 0.7em
 }
+
+#notifications {
+    width: 20em;
+    position: fixed;
+    bottom: 1em;
+    right: 0px;
+}
