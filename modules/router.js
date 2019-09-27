@@ -7,6 +7,18 @@ function auth(req, res, next) {
         next();
     }
 }
+function sanitize(string) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        "/": '&#x2F;',
+    };
+    const reg = /[&<>"'/]/ig;
+    return string.replace(reg, (match)=>(map[match]));
+  }
 
 
 module.exports = (app) => {
@@ -26,7 +38,7 @@ module.exports = (app) => {
     })
     app.get('/', async (req, res) => {
         // res.sendFile(file('index.html'), { root: "./" });
-        let username = req.session.user;
+        let username = sanitize(req.session.user);
         let allProjects = "";
         let userNotes = "";
         let allInvites = ""
@@ -46,7 +58,7 @@ module.exports = (app) => {
 
     app.get('/dashboard/:projectID', auth, async (req, res) => {
         let projectID = req.params.projectID;
-        let user = req.session.user;
+        let user = sanitize(req.session.user);
         let hasAcess = (await Storage.getUserProject({ username: user, projectID })).length != 0;
         if (!hasAcess) {
             res.redirect('/');
@@ -89,7 +101,7 @@ module.exports = (app) => {
         if (req.session.user !== undefined) {
             res.redirect('/');
         }
-        let user = req.body.user;
+        let user = sanitize(req.body.user);
         let result = await Storage.addUser(user);
         if (result == "Added user") {
             req.session.user = user.username;
@@ -100,7 +112,7 @@ module.exports = (app) => {
     });
     app.post("/login", async (req, res) => {
 
-        let user = req.body.user;
+        let user = sanitize(req.body.user);
         if (await Storage.verifyUser(user)) {
             req.session.user = user.username;
             res.redirect("/");
@@ -109,7 +121,7 @@ module.exports = (app) => {
         };
     });
     app.get("/user", auth, async (req, res) => {
-        let username = req.session.user;
+        let username = sanitize(req.session.user);
         let user = (await Storage.getUser(username))[0];
         let allProjects = await Storage.getAllProjects(username);
         let allInvites = await Storage.getAllProjectInvites(username);

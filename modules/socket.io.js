@@ -3,7 +3,18 @@ const Storage = require("./storage.js");
 const cookie = require('cookie');
 const sharedsession = require("express-socket.io-session");
 
-
+function sanitize(string) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        "/": '&#x2F;',
+    };
+    const reg = /[&<>"'/]/ig;
+    return string.replace(reg, (match)=>(map[match]));
+  }
 let io;
 
 module.exports = (https, cookie) => {
@@ -28,7 +39,7 @@ function socketIO() {
             return false;
 
         }
-        socket.user = user.user;
+        socket.user = sanitize(user.user);
 
         socket.on('disconnect', disconnect);
 
