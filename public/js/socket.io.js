@@ -611,8 +611,8 @@ function updateInvites(data) {
 }
 
 function yourBadges(data) {
-    let firends = $('.friend span:nth-child(2)');
-    firends.each(function (i) {
+    let friends = $('.friend span:nth-child(2)');
+    friends.each(function (i) {
         if (data[i].notes == 0) {
             $((this)).hide();
         } else {
@@ -673,11 +673,11 @@ function measureText(pText, pFontSize, pStyle) {
 }
 
 function updateMessageBadge() {
-    let firends = $('.friend span:nth-child(1)');
+    let friends = $('.friend span:nth-child(1)');
     let data = [];
-    firends.each(function () {
-        let firend = $((this)).attr('id');
-        data.push(firend)
+    friends.each(function () {
+        let friend = $((this)).attr('id');
+        data.push(friend)
     });
-    socket.emit('getFirendNotes', data);
+    socket.emit('getFriendNotes', data);
 }
