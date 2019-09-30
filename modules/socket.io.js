@@ -356,8 +356,15 @@ function socketIO() {
             io.to(socket.id).emit('yourProjects', projects);
         }
         async function removeMessageNotes(friendUsername) {
-            let id = await Storage.getFriendId({ username: socket.user, friendUsername })
+            let id = await Storage.getFriendId({ username: socket.user, friendUsername });
             await Storage.deleteMessageNote(id);
+            let notes = {
+                projectAndTaskNotes: await Storage.getAllUserNotes(friendUsername),
+                allInvites: await Storage.getAllProjectInvites(friendUsername),
+                allFriendRequests: await Storage.getAllFriendRequests(friendUsername),
+                allMessageNotes: (await Storage.getAllMessageNote(friendUsername)).length
+            }
+            io.to(socket.id).emit("yourNotes", notes);
         }
         async function newChat(friendUsername) {
             let id = await Storage.getFriendId({ username: socket.user, friendUsername });
@@ -380,6 +387,7 @@ function socketIO() {
                 allMessageNotes: (await Storage.getAllMessageNote(data.toUser)).length
             }
             emitToUser("yourNotes", "user", data.toUser, notes);
+
         }
         async function removeTask({ taskID, projectID }) {
             let task = await Storage.getTask(taskID);
@@ -400,7 +408,6 @@ function socketIO() {
         }
 
         async function getFirendNotes(data) {
-            //console.log(data);
             let out = [];
             let username = socket.user;
             for (let i in data) {
@@ -446,7 +453,7 @@ function socketIO() {
         }
         for (let i in allUsersOnline) {
             if (allUsersOnline[i][prop] == propValue) {
-
+                console.log("sent",allUsersOnline[i][prop])
                 io.to(allUsersOnline[i].id).emit(event, data);
             }
         }

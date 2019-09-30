@@ -481,6 +481,7 @@ function showChat(data) {
 function liveChat(data) {
     updateMessageBadge();
     if ($(".currentChat").length > 0) {
+        console.log("got here")
         socket.emit("removeMessageNotes", $(".currentChat").attr("id"));
         let allMessages = $("#allMessages");
         allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
@@ -597,7 +598,6 @@ function removeFriend(friend) {
 function updateInvites(data) {
     $("#invites").children("div").remove();
     $("#friendInvites").children("div").remove();
-    console.log("client", data)
     for (i in data.projectInvites) {
         let invite = data.projectInvites[i];
         $("#invites").append(`<div id=${invite.id} class="invite border"><b>@${invite.fromUser}</b> invited you to their project called ${invite.projectName}!<button type="button" class="badge choice accept btn btn-outline-primary"><i class="fas fa-check fa-2x"></i></button><button type="button"class="badge choice decline btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button></div>`)
