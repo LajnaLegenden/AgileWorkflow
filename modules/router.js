@@ -35,7 +35,7 @@ module.exports = (app) => {
     app.get("/favicon.ico", (req, res) => {
         res.sendStatus(404);
     })
-    app.get('/', async (req, res) => {
+    app.get('/', async (req, res, next) => {
         try {
             let username;
             if (req.session.user != undefined)
@@ -60,7 +60,7 @@ module.exports = (app) => {
         }
 
     });
-    app.get('/dashboard/:projectID', auth, async (req, res) => {
+    app.get('/dashboard/:projectID', auth, async (req, res, next) => {
         try {
             let projectID = req.params.projectID;
             let user = sanitize(req.session.user);
@@ -104,7 +104,7 @@ module.exports = (app) => {
         req.session.user = undefined;
         res.redirect("/");
     });
-    app.post("/signup", async (req, res) => {
+    app.post("/signup", async (req, res, next) => {
         try {
             if (req.session.user !== undefined) {
                 res.redirect('/');
@@ -127,7 +127,7 @@ module.exports = (app) => {
             next(err)
         }
     });
-    app.post("/login", async (req, res) => {
+    app.post("/login", async (req, res, next) => {
         try {
             let user = req.body.user;
             if (await Storage.verifyUser(user)) {
@@ -141,7 +141,7 @@ module.exports = (app) => {
         }
 
     });
-    app.get("/user", auth, async (req, res) => {
+    app.get("/user", auth, async (req, res, next) => {
         try {
             let username = sanitize(req.session.user);
             let user = (await Storage.getUser(username))[0];
@@ -159,8 +159,7 @@ module.exports = (app) => {
         }
     });
     app.all("*", (req, res) => {
-        let error;
-        res.render("error", { title: "Error", error });
+        res.render("error", { title: "Error" });
     });
 }
 
