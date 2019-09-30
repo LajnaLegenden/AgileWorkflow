@@ -68,13 +68,17 @@ function addEventListenerToInvites() {
     });
 }
 addEventListenerToInvites();
-$(".friend").click(function () {
-    $(".inputAndBtnChatHide").removeClass("inputAndBtnChatHide");
-    $(".currentChat").removeClass("currentChat");
-    $(this).children().addClass("currentChat");
-    socket.emit("newChat", $(this).children().attr("id"));
-    updateMessageBadge();
-});
+function addEventListenersToFriends() {
+    $(".friend").click(function () {
+        $(".inputAndBtnChatHide").removeClass("inputAndBtnChatHide");
+        $(".currentChat").removeClass("currentChat");
+        $(this).children().addClass("currentChat");
+        socket.emit("newChat", $(this).children().attr("id"));
+        updateMessageBadge();
+    });
+}
+
+addEventListenersToFriends()
 $("#addMessage").on("click", function () {
     let data = {
         message: sanitize($("#Message").val()),
@@ -116,6 +120,7 @@ socket.on('yourNotes', yourNotes);
 socket.on("updateInvites", updateInvites);
 socket.on('yourBadges', yourBadges);
 socket.on("removeFriend", removeFriend);
+socket.on('addFriendToList', addFriendToList);
 /**
  * Adds a task
  */
@@ -680,4 +685,10 @@ function updateMessageBadge() {
         data.push(firend)
     });
     socket.emit('getFirendNotes', data);
+}
+
+function addFriendToList(data) {
+    console.log(data);
+    $('#friends').append(`<div class="friend"><span class="input-group-text" id="${data.friend}"><i class="fas fa-at"></i>${data.friend} <span class=" badge badge-light" style="display: none;"></span><button data-toggle="modal" data-target="#removeFriendModal" type="button" class="badge choice removeFriend btn btn-outline-primary right" style="margin:0;"><i class="fas fa-ban"></i></button></span></div>`);
+    addEventListenersToFriends()
 }

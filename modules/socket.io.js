@@ -297,7 +297,8 @@ function socketIO() {
                 await Storage.addFriend({ username: invite.toUser, friendUsername: invite.fromUser, id: id })
                 await Storage.deleteFriendRequest(invite.id);
                 io.to(socket.id).emit("goUpdate");
-                emitToUser('goUpdate', user, invite.fromUser);
+                io.to(socket.id).emit('addFriendToList', { friend: invite.fromUser });
+                emitToUser('addFriendToList', 'user', invite.fromUser, { friend: invite.toUser });
             }
             /**
              * Declines a friend invite
@@ -307,6 +308,7 @@ function socketIO() {
                 let invite = (await Storage.getFriendRequest(data))[0];
                 await Storage.deleteFriendRequest(invite.id);
                 io.to(socket.id).emit('goUpdate');
+
             }
         }
         /**
