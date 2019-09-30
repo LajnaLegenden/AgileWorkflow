@@ -1,3 +1,5 @@
+import { freemem } from "os";
+
 var socket = io();
 function sanitize(string) {
     const map = {
@@ -594,6 +596,7 @@ function yourNotes(data) {
 }
 function removeFriend(friend){
     let friends = [...$(".friend")];
+    console.log(friends)
     for(i in friends){
         if($(friends[i]).attr("id") == friend){
             $(friends[i]).remove();

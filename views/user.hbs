@@ -31,7 +31,7 @@
                     <div class="friend">
                         <span class="input-group-text" id="{{this.friendUsername}}"><i class="fas fa-at"></i>
                             {{this.friendUsername}} <span class=" badge
-                                                        badge-light">0</span><button data-toggle="modal"
+                                                        badge-light"></span><button data-toggle="modal"
                                 data-target="#removeFriendModal" type="button"
                                 class="badge choice removeFriend btn btn-outline-primary right" style="margin:0;"><i
                                     class="fas fa-ban"></i></button></span>
@@ -85,6 +85,15 @@
                         <input type="input" class="form-control" id="usernameAddFriend" placeholder="Enter Username">
                     </div>
                     <div class="from-group"><button class="btn btn-primary" id="addFriend">Add Friend</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+     <div class="modal fade" id="removeFriendModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <form class="remove">
+                    <div class="from-group"><button class="btn btn-primary" id="removeFriend">Remove Friend</button></div>
                 </form>
             </div>
         </div>
