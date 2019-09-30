@@ -153,7 +153,8 @@ class Database {
         return await connection.queryP(getAllComments, taskID);
     }
     async addUserNote(username, fromUser, projectID, taskID){
-        await connection.queryP(addUserNote, [username, fromUser, projectID, taskID, (await getNewId())]);
+        if((await this.getUserProject({username, projectID})).length > 0)
+            await connection.queryP(addUserNote, [username, fromUser, projectID, taskID, (await getNewId())])
     }
     async getAllUserNotes(username){
         return await connection.queryP(getAllUserNotes, username)
@@ -188,7 +189,7 @@ class Database {
         await connection.queryP(deleteProjectInvite, id);
     }
     async sendFriendRequest({fromUser, toUser}){
-        if(await this.getFriendId({username:fromUser, friendUsername:toUser}) == "" || await this.getFriendRequestByFromUser(fromUser).length == 0)
+        if(await this.getFriendId({username:fromUser, friendUsername:toUser}) == "" || await this.getFriendRequestByFromUser(fromUser).length == 0 || fromUser != toUser)
             await connection.queryP(sendFriendRequest, [fromUser, toUser, (await getNewId())]);
     }
     async getAllFriendRequests(username){
