@@ -19,6 +19,7 @@ let TOVERIFY = $('#TOVERIFY');
 let DONE = $('#DONE');
 let IMPEDIMENTS = $('#IMPEDIMENTS');
 $(document).ready(() => {
+    socket.emit('myNotes'); 
 });
 isEditing = false;
 //Eventlistners
@@ -122,8 +123,6 @@ function addTask() {
     let data = {};
     data.projectID = $(".currentProject").attr("id");
     data.taskID = $(".currentTask").attr("id");
-    console.log(data)
-    console.log("id", data.taskID)
     let fail = false;
     if (sanitize($('#taskNameInput').val()) != "") {
         data.name = sanitize($('#taskNameInput').val());
@@ -592,10 +591,10 @@ function yourNotes(data) {
     userIconNotes.append(`<i class="userNotes fas fa-bell"></i>`);
 
 }
-function removeFriend(friend){
+function removeFriend(friend) {
     let friends = [...$(".friend")];
-    for(i in friends){
-        if($(friends[i]).attr("id") == friend){
+    for (i in friends) {
+        if ($(friends[i]).attr("id") == friend) {
             $(friends[i]).remove();
         }
     }
