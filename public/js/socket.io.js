@@ -37,6 +37,12 @@ $("#addFriend").click(e => {
         $("#usernameAddFriend").val("");
     }
 });
+$("#removeFriend").click(e => {
+    e.preventDefault();
+    let friend = $(".currentChat").attr("id");
+    $(".currentChat").remove();
+    socket.emit("removeFriend", friend)
+})
 function addEventListenerToInvites() {
     $(".accept").click(function () {
         let inviteID = $(this).parent().attr("id");
@@ -106,6 +112,7 @@ socket.on("showChat", showChat);
 socket.on("liveChat", liveChat);
 socket.on('yourNotes', yourNotes);
 socket.on("updateInvites", updateInvites);
+socket.on("removeFriend", removeFriend);
 /**
  * Adds a task
  */
@@ -385,6 +392,7 @@ function onlinePeople(onlineusers) {
 function allGood(data) {
     $('#myModal').modal('hide');
     $('#addUserModal').modal('hide');
+    $('#removeFriendModal').modal('hide');
 }
 /**moves a task when dragged and dropped
  * @param {object} data The data of a task
@@ -470,8 +478,7 @@ function showChat(data) {
     scrollAllWayDown("allMessages");
 }
 function liveChat(data) {
-    console.log("sdfsd");
-    if (!$(".currentChat").length == 0) {
+    if ($(".currentChat").length > 0) {
         socket.emit("removeMessageNotes", $(".currentChat").attr("id"));
         let allMessages = $("#allMessages");
         allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
@@ -580,6 +587,14 @@ function yourNotes(data) {
     userIconNotes.text(userNotes);
     userIconNotes.append(`<i class="userNotes fas fa-bell"></i>`);
 
+}
+function removeFriend(friend){
+    let friends = [...$(".friend")];
+    for(i in friends){
+        if($(friends[i]).attr("id") == friend){
+            $(friends[i]).remove();
+        }
+    }
 }
 function updateInvites(data) {
     $("#invites").children("div").remove();

@@ -72,6 +72,7 @@ function socketIO() {
             socket.on("removeTask", removeTask);
             socket.on('updateNotesList', updateNotesList);
             socket.on("removeMessageNotes", removeMessageNotes)
+            socket.on("removeFriend", removeFriend);
 
 
             /**
@@ -396,7 +397,11 @@ function socketIO() {
             let allMessageNotes = (await Storage.getAllMessageNote(username)).length
             io.to(socket.id).emit('yourNotes', { projectAndTaskNotes, allInvites, allFriendRequests, allMessageNotes });
         }
-
+        async function removeFriend(friend) {
+            await Storage.removeFriend({ username: socket.user, friendUsername: friend });
+            io.to(socket.id).emit("allGood");
+            emitToUser("removeFriend", "user", friend, socket.user);
+        }
 
     });
 

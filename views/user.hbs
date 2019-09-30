@@ -43,12 +43,16 @@
             </div>
             <div id="friends" class="border">
                 <h4>Friends</h4>
-                {{#each friends}}
-                <div class="friend">
-                    <span class="input-group-text" id="{{this.friendUsername}}"><i class="fas fa-at"></i>
-                        {{this.friendUsername}}</span>
+                <div id="allFriends">
+                    {{#each friends}}
+                    <div class="friend">
+                        <span class="input-group-text" id="{{this.friendUsername}}"><i class="fas fa-at"></i>
+                            {{this.friendUsername}} <button data-toggle="modal" data-target="#removeFriendModal" type="button"
+                                class="badge choice removeFriend btn btn-outline-primary right" style="margin:0;"><i
+                                    class="fas fa-ban"></i></button></span>
+                    </div>
+                    {{/each}}
                 </div>
-                {{/each}}
             </div>
         </div>
         <div id="chat" class="border">
@@ -96,6 +100,15 @@
                         <input type="input" class="form-control" id="usernameAddFriend" placeholder="Enter Username">
                     </div>
                     <div class="from-group"><button class="btn btn-primary" id="addFriend">Add Friend</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="removeFriendModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <form class="remove">
+                    <div class="from-group"><button class="btn btn-primary" id="removeFriend">Remove friend</button></div>
                 </form>
             </div>
         </div>
