@@ -1,6 +1,7 @@
 
 $(function () {
   socket.emit('myProjects');
+  socket.emit('updateNotesList');
 })
 
 $(".project").click(function () {

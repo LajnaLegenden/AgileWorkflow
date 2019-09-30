@@ -1,5 +1,3 @@
-
-
 var socket = io();
 function sanitize(string) {
     const map = {
@@ -20,8 +18,8 @@ let INPROGRESS = $('#INPROGRESS');
 let TOVERIFY = $('#TOVERIFY');
 let DONE = $('#DONE');
 let IMPEDIMENTS = $('#IMPEDIMENTS');
-$(document).ready(() => {
-    socket.emit('myNotes');
+$(document).ready(function () {
+
 });
 isEditing = false;
 //Eventlistners
