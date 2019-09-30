@@ -51,8 +51,7 @@ function socketIO() {
 
         if (socket.user !== "{}" || socket.user != undefined) {
 
-            io.to(socket.id).emit('goUpdate');
-
+            //io.to(socket.id).emit('goUpdate');
             socket.on('newTask', newTask);
             socket.on("editTask", editTask);
             socket.on('needTasks', needTasks);
@@ -354,8 +353,8 @@ function socketIO() {
             }
             io.to(socket.id).emit('yourProjects', projects);
         }
-        async function removeMessageNotes(friendUsername){
-            let id = await Storage.getFriendId({username:socket.user, friendUsername})
+        async function removeMessageNotes(friendUsername) {
+            let id = await Storage.getFriendId({ username: socket.user, friendUsername })
             await Storage.deleteMessageNote(id);
         }
         async function newChat(friendUsername) {
@@ -373,10 +372,10 @@ function socketIO() {
             await Storage.sendMessage(data);
             emitToUser('liveChat', 'user', data.toUser, data);
             let notes = {
-                projectAndTaskNotes : await Storage.getAllUserNotes(data.toUser),
-                allInvites : await Storage.getAllProjectInvites(data.toUser),
-                allFriendRequests : await Storage.getAllFriendRequests(data.toUser),
-                allMessageNotes : (await Storage.getAllMessageNote(data.toUser)).length
+                projectAndTaskNotes: await Storage.getAllUserNotes(data.toUser),
+                allInvites: await Storage.getAllProjectInvites(data.toUser),
+                allFriendRequests: await Storage.getAllFriendRequests(data.toUser),
+                allMessageNotes: (await Storage.getAllMessageNote(data.toUser)).length
             }
             emitToUser("yourNotes", "user", data.toUser, notes);
         }

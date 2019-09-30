@@ -39,7 +39,7 @@ const deleteUserNotes = "DELETE FROM userNote WHERE taskID = ?";
 const sendInvite = "INSERT INTO inviteProject (fromUser, toUser, projectID,projectName, id) VALUES (?, ?, ?, ?, ?)";
 const getAllProjectInvites = "SELECT * FROM inviteProject WHERE toUser = ?";
 const getProjectInvite = "SELECT * FROM inviteProject WHERE id = ?";
-const getProjectInvitebyProjectID = "SELECT * FROM inviteProject WHERE projectID = ?";
+const getProjectInviteByProjectID = "SELECT * FROM inviteProject WHERE projectID = ?";
 const deleteProjectInvite = "DELETE FROM inviteProject WHERE id =  ?";
 
 const sendFriendRequest = "INSERT INTO friendRequest (fromUser, toUser, id) VALUES (?, ?, ?)";
@@ -55,7 +55,7 @@ const getFriendId = "SELECT * FROM friend WHERE (username = ? AND friendUsername
 const getChat = "SELECT * FROM message WHERE id = ?";
 const sendMessage = "INSERT INTO message (message, toUser, fromUser, date, id) VALUES (?, ?, ?, ? ,?)";
 
-const addMessgeNote = "INSERT INTO messageNote (fromUser, toUser, id) VALUES (?, ?, ?)";
+const addMessageNote = "INSERT INTO messageNote (fromUser, toUser, id) VALUES (?, ?, ?)";
 const getAllMessageNote = "SELECT * FROM messageNote WHERE toUser = ?";
 const deleteMessageNote = "DELETE FROM messageNote WHERE id = ?";
 const getAllMessageNoteFromFriend = "SELECT * FROM messageNote WHERE (fromUser = ? AND toUser = ?)";
@@ -134,7 +134,7 @@ class Database {
     async getUser(username) {
         return await connection.queryP(getUser, username);
     }
-    /**Verifys that the user exists*/
+    /**Verify that the user exists*/
     async verifyUser({ username, password }) {
         let user = await this.getUser(username);
         return user && user.length > 0 && bcryptjs.compare(password, user[0].password);
@@ -182,7 +182,7 @@ class Database {
         return await connection.queryP(getProjectInvite, id)
     }
     async getProjectInvitebyProjectID(projectID){
-        return await connection.queryP(getProjectInvitebyProjectID, projectID);
+        return await connection.queryP(getProjectInviteByProjectID, projectID);
     }
     async deleteProjectInvite(id){
         await connection.queryP(deleteProjectInvite, id);
@@ -222,7 +222,7 @@ class Database {
         await connection.queryP(sendMessage, [message, toUser, fromUser ,date, id]);
     }
     async addMessegeNote({fromUser, toUser, id}){
-        await connection.queryP(addMessgeNote, [fromUser, toUser, id]);
+        await connection.queryP(addMessageNote, [fromUser, toUser, id]);
     }
     async getAllMessageNote(toUser){
         return await connection.queryP(getAllMessageNote, toUser);
@@ -250,4 +250,3 @@ async function getNewId() {
     }
     return this.getNewId();
 }
-module.exports = Storage;
