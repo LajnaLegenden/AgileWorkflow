@@ -71,7 +71,8 @@ function socketIO() {
             socket.on("addMessage", sendMessage);
             socket.on("removeTask", removeTask);
             socket.on('updateNotesList', updateNotesList);
-            socket.on("removeMessageNotes", removeMessageNotes)
+            socket.on("removeMessageNotes", removeMessageNotes);
+            socket.on('getFirendNotes', getFirendNotes);
 
 
             /**
@@ -395,6 +396,22 @@ function socketIO() {
             let allFriendRequests = await Storage.getAllFriendRequests(username);
             let allMessageNotes = (await Storage.getAllMessageNote(username)).length
             io.to(socket.id).emit('yourNotes', { projectAndTaskNotes, allInvites, allFriendRequests, allMessageNotes });
+        }
+
+        async function getFirendNotes(data) {
+            //console.log(data);
+            let out = [];
+            let username = socket.user;
+            for (let i in data) {
+                let friendUsername = data[i];
+                let fId = await Storage.getFriendId({ username, friendUsername });
+                let obj = {};
+                obj.notes = (await Storage.getAllMessageNoteFromId(fId)).length;
+                console.log(obj.notes)
+                obj.firend = friendUsername;
+                out.push(obj);
+            }
+            io.to(socket.id).emit('yourBadges', out);
         }
 
 

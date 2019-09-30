@@ -57,7 +57,6 @@ btn.on('click', () => {
                 returnUrl = "/"
             }
             document.location.href = returnUrl;
-
         }
         setTimeout(() => {
             alert.removeClass("hide");

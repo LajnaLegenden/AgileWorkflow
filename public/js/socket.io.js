@@ -66,6 +66,7 @@ $(".friend").click(function () {
     $(".currentChat").removeClass("currentChat");
     $(this).children().addClass("currentChat");
     socket.emit("newChat", $(this).children().attr("id"));
+    updateMessageBadge();
 });
 $("#addMessage").on("click", function () {
     let data = {
@@ -106,6 +107,7 @@ socket.on("showChat", showChat);
 socket.on("liveChat", liveChat);
 socket.on('yourNotes', yourNotes);
 socket.on("updateInvites", updateInvites);
+socket.on('yourBadges', yourBadges);
 /**
  * Adds a task
  */
@@ -470,7 +472,7 @@ function showChat(data) {
     scrollAllWayDown("allMessages");
 }
 function liveChat(data) {
-    console.log("sdfsd");
+    updateMessageBadge()
     if (!$(".currentChat").length == 0) {
         socket.emit("removeMessageNotes", $(".currentChat").attr("id"));
         let allMessages = $("#allMessages");
@@ -478,15 +480,16 @@ function liveChat(data) {
         scrollAllWayDown("allMessages");
     } else {
         displayNotification(data);
-        console.log(data);
     }
 
     function displayNotification(data) {
         notifications = $('#notifications');
         let id = getNewId();
-        notifications.append(`<div id="${id}" style="display:none" class="alert notification alert-info">Message from @${data.fromUser}: <span></span>
+        notifications.append(`<div id="${id}" style="display:none" class="alert notification alert-info">Message from @${data.fromUser}: <span></span>  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
         </div>`)
-
+        $('#' + id).alert();
         hasBeenCut = false;
         targetWidth = Math.floor(notifications.width());
         fontSize = $(document.getElementById('notifications')[0]).css('font-size');
@@ -512,7 +515,7 @@ function liveChat(data) {
     }
 
     function getNewId() {
-        let a = "abcdefghijklmnopkqrtuvwxyzABCDEFGHIJKLMNOPKQRTUVWXYZ0123456789_-";
+        let a = "abcdefghijklmnopkqrtuvwxyzABCDEFGHIJKLMNOPKQRTUVWXYZ";
         let testId = "";
         for (let i = 0; i < 32; i++) {
             testId += a[Math.floor(Math.random() * a.length)];
@@ -594,6 +597,19 @@ function updateInvites(data) {
         $("#friendInvites").append(`<div id=${invite.id} class="invite border"><b>@${invite.fromUser}</b> sent a friend request!<button type="button" class="badge choice acceptFriend btn btn-outline-primary"><i class="fas fa-check fa-2x"></i></button><button type="button"class="badge choice declineFriend btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button></div>`)
     }
     addEventListenerToInvites();
+
+}
+
+function yourBadges(data) {
+    let firends = $('.friend span:nth-child(2)');
+    firends.each(function (i) {
+        if (data[i].notes == 0) {
+            $((this)).hide();
+        } else {
+            $((this)).show();
+            $((this)).text(data[i].notes);
+        }
+    });
 }
 /**Adds new eventlistner on a the task as it comes in.
  * @param {htmlElement} data -jquery element that
@@ -644,4 +660,14 @@ function measureText(pText, pFontSize, pStyle) {
     lDiv = null;
 
     return lResult;
+}
+
+function updateMessageBadge() {
+    let firends = $('.friend span:nth-child(1)');
+    let data = [];
+    firends.each(function () {
+        let firend = $((this)).attr('id');
+        data.push(firend)
+    });
+    socket.emit('getFirendNotes', data);
 }
