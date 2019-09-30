@@ -36,44 +36,44 @@
                                 class="fas fa-ban"></i></button></span>
                 </div>
                 {{/each}}
+
             </div>
         </div>
-    </div>
-    <div id="chat" class="border">
-        <div id="allMessages">
-        </div>
-        <div class="input-group mb-3 inputAndBtnChatHide">
-            <div class="input-group-prepend">
-                <span class="input-group-text"><i class="far fa-comment"></i></span>
+        <div id="chat" class="border">
+            <div id="allMessages">
             </div>
-            <input type="text" id="Message" class="form-control" id="taskNameInput" placeholder="Message"
-                aria-label="Comment" aria-describedby="basic-addon1">
-            <div class="input-group-prepend">
-                <button type="button" class="input-group-text btn btn-outline-primary" id="addMessage">Send</button>
+            <div class="input-group mb-3 inputAndBtnChatHide">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="far fa-comment"></i></span>
+                </div>
+                <input type="text" id="Message" class="form-control" id="taskNameInput" placeholder="Message"
+                    aria-label="Comment" aria-describedby="basic-addon1">
+                <div class="input-group-prepend">
+                    <button type="button" class="input-group-text btn btn-outline-primary" id="addMessage">Send</button>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="invites" class="border">
-        <h4>Project Invites</h4>
-        {{#each allInvites}}
-        <div id={{this.id}} class="invite border"><b>@{{this.fromUser}}</b> invited you to their project called
-            {{this.projectName}}!<button type="button" class="badge choice accept btn btn-outline-primary"><i
-                    class="fas fa-check fa-2x"></i></button><button type="button"
-                class="badge choice decline btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button></div>
-        {{/each}}
-    </div>
-    <div id="friendInvites" class="border">
-        <h4 style="display:inline-block">Friend Invites</h4>
-        <button type="button" class="badge choice addFriend btn btn-outline-primary" data-toggle="modal"
-            data-target="#addUserModal">Add friend</button>
-        {{#each allFriendRequests}}
-        <div id={{this.id}} class="invite border"><b>@{{this.fromUser}}</b> sent a friend request!<button type="button"
-                class="badge choice acceptFriend btn btn-outline-primary"><i
-                    class="fas fa-check fa-2x"></i></button><button type="button"
-                class="badge choice declineFriend btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button>
+        <div id="invites" class="border">
+            <h4>Project Invites</h4>
+            {{#each allInvites}}
+            <div id={{this.id}} class="invite border"><b>@{{this.fromUser}}</b> invited you to their project called
+                {{this.projectName}}!<button type="button" class="badge choice accept btn btn-outline-primary"><i
+                        class="fas fa-check fa-2x"></i></button><button type="button"
+                    class="badge choice decline btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button></div>
+            {{/each}}
         </div>
-        {{/each}}
-    </div>
+        <div id="friendInvites" class="border">
+            <h4 style="display:inline-block">Friend Invites</h4>
+            <button type="button" class="badge choice addFriend btn btn-outline-primary" data-toggle="modal"
+                data-target="#addUserModal">Add friend</button>
+            {{#each allFriendRequests}}
+            <div id={{this.id}} class="invite border"><b>@{{this.fromUser}}</b> sent a friend request!<button
+                    type="button" class="badge choice acceptFriend btn btn-outline-primary"><i
+                        class="fas fa-check fa-2x"></i></button><button type="button"
+                    class="badge choice declineFriend btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button>
+            </div>
+            {{/each}}
+        </div>
     </div>
     <div class="modal fade" id="addUserModal" role="dialog">
         <div class="modal-dialog modal-sm">
