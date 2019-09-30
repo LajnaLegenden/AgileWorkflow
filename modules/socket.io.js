@@ -73,6 +73,7 @@ function socketIO() {
             socket.on('updateNotesList', updateNotesList);
             socket.on("removeMessageNotes", removeMessageNotes);
             socket.on('getFirendNotes', getFirendNotes);
+            socket.on("removeFriend", removeFriend);
 
 
             /**
@@ -414,6 +415,11 @@ function socketIO() {
             io.to(socket.id).emit('yourBadges', out);
         }
 
+        async function removeFriend(friend) {
+            await Storage.removeFriend({ username: socket.user, friendUsername: friend });
+            io.to(socket.id).emit("allGood");
+            emitToUser("removeFriend", "user", friend, socket.user);
+        }
 
     });
 

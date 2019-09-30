@@ -45,11 +45,18 @@
 
 .friend span {
     transition: all 100ms ease-in-out;
+    cursor: pointer;
 }
 
 .friend span:hover {
-    transform: scale(0.97);
-    cursor: pointer;
+    background-color:#85FFFE;
+}
+.removeFriend{
+    opacity: 0;
+    transition: all 200ms ease-in-out;
+}
+.friend:hover span button{
+    opacity: 1;
 }
 
 .choice {
@@ -130,4 +137,22 @@
 }
 .inputAndBtnChatHide{
     display:none;
+}
+#allFriends{
+    overflow: auto;
+}
+.input-group-text{
+    display: block !important;
+    text-align: left;
+}
+.removeFriend i{
+    color:red !important;
+}
+#removeFriend{
+    padding:1em;
+    text-align: center
+}
+.remove{
+    text-align: center;
+    padding: 1em;
 }
