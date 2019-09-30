@@ -1,4 +1,4 @@
-import { freemem } from "os";
+
 
 var socket = io();
 function sanitize(string) {
@@ -590,18 +590,12 @@ function yourNotes(data) {
 
     let userIconNotes = $('#userIconNotes');
     let userNotes = (data.allInvites.length) + (data.allFriendRequests.length) + data.allMessageNotes;
+    if(userNotes == 0) userNotes = "";
     userIconNotes.text(userNotes);
-    userIconNotes.append(`<i class="userNotes fas fa-bell"></i>`);
 
 }
 function removeFriend(friend){
-    let friends = [...$(".friend")];
-    console.log(friends)
-    for(i in friends){
-        if($(friends[i]).attr("id") == friend){
-            $(friends[i]).remove();
-        }
-    }
+    $("#" + friend).remove();
 }
 function updateInvites(data) {
     $("#invites").children("div").remove();
