@@ -8,12 +8,14 @@ const updateState = "UPDATE task SET state = ? WHERE id = ?";
 const getTask = "SELECT * FROM task WHERE id = ?";
 const removeTask = "DELETE FROM task WHERE id = ?";
 const editTask = "UPDATE task SET name = ?, description = ? WHERE id = ?";
+const removeAllTasks = "DELETE FROM task WHERE projectID = ?";
 
 const getProject = "SELECT * FROM project WHERE id = ?"
 const verifyProcjetID = "SELECT * FROM project WHERE id = ?";
 const addProject = "INSERT INTO project (name, creator, id) VALUES (?, ?, ?)"
 const addUserToProjcet = "UPDATE project SET users = ?";
 const getAllProjects = "SELECT * FROM userProject WHERE username = ?";
+const deleteProject = "DELETE FROM project WHERE id = ?";
 
 const addUserProject = "INSERT INTO userProject (username, projectID, admin) VALUES (?, ?, ?)";
 const getUserProject = "SELECT * FROM userProject WHERE (username = ? AND projectID = ?)"
@@ -21,13 +23,16 @@ const getUserProject = "SELECT * FROM userProject WHERE (username = ? AND projec
 const getUser = "SELECT * FROM user WHERE username = ?"
 const addUser = "INSERT INTO user (username, password, firstname, lastname, email, projects) VALUES (?, ?, ?, ?, ?, ?)"
 const addProcjetToUser = "UPDATE user SET projects = ?";
+const deleteUserProject = "DELETE FROM userProject WHERE projectID = ?";
 
 const addLog = "INSERT INTO log (html, projectID) VALUES (?, ?)";
-const getAllLogs = "SELECT * FROM log WHERE projectID = ? LIMIT 5";
-const getAllLogsLimit100 = "SELECT * FROM (SELECT * FROM log WHERE projectID = ? ORDER BY id DESC LIMIT 100) sub ORDER BY id ASC;"
+const getAllLogs = "SELECT * FROM log WHERE projectID = ?";
+const getAllLogsLimit100 = "SELECT * FROM (SELECT * FROM log WHERE projectID = ? ORDER BY id DESC LIMIT 100) sub ORDER BY id ASC;";
+const removeAllLogs = "DELETE FROM log WHERE projectID = ?";
 
-const addComment = "INSERT INTO comment (author, content, postDate, taskID) VALUES (?, ?, ?, ?)";
+const addComment = "INSERT INTO comment (author, content, postDate, taskID, projectID) VALUES (?, ?, ?, ?, ?)";
 const getAllComments = "SELECT * FROM comment WHERE taskID = ?";
+const removeAllComments = "DELETE FROM comment WHERE projectID = ?";
 
 const addUserNote = "INSERT INTO userNote (username, fromUser, projectID, taskID, id) VALUES (?, ?, ?, ?, ?)";
 const getAllUserNotes = "SELECT * FROM userNote WHERE username = ?";
@@ -35,12 +40,14 @@ const getAllUserNotesWithProject = "SELECT * FROM userNote WHERE (username = ? A
 const getAllUserNotesWithTask = "SELECT * FROM userNote WHERE (username = ? AND taskID = ?)";
 const getUserNote = "SELECT * FROM userNote WHERE id = ?";
 const deleteUserNotes = "DELETE FROM userNote WHERE taskID = ?";
+const deleteUserNotesWithProjectID = "DELETE FROM userNote WHERE projectID = ?";
 
 const sendInvite = "INSERT INTO inviteProject (fromUser, toUser, projectID,projectName, id) VALUES (?, ?, ?, ?, ?)";
 const getAllProjectInvites = "SELECT * FROM inviteProject WHERE toUser = ?";
 const getProjectInvite = "SELECT * FROM inviteProject WHERE id = ?";
 const getProjectInviteByProjectID = "SELECT * FROM inviteProject WHERE projectID = ?";
-const deleteProjectInvite = "DELETE FROM inviteProject WHERE id =  ?";
+const deleteProjectInvite = "DELETE FROM inviteProject WHERE id = ?";
+const deleteProjectInviteByProjectID = "DELETE FROM inviteProject WHERE projectID = ?";
 
 const sendFriendRequest = "INSERT INTO friendRequest (fromUser, toUser, id) VALUES (?, ?, ?)";
 const getAllFriendRequests = "SELECT * FROM friendRequest WHERE toUser = ?";
@@ -85,6 +92,9 @@ class Database {
     async removeTask(id) {
         await connection.queryP(removeTask, id);
     }
+    async removeAllTasks(projectID) {
+        await connection.queryP(removeAllTasks, projectID)
+    }
     async editTask({ name, description, taskID }) {
         await connection.queryP(editTask, [name, description, taskID]);
     }
@@ -115,6 +125,12 @@ class Database {
         let id = await getNewId();
         await connection.queryP(addProject, [name, creator, id]);
         await connection.queryP(addUserProject, [creator, id, true]);
+    }
+    async deleteUserProject(projectID) {
+        await connection.queryP(deleteUserProject, projectID);
+    }
+    async deleteProject(id) {
+        await connection.queryP(deleteProject, id);
     }
     /**Adds a user to a project*/
     async addUserProject({ username, projectID }) {
@@ -148,11 +164,17 @@ class Database {
     async addLog(html, projectID) {
         await connection.queryP(addLog, [html, projectID]);
     }
-    async addComment({ author, content, postDate, taskID }) {
-        await connection.queryP(addComment, [author, content, postDate, taskID]);
+    async removeAllLogs(projectID) {
+        await connection.queryP(removeAllLogs, projectID);
+    }
+    async addComment({ author, content, postDate, taskID, projectID }) {
+        await connection.queryP(addComment, [author, content, postDate, taskID, projectID]);
     }
     async getAllComments(taskID) {
         return await connection.queryP(getAllComments, taskID);
+    }
+    async removeAllComments(projectID) {
+        await connection.queryP(removeAllComments, projectID);
     }
     async addUserNote(username, fromUser, projectID, taskID) {
         if ((await this.getUserProject({ username, projectID })).length > 0)
@@ -166,6 +188,9 @@ class Database {
     }
     async getAllUserNotesWithTask(username, taskID) {
         return await connection.queryP(getAllUserNotesWithTask, [username, taskID]);
+    }
+    async deleteUserNotesWithProjectID(projectID) {
+        await connection.queryP(deleteUserNotesWithProjectID, projectID)
     }
     async deleteUserNotes(taskID) {
         await connection.queryP(deleteUserNotes, taskID)
@@ -189,6 +214,9 @@ class Database {
     }
     async deleteProjectInvite(id) {
         await connection.queryP(deleteProjectInvite, id);
+    }
+    async deleteProjectInviteByProjectID(projectID) {
+        await connection.queryP(deleteProjectInviteByProjectID, projectID);
     }
     async sendFriendRequest({ fromUser, toUser }) {
         if (await this.getFriendId({ username: fromUser, friendUsername: toUser }) == "" || await this.getFriendRequestByFromUser(fromUser).length == 0 || fromUser != toUser)
@@ -228,7 +256,8 @@ class Database {
         return await connection.queryP(getChat, id);
     }
     async sendMessage({ message, toUser, fromUser, date, id }) {
-        await connection.queryP(sendMessage, [message, toUser, fromUser, date, id]);
+        if (fromUser != null)
+            await connection.queryP(sendMessage, [message, toUser, fromUser, date, id]);
     }
     async addMessegeNote({ fromUser, toUser, id }) {
         await connection.queryP(addMessageNote, [fromUser, toUser, id]);
@@ -248,7 +277,7 @@ class Database {
 }
 let Storage = new Database();
 async function getNewId() {
-    let a = "abcdefghijklmnopkqrtuvwxyzABCDEFGHIJKLMNOPKQRTUVWXYZ0123456789_-";
+    let a = "abcdefghijklmnopkqrtuvwxyzABCDEFGHIJKLMNOPKQRTUVWXYZ";
     let testId = "";
     for (let i = 0; i < 16; i++) {
         testId += a[Math.floor(Math.random() * a.length)];

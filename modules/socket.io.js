@@ -74,6 +74,7 @@ function socketIO() {
             socket.on("removeMessageNotes", removeMessageNotes);
             socket.on('getFriendNotes', getFriendNotes);
             socket.on("removeFriend", removeFriend);
+            socket.on("removeProject", removeProject);
 
 
             /**
@@ -429,7 +430,22 @@ function socketIO() {
             io.to(socket.id).emit("allGood");
             emitToUser("removeFriend", "user", friend, socket.user);
         }
+        async function removeProject(data) {
+            let project = (await Storage.getProject(data.projectID))[0]
+            let projectName = project.name;
+            let projectCreator = project.creator;
+            if (projectName == data.inputProjectName && socket.user == projectCreator) {
+                await Storage.removeAllLogs(data.projectID);
+                await Storage.removeAllTasks(data.projectID);
+                await Storage.removeAllComments(data.projectID);
+                await Storage.deleteUserNotesWithProjectID(data.projectID)
+                await Storage.deleteProjectInviteByProjectID(data.projectID);
+                await Storage.deleteUserProject(data.projectID);
+                await Storage.deleteProject(data.projectID);
+                io.to(data.projectID).emit("href", "/");
+            }
 
+        }
     });
 
     function removeSocket(socket) {
@@ -438,7 +454,6 @@ function socketIO() {
                 allUsersOnline.splice(i, 1);
             }
         }
-
         io.emit('onlinePeople', allUsersOnline.length);
     }
     async function allInvites(toUser) {
@@ -450,6 +465,7 @@ function socketIO() {
         }
         emitToUser("updateInvites", "user", toUser, data);
     }
+
     function emitToUser(event, prop, propValue, data) {
         if (data == undefined) {
             data = {};
