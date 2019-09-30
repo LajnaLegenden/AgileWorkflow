@@ -72,7 +72,7 @@ function socketIO() {
             socket.on("removeTask", removeTask);
             socket.on('updateNotesList', updateNotesList);
             socket.on("removeMessageNotes", removeMessageNotes);
-            socket.on('getFirendNotes', getFirendNotes);
+            socket.on('getFriendNotes', getFriendNotes);
             socket.on("removeFriend", removeFriend);
 
 
@@ -244,8 +244,8 @@ function socketIO() {
                 return testId;
             }
             /**
-             * Sends a firend request
-             * @param {string} username - Who should recive this firend request
+             * Sends a friend request
+             * @param {string} username - Who should recive this friend request
              */
 
             async function addFriend(username) {
@@ -286,7 +286,7 @@ function socketIO() {
             }
 
             /**
-             * Accepts a firend invite
+             * Accepts a friend invite
              * @param {object} data  - The invite to accept
              */
 
@@ -410,15 +410,15 @@ function socketIO() {
             io.to(socket.id).emit('yourNotes', { projectAndTaskNotes, allInvites, allFriendRequests, allMessageNotes });
         }
 
-        async function getFirendNotes(data) {
+        async function getFriendNotes(data) {
             let out = [];
             let username = socket.user;
             for (let i in data) {
                 let friendUsername = data[i];
                 let fId = await Storage.getFriendId({ username, friendUsername });
                 let obj = {};
-                obj.notes = (await Storage.getAllMessageNoteFromFriend({ friendUsername, username })).length;
-                obj.firend = friendUsername;
+                obj.notes = (await Storage.getAllMessageNoteFromId(fId)).length;
+                obj.friend = friendUsername;
                 out.push(obj);
             }
             io.to(socket.id).emit('yourBadges', out);

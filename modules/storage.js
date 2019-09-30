@@ -55,6 +55,7 @@ const removeFriend = "DELETE FROM friend WHERE (username = ? AND friendUsername 
 
 const getChat = "SELECT * FROM message WHERE id = ?";
 const sendMessage = "INSERT INTO message (message, toUser, fromUser, date, id) VALUES (?, ?, ?, ? ,?)";
+const removeChat = "DELETE FROM message WHERE id = ?";
 
 const addMessageNote = "INSERT INTO messageNote (fromUser, toUser, id) VALUES (?, ?, ?)";
 const getAllMessageNote = "SELECT * FROM messageNote WHERE toUser = ?";
@@ -220,6 +221,10 @@ class Database {
     async removeFriend({username, friendUsername}){
         await connection.queryP(removeFriend, [username, friendUsername]);
         await connection.queryP(removeFriend, [friendUsername, username]);
+        console.log("GOT HERER")
+        let id = await this.getFriendId({username, friendUsername});
+        console.log("id", id);
+        await connection.queryP(removeChat, id);
     }
     async getChat(id){
         return await connection.queryP(getChat, id);
