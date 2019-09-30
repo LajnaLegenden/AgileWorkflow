@@ -36,48 +36,57 @@ module.exports = (app) => {
         res.sendStatus(404);
     })
     app.get('/', async (req, res) => {
-        // res.sendFile(file('index.html'), { root: "./" });
-        let username;
-        if (req.session.user != undefined)
-            username = sanitize(req.session.user);
-        let allProjects = "";
-        let userNotes = "";
-        let allInvites = ""
-        let allFriendRequests = ""
-        let totalNotes = "";
-        if (username) {
-            allInvites = await Storage.getAllProjectInvites(username);
-            allFriendRequests = await Storage.getAllFriendRequests(username);
-            allProjects = await Storage.getAllProjects(username);
-            userNotes = (await Storage.getAllFriendRequests(username)).length + (await Storage.getAllProjectInvites(username)).length;
-            let projectAndTaskNotes = await Storage.getAllUserNotes(username);
-            totalNotes = userNotes + projectAndTaskNotes.length;
-            if (userNotes == 0) userNotes = "";
+        try {
+            let username;
+            if (req.session.user != undefined)
+                username = sanitize(req.session.user);
+            let allProjects = "";
+            let userNotes = "";
+            let allInvites = ""
+            let allFriendRequests = ""
+            let totalNotes = "";
+            if (username) {
+                allInvites = await Storage.getAllProjectInvites(username);
+                allFriendRequests = await Storage.getAllFriendRequests(username);
+                allProjects = await Storage.getAllProjects(username);
+                userNotes = (await Storage.getAllFriendRequests(username)).length + (await Storage.getAllProjectInvites(username)).length;
+                let projectAndTaskNotes = await Storage.getAllUserNotes(username);
+                totalNotes = userNotes + projectAndTaskNotes.length;
+                if (userNotes == 0) userNotes = "";
+            }
+            res.render('index', { title: "Index", loggedIn: username, allProjects, userNotes, allInvites, allFriendRequests, totalNotes });
+        } catch (err) {
+            next(err)
         }
-        res.render('index', { title: "Index", loggedIn: username, allProjects, userNotes, allInvites, allFriendRequests, totalNotes });
+
     });
     app.get('/dashboard/:projectID', auth, async (req, res) => {
-        let projectID = req.params.projectID;
-        let user = sanitize(req.session.user);
-        let hasAcess = (await Storage.getUserProject({ username: user, projectID })).length != 0;
-        if (!hasAcess) {
-            res.redirect('/');
-        } else {
-            let project = (await Storage.getProject(projectID))[0];
-            let allProjects = await Storage.getAllProjects(user);
-            for (let i = 0; i < allProjects.length; i++) {
-                allProjects[i].notes = (await Storage.getAllUserNotesWithProject(user, allProjects[i].id)).length;
-                if (allProjects[i].notes == 0) allProjects[i].notes = "";
+        try {
+            let projectID = req.params.projectID;
+            let user = sanitize(req.session.user);
+            let hasAcess = (await Storage.getUserProject({ username: user, projectID })).length != 0;
+            if (!hasAcess) {
+                res.redirect('/');
+            } else {
+                let project = (await Storage.getProject(projectID))[0];
+                let allProjects = await Storage.getAllProjects(user);
+                for (let i = 0; i < allProjects.length; i++) {
+                    allProjects[i].notes = (await Storage.getAllUserNotesWithProject(user, allProjects[i].id)).length;
+                    if (allProjects[i].notes == 0) allProjects[i].notes = "";
+                }
+                let logs = await Storage.getAllLogs(projectID)
+                let userNotes = (await Storage.getAllFriendRequests(user)).length + (await Storage.getAllProjectInvites(user)).length;
+                let projectAndTaskNotes = await Storage.getAllUserNotes(user);
+                let totalNotes = userNotes + projectAndTaskNotes.length;
+                let allInvites = await Storage.getAllProjectInvites(user);
+                let allFriendRequests = await Storage.getAllFriendRequests(user);
+                if (userNotes == 0) userNotes = "";
+                res.render('dashboard', { title: "Projects", loggedIn: user, project, allProjects, logs, userNotes, projectAndTaskNotes, totalNotes, allInvites, allFriendRequests });
             }
-            let logs = await Storage.getAllLogs(projectID)
-            let userNotes = (await Storage.getAllFriendRequests(user)).length + (await Storage.getAllProjectInvites(user)).length;
-            let projectAndTaskNotes = await Storage.getAllUserNotes(user);
-            let totalNotes = userNotes + projectAndTaskNotes.length;
-            let allInvites = await Storage.getAllProjectInvites(user);
-            let allFriendRequests = await Storage.getAllFriendRequests(user);
-            if (userNotes == 0) userNotes = "";
-            res.render('dashboard', { title: "Projects", loggedIn: user, project, allProjects, logs, userNotes, projectAndTaskNotes, totalNotes, allInvites, allFriendRequests });
+        } catch (err) {
+            next(err)
         }
+
     });
     app.get('/signup', (req, res) => {
         res.sendFile(file('signup.html'), { root: "./" });
@@ -96,46 +105,61 @@ module.exports = (app) => {
         res.redirect("/");
     });
     app.post("/signup", async (req, res) => {
-        if (req.session.user !== undefined) {
-            res.redirect('/');
-        }
-        let user = req.body.user
-        user["firstname"] = sanitize(user["firstname"]);
-        user["lastname"] = sanitize(user["lastname"]);
-        user["email"] = sanitize(user["email"]);
-        user["username"] = sanitize(user["username"]);
-        user["password"] = sanitize(user["password"]);
-        user["password2"] = sanitize(user["password2"]);
-        let result = await Storage.addUser(user);
-        if (result == "Added user") {
-            req.session.user = user.username;
-            res.redirect("/");
-        } else {
-            res.send(result);
+        try {
+            if (req.session.user !== undefined) {
+                res.redirect('/');
+            }
+            let user = req.body.user
+            user["firstname"] = sanitize(user["firstname"]);
+            user["lastname"] = sanitize(user["lastname"]);
+            user["email"] = sanitize(user["email"]);
+            user["username"] = sanitize(user["username"]);
+            user["password"] = sanitize(user["password"]);
+            user["password2"] = sanitize(user["password2"]);
+            let result = await Storage.addUser(user);
+            if (result == "Added user") {
+                req.session.user = user.username;
+                res.redirect("/");
+            } else {
+                res.send(result);
+            }
+        } catch (err) {
+            next(err)
         }
     });
     app.post("/login", async (req, res) => {
+        try {
+            let user = req.body.user;
+            if (await Storage.verifyUser(user)) {
+                req.session.user = user.username;
+                res.redirect("/");
+            } else {
+                res.send("Wrong username or password!");
+            };
+        } catch (err) {
+            next(err)
+        }
 
-        let user = req.body.user;
-        if (await Storage.verifyUser(user)) {
-            req.session.user = user.username;
-            res.redirect("/");
-        } else {
-            res.send("Wrong username or password!");
-        };
     });
     app.get("/user", auth, async (req, res) => {
-        let username = sanitize(req.session.user);
-        let user = (await Storage.getUser(username))[0];
-        let allProjects = await Storage.getAllProjects(username);
-        let allInvites = await Storage.getAllProjectInvites(username);
-        let allFriendRequests = await Storage.getAllFriendRequests(username);
-        let friends = await Storage.getAllFriends(username);
-        let userNotes = (await Storage.getAllFriendRequests(username)).length + (await Storage.getAllProjectInvites(username)).length;
-        let projectAndTaskNotes = await Storage.getAllUserNotes(username);
-        let totalNotes = userNotes + projectAndTaskNotes.length;
-        if (userNotes == 0) userNotes = "";
-        res.render("user", { title: username, loggedIn: username, user, allProjects, allInvites, allFriendRequests, friends, userNotes, projectAndTaskNotes, totalNotes })
+        try {
+            let username = sanitize(req.session.user);
+            let user = (await Storage.getUser(username))[0];
+            let allProjects = await Storage.getAllProjects(username);
+            let allInvites = await Storage.getAllProjectInvites(username);
+            let allFriendRequests = await Storage.getAllFriendRequests(username);
+            let friends = await Storage.getAllFriends(username);
+            let userNotes = (await Storage.getAllFriendRequests(username)).length + (await Storage.getAllProjectInvites(username)).length;
+            let projectAndTaskNotes = await Storage.getAllUserNotes(username);
+            let totalNotes = userNotes + projectAndTaskNotes.length;
+            if (userNotes == 0) userNotes = "";
+            res.render("user", { title: username, loggedIn: username, user, allProjects, allInvites, allFriendRequests, friends, userNotes, projectAndTaskNotes, totalNotes })
+        } catch (err) {
+            next(err);
+        }
+    });
+    app.all("*", (req, res) => {
+        res.render("error", {title:"Error", err});
     });
 }
 
