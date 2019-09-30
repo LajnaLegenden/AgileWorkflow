@@ -218,15 +218,13 @@ class Database {
         else return "";
         return id;
     }
-    async removeFriend({username, friendUsername}){
+    async removeFriend({ username, friendUsername }) {
+        let id = await this.getFriendId({ username, friendUsername });
+        await connection.queryP(removeChat, id);
         await connection.queryP(removeFriend, [username, friendUsername]);
         await connection.queryP(removeFriend, [friendUsername, username]);
-        console.log("GOT HERER")
-        let id = await this.getFriendId({username, friendUsername});
-        console.log("id", id);
-        await connection.queryP(removeChat, id);
     }
-    async getChat(id){
+    async getChat(id) {
         return await connection.queryP(getChat, id);
     }
     async sendMessage({ message, toUser, fromUser, date, id }) {

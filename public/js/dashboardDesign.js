@@ -29,11 +29,18 @@ function drop(ev) {
     ev.preventDefault();
     let doStuff = true;
     let element = $(ev.srcElement);
-    if (element.is('li')) {
-        element = $(element).parent();
-    }
-    if (element.is('p')) {
-        doStuff = false;
+
+    element = checkElement(element);
+    function checkElement(element) {
+        if (element.is('ul')) {
+            return element;
+        } else if (element.is('li')) {
+            return checkElement($(element).parent());
+        } else if (element.is('p')) {
+            return checkElement($(element).parent());
+        } else if (element.is('span')) {
+            return checkElement($(element).parent());
+        }
     }
 
 
