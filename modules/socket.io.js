@@ -427,7 +427,6 @@ function socketIO() {
             if (allUsersOnline[i][prop] == propValue) {
 
                 io.to(allUsersOnline[i].id).emit(event, data);
-                return;
             }
         }
     }

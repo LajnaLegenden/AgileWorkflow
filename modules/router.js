@@ -104,6 +104,8 @@ module.exports = (app) => {
         req.session.user = undefined;
         res.redirect("/");
     });
+
+    
     app.post("/signup", async (req, res, next) => {
         try {
             if (req.session.user !== undefined) {

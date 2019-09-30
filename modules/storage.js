@@ -13,7 +13,7 @@ const getProject = "SELECT * FROM project WHERE id = ?"
 const verifyProcjetID = "SELECT * FROM project WHERE id = ?";
 const addProject = "INSERT INTO project (name, creator, id) VALUES (?, ?, ?)"
 const addUserToProjcet = "UPDATE project SET users = ?";
-const getAllProjects = "SELECT * FROM userProject WHERE username = ?"; 
+const getAllProjects = "SELECT * FROM userProject WHERE username = ?";
 
 const addUserProject = "INSERT INTO userProject (username, projectID, admin) VALUES (?, ?, ?)";
 const getUserProject = "SELECT * FROM userProject WHERE (username = ? AND projectID = ?)"
@@ -72,7 +72,7 @@ class Database {
     }
     /**Returns all tasks*/
     async getAllTasks(projectID) {
-        if(projectID != undefined){
+        if (projectID != undefined) {
             return await connection.queryP(getAllTasks, projectID);
         }
     }
@@ -80,10 +80,10 @@ class Database {
     async getTask(id) {
         return await connection.queryP(getTask, id);
     }
-    async removeTask(id){
+    async removeTask(id) {
         await connection.queryP(removeTask, id);
     }
-    async editTask({name, description, taskID}){
+    async editTask({ name, description, taskID }) {
         await connection.queryP(editTask, [name, description, taskID]);
     }
     /**Updates the tasks state with the specified id*/
@@ -103,7 +103,7 @@ class Database {
             let allProjectsIds = await connection.queryP(getAllProjects, username);
             let projects = [];
             for (let i = 0; i < allProjectsIds.length; i++) {
-               projects.push((await this.getProject(allProjectsIds[i].projectID))[0])
+                projects.push((await this.getProject(allProjectsIds[i].projectID))[0])
             }
             return projects
         }
@@ -118,13 +118,13 @@ class Database {
     async addUserProject({ username, projectID }) {
         await connection.queryP(addUserProject, [username, projectID, true]);
     }
-    async getUserProject({username, projectID}){
+    async getUserProject({ username, projectID }) {
         return await connection.queryP(getUserProject, [username, projectID]);
     }
     /**Adds a user*/
     async addUser({ username, password, firstname, lastname, email }) {
         let testUsername = await this.getUser(username);
-        if (testUsername == undefined|| testUsername == "") {
+        if (testUsername == undefined || testUsername == "") {
             await connection.queryP(addUser, [username, await bcryptjs.hash(password, 10), firstname, lastname, email, "[]"]);
             return "Added user";
         }
@@ -143,98 +143,98 @@ class Database {
     async getAllLogs(projectID) {
         return await connection.queryP(getAllLogsLimit100, projectID);
     }
-    async addLog(html, projectID){
+    async addLog(html, projectID) {
         await connection.queryP(addLog, [html, projectID]);
     }
-    async addComment({author, content, postDate, taskID}){
+    async addComment({ author, content, postDate, taskID }) {
         await connection.queryP(addComment, [author, content, postDate, taskID]);
     }
-    async getAllComments(taskID){
+    async getAllComments(taskID) {
         return await connection.queryP(getAllComments, taskID);
     }
-    async addUserNote(username, fromUser, projectID, taskID){
-        if((await this.getUserProject({username, projectID})).length > 0)
+    async addUserNote(username, fromUser, projectID, taskID) {
+        if ((await this.getUserProject({ username, projectID })).length > 0)
             await connection.queryP(addUserNote, [username, fromUser, projectID, taskID, (await getNewId())])
     }
-    async getAllUserNotes(username){
+    async getAllUserNotes(username) {
         return await connection.queryP(getAllUserNotes, username)
     }
-    async getAllUserNotesWithProject(username, projectID){
+    async getAllUserNotesWithProject(username, projectID) {
         return await connection.queryP(getAllUserNotesWithProject, [username, projectID]);
     }
-    async getAllUserNotesWithTask(username, taskID){
+    async getAllUserNotesWithTask(username, taskID) {
         return await connection.queryP(getAllUserNotesWithTask, [username, taskID]);
     }
-    async deleteUserNotes(taskID){
+    async deleteUserNotes(taskID) {
         await connection.queryP(deleteUserNotes, taskID)
     }
-    async sendInvite({fromUser, toUser, projectID}){
-        if((await this.getUserProject({username:toUser, projectID})).length > 0 || (await this.getProjectInvitebyProjectID(projectID)).length > 0){
+    async sendInvite({ fromUser, toUser, projectID }) {
+        if ((await this.getUserProject({ username: toUser, projectID })).length > 0 || (await this.getProjectInvitebyProjectID(projectID)).length > 0) {
             console.log("fround project or invite already")
             return false;
-        } 
+        }
         let project = (await this.getProject(projectID))[0];
         await connection.queryP(sendInvite, [fromUser, toUser, projectID, project.name, (await getNewId())]);
     }
-    async getAllProjectInvites(username){
+    async getAllProjectInvites(username) {
         return await connection.queryP(getAllProjectInvites, username);
     }
-    async getProjectInvite(id){
+    async getProjectInvite(id) {
         return await connection.queryP(getProjectInvite, id)
     }
-    async getProjectInvitebyProjectID(projectID){
+    async getProjectInvitebyProjectID(projectID) {
         return await connection.queryP(getProjectInviteByProjectID, projectID);
     }
-    async deleteProjectInvite(id){
+    async deleteProjectInvite(id) {
         await connection.queryP(deleteProjectInvite, id);
     }
-    async sendFriendRequest({fromUser, toUser}){
-        if(await this.getFriendId({username:fromUser, friendUsername:toUser}) == "" || await this.getFriendRequestByFromUser(fromUser).length == 0 || fromUser != toUser)
+    async sendFriendRequest({ fromUser, toUser }) {
+        if (await this.getFriendId({ username: fromUser, friendUsername: toUser }) == "" || await this.getFriendRequestByFromUser(fromUser).length == 0 || fromUser != toUser)
             await connection.queryP(sendFriendRequest, [fromUser, toUser, (await getNewId())]);
     }
-    async getAllFriendRequests(username){
+    async getAllFriendRequests(username) {
         return await connection.queryP(getAllFriendRequests, username);
     }
-    async getFriendRequest(id){
+    async getFriendRequest(id) {
         return await connection.queryP(getFriendRequest, id)
     }
-    async getFriendRequestByFromUser(fromUser){
+    async getFriendRequestByFromUser(fromUser) {
         return await connection.queryP(getFriendRequestByFromUser, fromUser)
     }
-    async deleteFriendRequest(id){
+    async deleteFriendRequest(id) {
         await connection.queryP(deleteFriendRequest, id);
     }
-    async addFriend({username, friendUsername, id}){
+    async addFriend({ username, friendUsername, id }) {
         await connection.queryP(addFriend, [username, friendUsername, id]);
     }
-    async getAllFriends(username){
+    async getAllFriends(username) {
         return await connection.queryP(getAllFriends, username);
     }
-    async getFriendId({username, friendUsername}){
+    async getFriendId({ username, friendUsername }) {
         let id = await connection.queryP(getFriendId, [username, friendUsername]);
-        if(id.length > 0) id = id[0].id
+        if (id.length > 0) id = id[0].id
         else return "";
         return id;
     }
-    async getChat(id){
+    async getChat(id) {
         return await connection.queryP(getChat, id);
     }
-    async sendMessage({message, toUser, fromUser,date, id}){
-        await connection.queryP(sendMessage, [message, toUser, fromUser ,date, id]);
+    async sendMessage({ message, toUser, fromUser, date, id }) {
+        await connection.queryP(sendMessage, [message, toUser, fromUser, date, id]);
     }
-    async addMessegeNote({fromUser, toUser, id}){
+    async addMessegeNote({ fromUser, toUser, id }) {
         await connection.queryP(addMessageNote, [fromUser, toUser, id]);
     }
-    async getAllMessageNote(toUser){
+    async getAllMessageNote(toUser) {
         return await connection.queryP(getAllMessageNote, toUser);
     }
-    async deleteMessageNote(id){
+    async deleteMessageNote(id) {
         await connection.queryP(deleteMessageNote, id);
     }
-    async getAllMessageNoteFromFriend({fromUser, toUser}){
+    async getAllMessageNoteFromFriend({ fromUser, toUser }) {
         return await connection.queryP(getAllMessageNoteFromFriend, [fromUser, toUser])
     }
-    async getAllMessageNoteFromId(id){
+    async getAllMessageNoteFromId(id) {
         return await connection.queryP(getAllMessageNoteFromId, id);
     }
 }
@@ -251,3 +251,6 @@ async function getNewId() {
     }
     return this.getNewId();
 }
+
+
+module.exports = Storage;
