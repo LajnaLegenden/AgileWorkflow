@@ -296,7 +296,8 @@ function socketIO() {
                 await Storage.addFriend({ username: invite.fromUser, friendUsername: invite.toUser, id: id })
                 await Storage.addFriend({ username: invite.toUser, friendUsername: invite.fromUser, id: id })
                 await Storage.deleteFriendRequest(invite.id);
-                io.to(socket.id).emit("goUpdate")
+                io.to(socket.id).emit("goUpdate");
+                emitToUser('goUpdate', user, invite.fromUser);
             }
             /**
              * Declines a friend invite
@@ -414,7 +415,7 @@ function socketIO() {
                 let friendUsername = data[i];
                 let fId = await Storage.getFriendId({ username, friendUsername });
                 let obj = {};
-                obj.notes = (await Storage.getAllMessageNoteFromId(fId)).length;
+                obj.notes = (await Storage.getAllMessageNoteFromFriend({ friendUsername, username })).length;
                 obj.firend = friendUsername;
                 out.push(obj);
             }
@@ -453,7 +454,7 @@ function socketIO() {
         }
         for (let i in allUsersOnline) {
             if (allUsersOnline[i][prop] == propValue) {
-                console.log("sent",allUsersOnline[i][prop])
+                console.log("sent", allUsersOnline[i][prop])
                 io.to(allUsersOnline[i].id).emit(event, data);
             }
         }
