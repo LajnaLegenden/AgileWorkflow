@@ -33,7 +33,7 @@
                             {{this.friendUsername}} <span class=" badge
                                                         badge-light"></span><button data-toggle="modal"
                                 data-target="#removeFriendModal" type="button"
-                                class="badge choice removeFriend btn btn-outline-primary right" style="margin:0;"><i
+                                class="badge choice removeFriend btn btn-outline-warning right" style="margin:0;"><i
                                     class="fas fa-ban"></i></button></span>
                     </div>
                     {{/each}}
@@ -58,9 +58,9 @@
             <h4>Project Invites</h4>
             {{#each allInvites}}
             <div id={{this.id}} class="invite border"><b>@{{this.fromUser}}</b> invited you to their project called
-                {{this.projectName}}!<button type="button" class="badge choice accept btn btn-outline-primary"><i
+                {{this.projectName}}!<button type="button" class="badge choice accept btn btn-outline-dark"><i
                         class="fas fa-check fa-2x"></i></button><button type="button"
-                    class="badge choice decline btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button></div>
+                    class="badge choice decline btn btn-outline-warning"><i class="fas fa-ban fa-2x"></i></button></div>
             {{/each}}
         </div>
         <div id="friendInvites" class="border">
@@ -69,9 +69,9 @@
                 data-target="#addUserModal">Add friend</button>
             {{#each allFriendRequests}}
             <div id={{this.id}} class="invite border"><b>@{{this.fromUser}}</b> sent a friend request!<button
-                    type="button" class="badge choice acceptFriend btn btn-outline-primary"><i
+                    type="button" class="badge choice acceptFriend btn btn-outline-dark"><i
                         class="fas fa-check fa-2x"></i></button><button type="button"
-                    class="badge choice declineFriend btn btn-outline-primary"><i class="fas fa-ban fa-2x"></i></button>
+                    class="badge choice declineFriend btn btn-outline-warning"><i class="fas fa-ban fa-2x"></i></button>
             </div>
             {{/each}}
         </div>
@@ -93,7 +93,7 @@
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <form class="remove">
-                    <div class="from-group"><button class="btn btn-primary" id="removeFriend">Remove friend</button>
+                    <div class="from-group"><button class="btn btn-danger" id="removeFriend">Remove friend</button>
                     </div>
                 </form>
             </div>

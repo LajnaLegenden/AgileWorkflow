@@ -7,7 +7,8 @@ async function doStuff() {
         author varchar(255),
         content varchar(255),
         postDate varchar(255),
-        taskID varchar(255)
+        taskID varchar(255),
+        projectID varchar(255)
     );`, (error, results, fields) => {
         if(error) {
             console.log("error creating table topics ", error);

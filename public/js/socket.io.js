@@ -100,6 +100,14 @@ $("#showForm").click(() => {
     }
 });
 $("#edit").click(editTask);
+$("#removeProject").click(e => {
+    e.preventDefault();
+    let data = {
+        inputProjectName : $("#projectRemove").val(),
+        projectID : $(".currentProject").attr("id")
+    }
+    socket.emit("removeProject", data)
+});
 
 //ReviceEvent
 socket.on('allTasks', allTasks)
@@ -121,6 +129,7 @@ socket.on("updateInvites", updateInvites);
 socket.on('yourBadges', yourBadges);
 socket.on("removeFriend", removeFriend);
 socket.on('addFriendToList', addFriendToList);
+socket.on("href", href);
 /**
  * Adds a task
  */
@@ -599,6 +608,9 @@ function yourNotes(data) {
 }
 function removeFriend(friend) {
     $("#" + friend).remove();
+}
+function href(path){
+    window.location.href = path;
 }
 function updateInvites(data) {
     $("#invites").children("div").remove();

@@ -162,4 +162,7 @@
 #edit:hover{
     color:#63BFBF;
 }
-
+.deleteProject{
+    float:right;
+    padding:0.5em;
+}

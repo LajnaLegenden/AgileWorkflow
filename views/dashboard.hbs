@@ -13,6 +13,7 @@
 </script>
 {{/contentFor}}
 <main>
+        <button type="button" data-toggle="modal" data-target="#removeProjectModal"class="btn btn-danger deleteProject">Delete Project</button>
     <div class="tasks">
         <div id="taskViewHeader" class="taskViewGrid">
             <p class="center">BACKLOG</p>
@@ -126,4 +127,18 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="removeProjectModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <form class="addNew">
+                    <div class="form-group">
+                        <label for="projectName">Project Name</label>
+                        <input type="input" class="form-control" id="projectRemove" placeholder="Enter the Project name">
+                    </div>
+                    <div class="from-group"><button class="btn btn-danger" id="removeProject">Remove Project</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
 </main>
