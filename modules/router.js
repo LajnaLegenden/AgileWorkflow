@@ -159,7 +159,8 @@ module.exports = (app) => {
         }
     });
     app.all("*", (req, res) => {
-        res.render("error", {title:"Error", err});
+        let error;
+        res.render("error", { title: "Error", error });
     });
 }
 

@@ -1,5 +1,9 @@
 {{!< default}}
 <main>
     <h1>An error has occured</h1>
+    {{#if err}}
     <p>{{{err}}}</p>
+    {{else}}
+    <p>404 This isnt what you are looking for</p>
+    {{/if}}
 </main>

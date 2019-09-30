@@ -35,6 +35,8 @@ app.use(cookieSession({
 }));
 app.use(bodyParser.urlencoded({ extended: true }))
 
+app.use('/public', express.static('public'));
+
 //Start stuff
 socketIO(server, cookieSession({
   secret: process.env.SECRET
@@ -45,7 +47,7 @@ router(app);
 const port = process.env.PORT || 3000;
 
 
-app.use('/public', express.static('public'));
+
 
 
 server.listen(port, () => {
