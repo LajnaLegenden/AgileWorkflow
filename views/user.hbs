@@ -26,17 +26,18 @@
             </div>
             <div id="friends" class="border">
                 <h4>Friends</h4>
-                {{#each friends}}
-                <div class="friend">
-                    <span class="input-group-text" id="{{this.friendUsername}}"><i class="fas fa-at"></i>
-                        {{this.friendUsername}} <span class=" badge
+                <div id="allFriends">
+                    {{#each friends}}
+                    <div class="friend">
+                        <span class="input-group-text" id="{{this.friendUsername}}"><i class="fas fa-at"></i>
+                            {{this.friendUsername}} <span class=" badge
                                                         badge-light">0</span><button data-toggle="modal"
-                            data-target="#removeFriendModal" type="button"
-                            class="badge choice removeFriend btn btn-outline-primary right" style="margin:0;"><i
-                                class="fas fa-ban"></i></button></span>
+                                data-target="#removeFriendModal" type="button"
+                                class="badge choice removeFriend btn btn-outline-primary right" style="margin:0;"><i
+                                    class="fas fa-ban"></i></button></span>
+                    </div>
+                    {{/each}}
                 </div>
-                {{/each}}
-
             </div>
         </div>
         <div id="chat" class="border">

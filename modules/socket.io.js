@@ -228,7 +228,7 @@ function socketIO() {
                 for (let i in data.users) {
                     if ((await Storage.getUserProject({ username: data.toUser, projectID: data.projectID })).length == 0) {
                         await Storage.sendInvite({ fromUser: socket.user, toUser: data.users[i], projectID: data.projectID });
-                        console.log("got here")
+
                         allInvites(data.users[i]);
                         emitToUser("goUpdate", "user", data.users[i], data)
                     }
@@ -408,7 +408,6 @@ function socketIO() {
                 let fId = await Storage.getFriendId({ username, friendUsername });
                 let obj = {};
                 obj.notes = (await Storage.getAllMessageNoteFromId(fId)).length;
-                console.log(obj.notes)
                 obj.firend = friendUsername;
                 out.push(obj);
             }
@@ -439,7 +438,6 @@ function socketIO() {
             projectInvites: pInvites,
             friendRequests: fInvites
         }
-        console.log(data)
         emitToUser("updateInvites", "user", toUser, data);
     }
     function emitToUser(event, prop, propValue, data) {
