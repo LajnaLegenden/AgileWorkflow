@@ -94,6 +94,8 @@ $("#remove").click(removeTask);
 $("#showForm").click(() => {
     if ($(".currentTask").length > 0) {
         isEditing = false;
+        $("#taskNameInput").val("")
+        $("#taskDescriptionInput").val("")
         $("#form").toggleClass("hide")
         $("#taskDesc").toggleClass("hide")
         $("#comments").toggleClass("hide");
@@ -245,7 +247,7 @@ function appendThisProject(obj) {
  * @param {element} element a html element
  */
 function addToBoard(obj, element) {
-    $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border"><span class="taskName">${obj.name}</span><span class="badge taskNotes">${obj.notes}</span><p  draggable="false" name="${obj.description}"class="hidden desc"></p></li>`);
+    $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border"><span class="taskName" id="${obj.name}">${obj.name}</span><span class="badge taskNotes">${obj.notes}</span><p  draggable="false" name="${obj.description}"class="hidden desc"></p></li>`);
     let newTask = document.getElementById(obj.id);
     addNewEventListeners(newTask);
     let hasBeenCut = false;
@@ -556,9 +558,9 @@ function removeTask() {
 }
 function editTask() {
     let desc = $(".currentTask p").attr("name");
-    let name = $(".currentTask .taskName").html();
-    sanitize($("#taskNameInput").val(name));
-    sanitize($("#taskDescriptionInput").val(desc));
+    let name = $(".currentTask .taskName").attr("id");
+    $("#taskNameInput").val(name)
+    $("#taskDescriptionInput").val(desc)
     $("#form").removeClass("hide");
     $("#taskDesc").addClass("hide");
     $("#comments").addClass("hide");
