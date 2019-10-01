@@ -92,7 +92,7 @@ class Database {
     async removeTask(id) {
         await connection.queryP(removeTask, id);
     }
-    async removeAllTasks(projectID){
+    async removeAllTasks(projectID) {
         await connection.queryP(removeAllTasks, projectID)
     }
     async editTask({ name, description, taskID }) {
@@ -126,10 +126,10 @@ class Database {
         await connection.queryP(addProject, [name, creator, id]);
         await connection.queryP(addUserProject, [creator, id, true]);
     }
-    async deleteUserProject(projectID){
+    async deleteUserProject(projectID) {
         await connection.queryP(deleteUserProject, projectID);
     }
-    async deleteProject(id){
+    async deleteProject(id) {
         await connection.queryP(deleteProject, id);
     }
     /**Adds a user to a project*/
@@ -164,16 +164,16 @@ class Database {
     async addLog(html, projectID) {
         await connection.queryP(addLog, [html, projectID]);
     }
-    async removeAllLogs(projectID){
+    async removeAllLogs(projectID) {
         await connection.queryP(removeAllLogs, projectID);
     }
-    async addComment({ author, content, postDate, taskID, projectID}) {
+    async addComment({ author, content, postDate, taskID, projectID }) {
         await connection.queryP(addComment, [author, content, postDate, taskID, projectID]);
     }
     async getAllComments(taskID) {
         return await connection.queryP(getAllComments, taskID);
     }
-    async removeAllComments(projectID){
+    async removeAllComments(projectID) {
         await connection.queryP(removeAllComments, projectID);
     }
     async addUserNote(username, fromUser, projectID, taskID) {
@@ -189,7 +189,7 @@ class Database {
     async getAllUserNotesWithTask(username, taskID) {
         return await connection.queryP(getAllUserNotesWithTask, [username, taskID]);
     }
-    async deleteUserNotesWithProjectID(projectID){
+    async deleteUserNotesWithProjectID(projectID) {
         await connection.queryP(deleteUserNotesWithProjectID, projectID)
     }
     async deleteUserNotes(taskID) {
@@ -215,7 +215,7 @@ class Database {
     async deleteProjectInvite(id) {
         await connection.queryP(deleteProjectInvite, id);
     }
-    async deleteProjectInviteByProjectID(projectID){
+    async deleteProjectInviteByProjectID(projectID) {
         await connection.queryP(deleteProjectInviteByProjectID, projectID);
     }
     async sendFriendRequest({ fromUser, toUser }) {
@@ -246,17 +246,17 @@ class Database {
         else return "";
         return id;
     }
-    async removeFriend({username, friendUsername}){
-        let id = await this.getFriendId({username, friendUsername});
+    async removeFriend({ username, friendUsername }) {
+        let id = await this.getFriendId({ username, friendUsername });
         await connection.queryP(removeChat, id);
         await connection.queryP(removeFriend, [username, friendUsername]);
         await connection.queryP(removeFriend, [friendUsername, username]);
     }
-    async getChat(id){
+    async getChat(id) {
         return await connection.queryP(getChat, id);
     }
     async sendMessage({ message, toUser, fromUser, date, id }) {
-        if(fromUser != null)
+        if (fromUser != null)
             await connection.queryP(sendMessage, [message, toUser, fromUser, date, id]);
     }
     async addMessegeNote({ fromUser, toUser, id }) {
