@@ -12,6 +12,7 @@ function endDB(ms = 60000) {
         console.log("ending database", connection.state)
     }, ms)
 }
+
 function connectDB() {
     if(connection.state != "authenticated"){
         connection = mysql.createConnection({
