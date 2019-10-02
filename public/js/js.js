@@ -27,7 +27,6 @@ function pressEnterToSubmit(inputElementID, submitBtnID) {
 pressEnterToSubmit("Message", "addMessage");
 pressEnterToSubmit("taskNameInput", "submitTask");
 pressEnterToSubmit("taskDescriptionInput", "submitTask");
-pressEnterToSubmit("name", "submit");
 pressEnterToSubmit("Comment", "addComment");
 pressEnterToSubmit("username", "ssubmit");
 pressEnterToSubmit("password", "ssubmit");

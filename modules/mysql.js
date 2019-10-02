@@ -10,18 +10,19 @@ function connectDB() {
         password: process.env.DBPASS,
         database: process.env.DBNAME
     });
+    connection.queryP = util.promisify(connection.query);
 }
 connectDB();
-connection.on("error", connectDB);
+// connection.on("error", connectDB);
 
 
-try {
-    connection.connect();
-    connection.queryP = util.promisify(connection.query);
-} catch (error) {
-    console.log(error);
-    connection.connect();
-}
+// try {
+//     connection.connect();
+//     connection.queryP = util.promisify(connection.query);
+// } catch (error) {
+//     console.log(error);
+//     connection.connect();
+// }
 
 module.exports = connection;
 
