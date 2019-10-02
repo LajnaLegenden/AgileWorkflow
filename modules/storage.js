@@ -73,6 +73,7 @@ const sendInvite = "INSERT INTO inviteProject (fromUser, toUser, projectID,proje
 const getAllProjectInvites = "SELECT * FROM inviteProject WHERE toUser = ?";
 const getProjectInvite = "SELECT * FROM inviteProject WHERE id = ?";
 const getProjectInviteByProjectID = "SELECT * FROM inviteProject WHERE projectID = ?";
+const getProjectInviteByProjectIDAndUsername = "SELECT * FROM inviteProject WHERE (projectID = ? AND toUser = ?)";
 const deleteProjectInvite = "DELETE FROM inviteProject WHERE id = ?";
 const deleteProjectInviteByProjectID = "DELETE FROM inviteProject WHERE projectID = ?";
 
@@ -223,7 +224,7 @@ class Database {
         await connection.queryP(deleteUserNotes, taskID)
     }
     async sendInvite({ fromUser, toUser, projectID }) {
-        if ((await this.getUserProject({ username: toUser, projectID })).length > 0 || (await this.getProjectInvitebyProjectID(projectID)).length > 0) {
+        if ((await this.getUserProject({ username: toUser, projectID })).length > 0 || (await this.getProjectInvitebyProjectIDAndUsername(projectID, toUser)).length > 0) {
             return false;
         }
         let project = (await this.getProject(projectID))[0];
@@ -238,6 +239,9 @@ class Database {
     async getProjectInvitebyProjectID(projectID) {
         return await connection.queryP(getProjectInviteByProjectID, projectID);
     }
+    async getProjectInvitebyProjectIDAndUsername(projectID, toUser) {
+        return await connection.queryP(getProjectInvitebyProjectIDAndUsername, [projectID, toUser]);
+    }
     async deleteProjectInvite(id) {
         await connection.queryP(deleteProjectInvite, id);
     }
@@ -245,7 +249,7 @@ class Database {
         await connection.queryP(deleteProjectInviteByProjectID, projectID);
     }
     async sendFriendRequest({ fromUser, toUser }) {
-        if (await this.getFriendId({ username: fromUser, friendUsername: toUser }) == "" || await this.getFriendRequestByFromUser(fromUser).length == 0 || fromUser != toUser)
+        if (await this.getFriendId({ username: fromUser, friendUsername: toUser }) == "" && await this.getFriendRequestByFromUser(fromUser).length == 0 && fromUser != toUser)
             await connection.queryP(sendFriendRequest, [fromUser, toUser, (await getNewId())]);
     }
     async getAllFriendRequests(username) {
