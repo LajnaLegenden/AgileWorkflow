@@ -4,7 +4,8 @@ require('dotenv').config({ path: './env' });
 console.log(process.env.DBADDR)
 let connection;
 function connectDB() {
-    connection = mysql.createConnection({
+    connection = mysql.createPool({
+        connectionLimit :100,
         host: process.env.DBADDR,
         user: process.env.DBUSER,
         password: process.env.DBPASS,
@@ -13,16 +14,7 @@ function connectDB() {
     connection.queryP = util.promisify(connection.query);
 }
 connectDB();
-// connection.on("error", connectDB);
-
-
-// try {
-//     connection.connect();
-//     connection.queryP = util.promisify(connection.query);
-// } catch (error) {
-//     console.log(error);
-//     connection.connect();
-// }
+connection.on("error", connectDB);
 
 module.exports = connection;
 

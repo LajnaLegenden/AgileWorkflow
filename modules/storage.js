@@ -1,37 +1,33 @@
 
 let connection = require("./mysql");
 const bcryptjs = require("bcryptjs");
-const mysql = require("mysql");
-const util = require("util");
-require('dotenv').config({ path: './env' });
-let timeoutDB
-function endDB(ms = 60000) {
-    clearTimeout(timeoutDB)
-    timeoutDB = setTimeout(() => {
-        connection.end();
-        console.log("ending database", connection.state)
-    }, ms)
-}
-
-function connectDB() {
-    if(connection.state != "authenticated"){
-        connection = mysql.createConnection({
-            host: process.env.DBADDR,
-            user: process.env.DBUSER,
-            password: process.env.DBPASS,
-            database: process.env.DBNAME
-        });
-        connection.connect(function (err) {
-            if (err) {
-                console.log('error when connecting to db:', err);
-                connectDB();
-            }
-        });
-        console.log("starting database", connection.state)
-        connection.queryP = util.promisify(connection.query);
-    }
-    endDB();
-}
+// const mysql = require("mysql");
+// const util = require("util");
+// require('dotenv').config({ path: './env' });
+// let timeoutDB
+// function endDB(ms = 5000) {
+//     clearTimeout(timeoutDB)
+//     timeoutDB = setTimeout(() => {
+//         connection.end(() => {
+//             console.log("Closing database", connection.state)
+//             connection.destroy();
+//             console.log(connection)
+//         });
+//     }, ms)
+// }
+// function connectDB() {
+//     if(connection.state != "authenticated"){
+//         connection = mysql.createPool({
+//             connectionLimit :10,
+//             host: process.env.DBADDR,
+//             user: process.env.DBUSER,
+//             password: process.env.DBPASS,
+//             database: process.env.DBNAME
+//         });
+//         console.log("starting database", connection.state)
+//         connection.queryP = util.promisify(connection.query);
+//     }
+// }
 
 const addTask = "INSERT INTO task (name, description, state, postDate, id, projectID) VALUES (?, ?, ?, ?, ?, ?)";
 const getAllTasks = "SELECT * FROM task WHERE projectID = ?";
@@ -106,52 +102,42 @@ const getAllMessageNoteFromId = "SELECT * FROM messageNote WHERE id = ?";
 class Database {
     /**Adds a task*/
     async addTask({ projectID, name, description }) {
-        connectDB();
         let id = await getNewId();
         let postDate = new Date();
         await connection.queryP(addTask, [name, description, 'BACKLOG', postDate, id, projectID])
     }
     /**Returns all tasks*/
     async getAllTasks(projectID) {
-        connectDB();
         if (projectID != undefined) {
             return await connection.queryP(getAllTasks, projectID);
         }
     }
     /**Returns single task*/
     async getTask(id) {
-        connectDB();
         return await connection.queryP(getTask, id);
     }
     async removeTask(id) {
-        connectDB();
         await connection.queryP(removeTask, id);
     }
     async removeAllTasks(projectID) {
-        connectDB();
         await connection.queryP(removeAllTasks, projectID)
     }
     async editTask({ name, description, taskID }) {
-        connectDB();
         await connection.queryP(editTask, [name, description, taskID]);
     }
     /**Updates the tasks state with the specified id*/
     async updateState({ state, id }) {
-        connectDB();
         await connection.queryP(updateState, [state, id])
     }
     /**Checks if and id for a procjet already exists*/
     async verifyProcjetID(id) {
-        connectDB();
         return await connection.queryP(verifyProcjetID, id).length == undefined;
     }
     /**Returns projcet with the specified id*/
     async getProject(id) {
-        connectDB();
         return await connection.queryP(getProject, id);
     }
     async getAllProjects(username) {
-        connectDB();
         if (username != undefined) {
             let allProjectsIds = await connection.queryP(getAllProjects, username);
             let projects = [];
@@ -163,31 +149,25 @@ class Database {
     }
     /**Adds a project*/
     async addProject({ name, creator }) {
-        connectDB();
         let id = await getNewId();
         await connection.queryP(addProject, [name, creator, id]);
         await connection.queryP(addUserProject, [creator, id, true]);
     }
     async deleteUserProject(projectID) {
-        connectDB();
         await connection.queryP(deleteUserProject, projectID);
     }
     async deleteProject(id) {
-        connectDB();
         await connection.queryP(deleteProject, id);
     }
     /**Adds a user to a project*/
     async addUserProject({ username, projectID }) {
-        connectDB();
         await connection.queryP(addUserProject, [username, projectID, true]);
     }
     async getUserProject({ username, projectID }) {
-        connectDB();
         return await connection.queryP(getUserProject, [username, projectID]);
     }
     /**Adds a user*/
     async addUser({ username, password, firstname, lastname, email }) {
-        connectDB();
         let testUsername = await this.getUser(username);
         if (testUsername == undefined || testUsername == "") {
             await connection.queryP(addUser, [username, await bcryptjs.hash(password, 10), firstname, lastname, email, "[]"]);
@@ -197,67 +177,52 @@ class Database {
     }
     /**Gives user with the specified username*/
     async getUser(username) {
-        connectDB();
         return await connection.queryP(getUser, username);
     }
     /**Verify that the user exists*/
     async verifyUser({ username, password }) {
-        connectDB();
         let user = await this.getUser(username);
         return user && user.length > 0 && bcryptjs.compare(password, user[0].password);
     }
 
     async getAllLogs(projectID) {
-        connectDB();
         return await connection.queryP(getAllLogsLimit100, projectID);
     }
     async addLog(html, projectID) {
-        connectDB();
         await connection.queryP(addLog, [html, projectID]);
     }
     async removeAllLogs(projectID) {
-        connectDB();
         await connection.queryP(removeAllLogs, projectID);
     }
     async addComment({ author, content, postDate, taskID, projectID }) {
-        connectDB();
         await connection.queryP(addComment, [author, content, postDate, taskID, projectID]);
     }
     async getAllComments(taskID) {
-        connectDB();
         return await connection.queryP(getAllComments, taskID);
     }
     async removeAllComments(projectID) {
-        connectDB();
         await connection.queryP(removeAllComments, projectID);
     }
     async addUserNote(username, fromUser, projectID, taskID) {
-        connectDB();
         if ((await this.getUserProject({ username, projectID })).length > 0)
             await connection.queryP(addUserNote, [username, fromUser, projectID, taskID, (await getNewId())])
     }
     async getAllUserNotes(username) {
-        connectDB();
         return await connection.queryP(getAllUserNotes, username)
     }
     async getAllUserNotesWithProject(username, projectID) {
-        connectDB();
         return await connection.queryP(getAllUserNotesWithProject, [username, projectID]);
     }
     async getAllUserNotesWithTask(username, taskID) {
-        connectDB();
         return await connection.queryP(getAllUserNotesWithTask, [username, taskID]);
     }
     async deleteUserNotesWithProjectID(projectID) {
-        connectDB();
         await connection.queryP(deleteUserNotesWithProjectID, projectID)
     }
     async deleteUserNotes(taskID) {
-        connectDB();
         await connection.queryP(deleteUserNotes, taskID)
     }
     async sendInvite({ fromUser, toUser, projectID }) {
-        connectDB();
         if ((await this.getUserProject({ username: toUser, projectID })).length > 0 || (await this.getProjectInvitebyProjectID(projectID)).length > 0) {
             return false;
         }
@@ -265,95 +230,74 @@ class Database {
         await connection.queryP(sendInvite, [fromUser, toUser, projectID, project.name, (await getNewId())]);
     }
     async getAllProjectInvites(username) {
-        connectDB();
         return await connection.queryP(getAllProjectInvites, username);
     }
     async getProjectInvite(id) {
-        connectDB();
         return await connection.queryP(getProjectInvite, id)
     }
     async getProjectInvitebyProjectID(projectID) {
-        connectDB();
         return await connection.queryP(getProjectInviteByProjectID, projectID);
     }
     async deleteProjectInvite(id) {
-        connectDB();
         await connection.queryP(deleteProjectInvite, id);
     }
     async deleteProjectInviteByProjectID(projectID) {
-        connectDB();
         await connection.queryP(deleteProjectInviteByProjectID, projectID);
     }
     async sendFriendRequest({ fromUser, toUser }) {
-        connectDB();
         if (await this.getFriendId({ username: fromUser, friendUsername: toUser }) == "" || await this.getFriendRequestByFromUser(fromUser).length == 0 || fromUser != toUser)
             await connection.queryP(sendFriendRequest, [fromUser, toUser, (await getNewId())]);
     }
     async getAllFriendRequests(username) {
-        connectDB();
         return await connection.queryP(getAllFriendRequests, username);
     }
     async getFriendRequest(id) {
-        connectDB();
         return await connection.queryP(getFriendRequest, id)
     }
     async getFriendRequestByFromUser(fromUser) {
-        connectDB();
         return await connection.queryP(getFriendRequestByFromUser, fromUser)
     }
     async deleteFriendRequest(id) {
-        connectDB();
         await connection.queryP(deleteFriendRequest, id);
     }
     async addFriend({ username, friendUsername, id }) {
-        connectDB();
         await connection.queryP(addFriend, [username, friendUsername, id]);
     }
     async getAllFriends(username) {
-        connectDB();
         return await connection.queryP(getAllFriends, username);
     }
     async getFriendId({ username, friendUsername }) {
-        connectDB();
         let id = await connection.queryP(getFriendId, [username, friendUsername]);
         if (id.length > 0) id = id[0].id
         else return "";
         return id;
     }
     async removeFriend({ username, friendUsername }) {
-        connectDB();
         let id = await this.getFriendId({ username, friendUsername });
         await connection.queryP(removeChat, id);
         await connection.queryP(removeFriend, [username, friendUsername]);
         await connection.queryP(removeFriend, [friendUsername, username]);
     }
     async getChat(id) {
-        connectDB();
         return await connection.queryP(getChat, id);
     }
     async sendMessage({ message, toUser, fromUser, date, id }) {
-        connectDB();
         if (fromUser != null)
             await connection.queryP(sendMessage, [message, toUser, fromUser, date, id]);
     }
     async addMessegeNote({ fromUser, toUser, id }) {
-        connectDB();
         await connection.queryP(addMessageNote, [fromUser, toUser, id]);
     }
     async getAllMessageNote(toUser) {
-        connectDB();
         return await connection.queryP(getAllMessageNote, toUser);
     }
     async deleteMessageNote(id) {
-        connectDB();
         await connection.queryP(deleteMessageNote, id);
     }
     async getAllMessageNoteFromFriend({ fromUser, toUser }) {
-        connectDB();
         return await connection.queryP(getAllMessageNoteFromFriend, [fromUser, toUser])
     }
     async getAllMessageNoteFromId(id) {
-        connectDB();
         return await connection.queryP(getAllMessageNoteFromId, id);
     }
 }
