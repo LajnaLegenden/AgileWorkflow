@@ -73,6 +73,7 @@ const sendInvite = "INSERT INTO inviteProject (fromUser, toUser, projectID,proje
 const getAllProjectInvites = "SELECT * FROM inviteProject WHERE toUser = ?";
 const getProjectInvite = "SELECT * FROM inviteProject WHERE id = ?";
 const getProjectInviteByProjectID = "SELECT * FROM inviteProject WHERE projectID = ?";
+const getProjectInvitebyProjectIDAndUsername = "SELECT * FROM inviteProject WHERE ( projectID = ? AND toUser = ?)";
 const deleteProjectInvite = "DELETE FROM inviteProject WHERE id = ?";
 const deleteProjectInviteByProjectID = "DELETE FROM inviteProject WHERE projectID = ?";
 
@@ -223,7 +224,10 @@ class Database {
         await connection.queryP(deleteUserNotes, taskID)
     }
     async sendInvite({ fromUser, toUser, projectID }) {
-        if ((await this.getUserProject({ username: toUser, projectID })).length > 0 || (await this.getProjectInvitebyProjectID(projectID)).length > 0) {
+        console.log((await this.getUserProject({ username: toUser, projectID })).length);
+        console.log((await this.getProjectInvitebyProjectID(projectID)).length);
+        if ((await this.getUserProject({ username: toUser, projectID })).length > 0 || (await this.getProjectInvitebyProjectIDAndUsername(projectID, toUser)).length > 0) {
+            console.log("asd");
             return false;
         }
         let project = (await this.getProject(projectID))[0];
@@ -237,6 +241,10 @@ class Database {
     }
     async getProjectInvitebyProjectID(projectID) {
         return await connection.queryP(getProjectInviteByProjectID, projectID);
+    }
+
+    async getProjectInvitebyProjectIDAndUsername(projectID, username) {
+        return await connection.queryP(getProjectInvitebyProjectIDAndUsername, [username, projectID]);
     }
     async deleteProjectInvite(id) {
         await connection.queryP(deleteProjectInvite, id);
