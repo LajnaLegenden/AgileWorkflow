@@ -269,3 +269,28 @@ dropdown-item {
     opacity: 0;
     transition: all 500ms ease-in-out;
 }
+
+video {
+    width: 100%;
+    height: 100%;
+}
+
+.title {
+    margin: 2rem;
+    text-align: center;
+}
+
+.display {
+    width: 50%;
+    height: 50%;
+}
+
+.information p {
+    margin-left: 2em;
+}
+
+.information {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 3em;
+}

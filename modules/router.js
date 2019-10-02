@@ -35,6 +35,10 @@ module.exports = (app) => {
     app.get("/favicon.ico", (req, res) => {
         res.sendStatus(404);
     })
+
+    app.get('/login', (req, res) => {
+        res.render('login', { title: "Login" });
+    });
     app.get('/', async (req, res, next) => {
         try {
             let username;
@@ -89,23 +93,20 @@ module.exports = (app) => {
 
     });
     app.get('/signup', (req, res) => {
-        res.sendFile(file('signup.html'), { root: "./" });
+        res.render('signup', { title: "Sign up" })
     });
     app.get('/login', (req, res) => {
         if (req.session.user !== undefined) {
             res.redirect('/');
         }
         let totalNotes = 0;
-        res.sendFile(file('login.html'), {
-            root: "./", title: "Login", totalNotes
-        });
+        res.render('index', { title: "Log in" })
     });
     app.get("/logout", (req, res) => {
         req.session.user = undefined;
         res.redirect("/");
     });
 
-    
     app.post("/signup", async (req, res, next) => {
         try {
             if (req.session.user !== undefined) {
