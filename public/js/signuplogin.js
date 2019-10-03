@@ -34,8 +34,8 @@ btn.on('click', () => {
         data.user[inputs[i].id] = currentVal;
         //Check pass
     }
-    var passw=  /^[A-Za-z]\w{7,14}$/;
-    if (url == "/signup" && data.user.password != data.user.password2 || url == "/signup" && data.user.password.length <= 6 || url =="/signup" && !data.user.password.match(passw)) {
+    var passw = /^[A-Za-z]\w{7,14}$/;
+    if (url == "/signup" && data.user.password != data.user.password2 || url == "/signup" && data.user.password.length <= 6 || url == "/signup" && !data.user.password.match(passw)) {
         fail = true;
         inputs[inputs.length - 1].classList.add("missing-info");
         inputs[inputs.length - 2].classList.add("missing-info");

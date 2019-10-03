@@ -240,7 +240,7 @@ class Database {
         return await connection.queryP(getProjectInviteByProjectID, projectID);
     }
     async getProjectInvitebyProjectIDAndUsername(projectID, toUser) {
-        return await connection.queryP(getProjectInvitebyProjectIDAndUsername, [projectID, toUser]);
+        return await connection.queryP(getProjectInviteByProjectIDAndUsername, [projectID, toUser]);
     }
     async deleteProjectInvite(id) {
         await connection.queryP(deleteProjectInvite, id);
