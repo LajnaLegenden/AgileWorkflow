@@ -249,7 +249,7 @@ class Database {
         await connection.queryP(deleteProjectInviteByProjectID, projectID);
     }
     async sendFriendRequest({ fromUser, toUser }) {
-        if (await this.getFriendId({ username: fromUser, friendUsername: toUser }) == "" && await this.getFriendRequestByFromUser(fromUser).length == 0 && fromUser != toUser)
+        if (await this.getFriendId({ username: fromUser, friendUsername: toUser }) == "" && fromUser != toUser)
             await connection.queryP(sendFriendRequest, [fromUser, toUser, (await getNewId())]);
     }
     async getAllFriendRequests(username) {

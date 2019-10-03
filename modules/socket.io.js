@@ -253,7 +253,6 @@ function socketIO() {
                 await Storage.sendFriendRequest({ fromUser: socket.user, toUser: username });
                 io.to(socket.id).emit('allGood');
                 emitToUser('goUpdate', 'user', username);
-                console.log("should be called")
                 allInvites(username);
 
             }
