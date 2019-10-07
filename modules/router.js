@@ -124,7 +124,6 @@ module.exports = (app) => {
                 req.session.user = user.username;
                 res.redirect("/");
             } else {
-                console.log("asd");
                 res.send(result);
             }
         } catch (err) {
