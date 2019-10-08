@@ -110,6 +110,12 @@ $("#removeProject").click(e => {
     }
     socket.emit("removeProject", data)
 });
+$("#editPersonalDetails").click(e =>  {
+    if($("#userForm").hasClass("hide"))
+        $("#userForm").removeClass("hide");
+    else
+        $("#userForm").addClass("hide");
+});
 
 //ReviceEvent
 socket.on('allTasks', allTasks)
@@ -201,7 +207,8 @@ function addComment() {
         projectID: $(".currentProject").attr("id")
     }
     $("#Comment").val("");
-    socket.emit("addComment", data);
+    if(data.content != "")
+        socket.emit("addComment", data);
 
 }
 /**
