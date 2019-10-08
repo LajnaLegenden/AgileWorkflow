@@ -163,7 +163,7 @@ function socketIO() {
                 let comments = await Storage.getAllComments(task[0].id);
                 io.to(socket.id).emit('infoAboutTask', { task: task[0], comments });
                 updateProjects();
-                io.to(socket.id).emit("goUpdate");
+                io.to(socket.id).emit("updateCurrentTask");
             }
 
             /**

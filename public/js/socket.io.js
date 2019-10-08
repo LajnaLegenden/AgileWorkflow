@@ -138,6 +138,7 @@ socket.on('yourBadges', yourBadges);
 socket.on("removeFriend", removeFriend);
 socket.on('addFriendToList', addFriendToList);
 socket.on("href", href);
+socket.on("updateCurrentTask", updateCurrentTask)
 /**
  * Adds a task
  */
@@ -572,6 +573,11 @@ function editTask() {
     $("#taskDesc").addClass("hide");
     $("#comments").addClass("hide");
     isEditing = true;
+}
+function updateCurrentTask(){
+    $(".currentTask taskNotes").empty();
+    socket.emit('updateNotesList');
+    socket.emit('myProjects');
 }
 function yourNotes(data) {
     let list = $('#userNotesDropdown');
