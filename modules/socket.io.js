@@ -85,9 +85,9 @@ function socketIO() {
             async function newTask(data) {
                 await Storage.addTask(data);
                 let LOG = log("addedTask", data);
-                io.emit('goUpdate', data);
+                io.to(data.projectID).emit('goUpdate', data);
                 await Storage.addLog(LOG, data.projectID)
-                io.emit('log', LOG);
+                io.to(data.projectID).emit('log', LOG);
             }
             async function editTask(data) {
                 let LOG = log('edit', { user: socket.user, name: data.name });
@@ -163,7 +163,7 @@ function socketIO() {
                 let comments = await Storage.getAllComments(task[0].id);
                 io.to(socket.id).emit('infoAboutTask', { task: task[0], comments });
                 updateProjects();
-                io.to(socket.id).emit("goUpdate")
+                io.to(socket.id).emit("goUpdate");
             }
 
             /**
@@ -196,7 +196,7 @@ function socketIO() {
                 data.userNote.forEach(async userTagged => {
                     await Storage.addUserNote(userTagged, socket.user, data.projectID, data.taskID);
                     for (let i in allUsersOnline) {
-                        if (allUsersOnline[i] == userTagged) {
+                        if (allUsersOnline[i].user == userTagged) {
                             io.to(allUsersOnline[i].id).emit('goUpdate');
                         }
                     }
@@ -204,7 +204,7 @@ function socketIO() {
                 await Storage.addComment(data);
                 io.to(socket.id).emit("showComment", data);
                 updateProjects();
-                io.emit("goUpdate");
+                io.to(socket.id).emit("goUpdate");
             }
 
             /**
