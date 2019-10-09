@@ -90,7 +90,7 @@
 }
 
 .message {
-    width: 300px;
+    width: 75% !important;
     margin: 5px auto;
     background: #63BFBF;
     padding: 10px;
@@ -125,7 +125,12 @@
     left: -19px;
     top: 6px;
 }
-
+.sb1{
+    float:right;
+}
+.sb2{
+    float:left;
+}
 .message p {
     margin: 0;
     overflow: hidden;
