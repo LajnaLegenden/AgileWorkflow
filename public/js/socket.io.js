@@ -585,6 +585,7 @@ function yourNotes(data) {
     let number = $("#dropdownMenu2 span");
 
     list.empty();
+    console.log(obj)
     if (data.allMessageNotes && data.allMessageNotes > 1)
         list.append(`<a class="dropdown-item" href="/user">You have <b>${data.allMessageNotes}</b> new messages!</a>`)
     else if (data.allMessageNotes)
