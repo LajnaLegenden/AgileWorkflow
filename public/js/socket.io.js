@@ -585,14 +585,13 @@ function yourNotes(data) {
     let number = $("#dropdownMenu2 span");
 
     list.empty();
-    console.log(obj)
     if (data.allMessageNotes && data.allMessageNotes > 1)
         list.append(`<a class="dropdown-item" href="/user">You have <b>${data.allMessageNotes}</b> new messages!</a>`)
     else if (data.allMessageNotes)
         list.append(`<a class="dropdown-item" href="/user">You have <b>${data.allMessageNotes}</b> new message!</a>`)
     for (let i in data.projectAndTaskNotes) {
         let obj = data.projectAndTaskNotes[i];
-        list.append(`<a class="dropdown-item" href="/dashboard/${obj.id}"><b>@${obj.fromUser}</b> tagged you in a project!</a>`);
+        list.append(`<a class="dropdown-item" href="/dashboard/${obj.projectID}"><b>@${obj.fromUser}</b> tagged you in a project!</a>`);
     }
     for (let i in data.allInvites) {
         let obj = data.allInvites[i];
