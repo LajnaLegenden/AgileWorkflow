@@ -415,9 +415,8 @@ function socketIO() {
             let username = socket.user;
             for (let i in data) {
                 let friendUsername = data[i];
-                let fId = await Storage.getFriendId({ username, friendUsername });
                 let obj = {};
-                obj.notes = (await Storage.getAllMessageNoteFromId(fId)).length;
+                obj.notes = (await Storage.getAllMessageNoteFromFriend({fromUser:friendUsername, toUser:username})).length;
                 obj.friend = friendUsername;
                 out.push(obj);
             }
@@ -472,7 +471,6 @@ function socketIO() {
         }
         for (let i in allUsersOnline) {
             if (allUsersOnline[i][prop] == propValue) {
-                console.log("sent", allUsersOnline[i][prop])
                 io.to(allUsersOnline[i].id).emit(event, data);
             }
         }
