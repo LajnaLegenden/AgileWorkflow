@@ -324,7 +324,7 @@ function socketIO() {
                 case 'addedTask':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${socket.user}</b> created a task called "${data.name}"</div>`;
                 case 'join':
-                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> has joined the porject, invied by "${data.from}"</div>`
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> has joined the project, invited by "${data.from}"</div>`
                 case 'remove':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> removed the task "${data.name}"</div>`
                 case 'edit':
@@ -433,6 +433,7 @@ function socketIO() {
             let project = (await Storage.getProject(data.projectID))[0]
             let projectName = project.name;
             let projectCreator = project.creator;
+            console.log(data)
             if (projectName == data.inputProjectName && socket.user == projectCreator) {
                 await Storage.removeAllLogs(data.projectID);
                 await Storage.removeAllTasks(data.projectID);
