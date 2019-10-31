@@ -595,7 +595,7 @@ function yourNotes(data) {
     }
     for (let i in data.allInvites) {
         let obj = data.allInvites[i];
-        list.append(`<a class="dropdown-item" href="/user"><b>@${obj.fromUser}</b>has invited you to the project ${obj.projectName}</a>`);
+        list.append(`<a class="dropdown-item" href="/user"><b>@${obj.fromUser}</b> has invited you to the project ${obj.projectName}</a>`);
     }
     for (let i in data.allFriendRequests) {
         let obj = data.allFriendRequests[i];
