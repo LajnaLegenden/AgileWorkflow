@@ -17,8 +17,8 @@ function sanitize(string) {
 }
 let io;
 
-module.exports = (https, cookie) => {
-    io = sIO.listen(https);
+module.exports = (cookie, app) => {
+    io = sIO(app);
     io.use(sharedsession(cookie, {
         autoSave: true
     }));
@@ -26,7 +26,6 @@ module.exports = (https, cookie) => {
 }
 
 function socketIO() {
-
     let allUsersOnline = [];
     io.on('connection', async (socket) => {
         allUsersOnline.push(socket);
@@ -416,7 +415,7 @@ function socketIO() {
             for (let i in data) {
                 let friendUsername = data[i];
                 let obj = {};
-                obj.notes = (await Storage.getAllMessageNoteFromFriend({fromUser:friendUsername, toUser:username})).length;
+                obj.notes = (await Storage.getAllMessageNoteFromFriend({ fromUser: friendUsername, toUser: username })).length;
                 obj.friend = friendUsername;
                 out.push(obj);
             }

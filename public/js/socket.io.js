@@ -105,13 +105,13 @@ $("#edit").click(editTask);
 $("#removeProject").click(e => {
     e.preventDefault();
     let data = {
-        inputProjectName : $("#projectRemove").val(),
-        projectID : $(".currentProject").attr("id")
+        inputProjectName: $("#projectRemove").val(),
+        projectID: $(".currentProject").attr("id")
     }
     socket.emit("removeProject", data)
 });
-$("#editPersonalDetails").click(e =>  {
-    if($("#userForm").hasClass("hide"))
+$("#editPersonalDetails").click(e => {
+    if ($("#userForm").hasClass("hide"))
         $("#userForm").removeClass("hide");
     else
         $("#userForm").addClass("hide");
@@ -208,7 +208,7 @@ function addComment() {
         projectID: $(".currentProject").attr("id")
     }
     $("#Comment").val("");
-    if(data.content != "")
+    if (data.content != "")
         socket.emit("addComment", data);
 
 }
@@ -574,7 +574,7 @@ function editTask() {
     $("#comments").addClass("hide");
     isEditing = true;
 }
-function updateCurrentTask(){
+function updateCurrentTask() {
     $(".currentTask taskNotes").empty();
     socket.emit('updateNotesList');
     socket.emit('myProjects');
@@ -624,7 +624,7 @@ function yourNotes(data) {
 function removeFriend(friend) {
     $("#" + friend).remove();
 }
-function href(path){
+function href(path) {
     window.location.href = path;
 }
 function updateInvites(data) {
