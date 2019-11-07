@@ -137,7 +137,7 @@
 }
 
 #allMessages {
-    height: 45vh;
+    height: 42vh;
     overflow-y: auto;
     overflow-x:hidden;
 }

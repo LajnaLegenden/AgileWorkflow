@@ -17,8 +17,8 @@ function sanitize(string) {
 }
 let io;
 
-module.exports = (https, cookie) => {
-    io = sIO.listen(https);
+module.exports = (cookie, app) => {
+    io = sIO(app);
     io.use(sharedsession(cookie, {
         autoSave: true
     }));
@@ -26,7 +26,6 @@ module.exports = (https, cookie) => {
 }
 
 function socketIO() {
-
     let allUsersOnline = [];
     io.on('connection', async (socket) => {
         allUsersOnline.push(socket);
@@ -324,7 +323,7 @@ function socketIO() {
                 case 'addedTask':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${socket.user}</b> created a task called "${data.name}"</div>`;
                 case 'join':
-                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> has joined the porject, invied by "${data.from}"</div>`
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> has joined the project, invited by "${data.from}"</div>`
                 case 'remove':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> removed the task "${data.name}"</div>`
                 case 'edit':
@@ -415,9 +414,8 @@ function socketIO() {
             let username = socket.user;
             for (let i in data) {
                 let friendUsername = data[i];
-                let fId = await Storage.getFriendId({ username, friendUsername });
                 let obj = {};
-                obj.notes = (await Storage.getAllMessageNoteFromId(fId)).length;
+                obj.notes = (await Storage.getAllMessageNoteFromFriend({ fromUser: friendUsername, toUser: username })).length;
                 obj.friend = friendUsername;
                 out.push(obj);
             }
@@ -433,6 +431,7 @@ function socketIO() {
             let project = (await Storage.getProject(data.projectID))[0]
             let projectName = project.name;
             let projectCreator = project.creator;
+            console.log(data)
             if (projectName == data.inputProjectName && socket.user == projectCreator) {
                 await Storage.removeAllLogs(data.projectID);
                 await Storage.removeAllTasks(data.projectID);
@@ -471,7 +470,6 @@ function socketIO() {
         }
         for (let i in allUsersOnline) {
             if (allUsersOnline[i][prop] == propValue) {
-                console.log("sent", allUsersOnline[i][prop])
                 io.to(allUsersOnline[i].id).emit(event, data);
             }
         }

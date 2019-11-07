@@ -109,6 +109,9 @@
     width: 90%;
     padding: 2em;
 }
+#taskDesc{
+    overflow-x:scroll;
+}
 
 .comment {
     padding: 2px;

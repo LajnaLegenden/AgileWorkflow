@@ -44,6 +44,10 @@ btn.on('click', () => {
         fail = true;
         inputs[2].classList.add("missing-info");
     }
+    if (/\s/.test(inputs[3])) {
+        fail = true;
+        inputs[3].classList.add("missing-info");
+    }
     if (fail) return;
     $.ajax({
         type: "POST",

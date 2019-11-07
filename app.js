@@ -3,7 +3,7 @@ require('dotenv').config({ path: './env' });
 
 const express = require('express');
 const app = express();
-const https = require('https');
+const http = require('http');
 const path = require('path');
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
@@ -13,21 +13,13 @@ const hbs = require('express-hbs');
 const fs = require('fs');
 
 
-
-var options = {
-  key: fs.readFileSync(process.env.KEY),
-  cert: fs.readFileSync(process.env.CERT),
-  requestCert: false,
-  rejectUnauthorized: false
-};
-let server = https.createServer(options, app);
-
-
 //Handlebars setup
 app.engine('hbs', hbs.express4());
 app.set('view engine', 'hbs');
 app.set('views', __dirname + '/views');
 
+
+let server = http.createServer(app);
 
 //Cookie secret
 app.use(cookieSession({
@@ -38,18 +30,14 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/public', express.static('public'));
 
 //Start stuff
-socketIO(server, cookieSession({
+socketIO(cookieSession({
   secret: process.env.SECRET
-}));
+}), server);
 router(app);
 
 //Config things
 const port = process.env.PORT || 3000;
 
-
-
-
-
 server.listen(port, () => {
-  console.log('Server Listening on port ' + port);
+  console.log(port);
 });
