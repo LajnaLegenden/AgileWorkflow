@@ -1,6 +1,0 @@
-PORT=3000
-DBADDR="85.24.194.27"
-DBNAME="AG_TASKS"
-DBPASS="ag_userPass60"
-DBUSER="ag_code"
-SECRET="sdfkaödfjasdöiolasdiojhöoiököjöfasdkojhöasdioöjhasdoijh"
