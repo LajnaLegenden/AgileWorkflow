@@ -45,6 +45,7 @@ $("#removeFriend").click(e => {
     socket.emit("removeFriend", friend)
 })
 $("#asign").click(e => {
+    console.log("Clicked")
     let projectID = $(".currentProject").attr("id");
     $(".asignUser").remove();
     socket.emit("asignUserInfo", projectID)
@@ -261,7 +262,8 @@ function appendThisProject(obj) {
  * @param {element} element a html element
  */
 function addToBoard(obj, element) {
-    $(element).append(`<li id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border"><span class="taskName" id="${obj.name}">${obj.name}</span><span class="badge taskNotes">${obj.notes}</span><p  draggable="false" name="${obj.description}"class="hidden desc"></p></li>`);
+    let color = obj.asignColor ? "background:" + obj.asignColor : "";
+    $(element).append(`<li style="${color}"id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border"><span class="taskName" id="${obj.name}">${obj.name}</span><span class="badge taskNotes">${obj.notes}</span><p  draggable="false" name="${obj.description}"class="hidden desc"></p></li>`);
     let newTask = document.getElementById(obj.id);
     addNewEventListeners(newTask);
     let hasBeenCut = false;
@@ -650,7 +652,17 @@ function updateInvites(data) {
 
 function asignUserInfo(users){
     users.forEach(user => {
-        $("#asignUsers").append(`<button class="btn btn-primary asignUser" id="${user.username}">${user.username}</button>`);
+        $("#asignUsers").append(`<button style="background:${user.color}; border:0;"class="btn btn-primary asignUser" id="${user.username}">${user.username}</button>`);
+    });
+    $(".asignUser").click(e => {
+        e.preventDefault();
+        let data = {
+            username:$(e.target).attr("id"),
+            taskID:$(".currentTask").attr("id"),
+            projectID:$(".currentProject").attr("id")
+        }
+        socket.emit("asignUser", data)
+        goUpdate();
     });
 }
 

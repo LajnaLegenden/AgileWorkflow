@@ -75,6 +75,7 @@ function socketIO() {
             socket.on("removeFriend", removeFriend);
             socket.on("removeProject", removeProject);
             socket.on("asignUserInfo", asignUserInfo);
+            socket.on("asignUser", asignUser);
 
             /**
              * Adds a new task
@@ -107,7 +108,13 @@ function socketIO() {
                 if (tasks == undefined)
                     return false;
                 for (let i = 0; i < tasks.length; i++) {
-                    tasks[i].notes = (await Storage.getAllUserNotesWithTask(socket.user, tasks[i].id)).length;
+                    tasks[i].notes = (await Storage.getAllUserNotesWithTask(socket.user, tasks[i].id)).length
+                    let asignedUser = await Storage.getTaskAsignByTaskID(tasks[i].id)
+                    for(prop of asignedUser){
+                        var username = prop.username;
+                    }
+                    let projectAsign = await Storage.getProjectAsign({projectID, username});
+                    if(asignedUser.length > 0 ) tasks[i].asignColor = `rgba(${projectAsign[0].R},${projectAsign[0].G},${projectAsign[0].B}, 0.6)`;
                     if (tasks[i].notes == 0) tasks[i].notes = "";
                 }
                 let logs = await Storage.getAllLogs(projectID);
@@ -431,7 +438,6 @@ function socketIO() {
             let project = (await Storage.getProject(data.projectID))[0]
             let projectName = project.name;
             let projectCreator = project.creator;
-            console.log(data)
             if (projectName == data.inputProjectName && socket.user == projectCreator) {
                 await Storage.removeAllLogs(data.projectID);
                 await Storage.removeAllTasks(data.projectID);
@@ -444,9 +450,18 @@ function socketIO() {
             }
 
         }
-        async function asignUserInfo(projectID){
+        async function asignUserInfo(projectID) {
             let users = await Storage.getAllUserWithProjectID(projectID);
+            for(let i = 0; i < users.length; i++){
+                let projectAsign = await Storage.getProjectAsign({projectID, username:users[i].username});
+                console.log("here", projectAsign)
+                if(projectAsign.length > 0 ) users[i].color = `rgba(${projectAsign[0].R},${projectAsign[0].G},${projectAsign[0].B},0.6)`;
+            }
             io.to(socket.id).emit("asignUserInfo", users);
+        }
+        async function asignUser({ username, taskID, projectID }) {
+            let projectAsign = (await Storage.getProjectAsign({ username, projectID })).length ? await Storage.getProjectAsign({ username, projectID }) : await Storage.makeProjectAsign({ username, projectID });
+            await Storage.makeTaskAsign({taskID, projectID, username});
         }
     });
 
@@ -492,7 +507,6 @@ function socketIO() {
             cookies = cookie.parse(socket.handshake.headers.cookie);
             user = Buffer.from(cookies['express:sess'], 'base64').toString();
         } catch (err) {
-            //console.log(err);
             socket.disconnect(true)
             removeSocket(socket)
             return;

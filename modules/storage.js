@@ -48,6 +48,16 @@ const addUserProject = "INSERT INTO userProject (username, projectID, admin) VAL
 const getUserProject = "SELECT * FROM userProject WHERE (username = ? AND projectID = ?)"
 const getAllUserWithProjectID = "SELECT * FROM userProject WHERE projectID = ?";
 
+const getProjectAsign = "SELECT * FROM projectAsign WHERE username = ? AND projectID = ?";
+const makeProjectAsign = "INSERT INTO projectAsign (R,G,B,projectID, username) VALUES (?,?,?,?,?)"
+const deleteProjectAsign = "DELETE FROM projectAsign WHERE projectID = ?";
+
+
+const makeTaskAsign = "INSERT INTO taskAsign (taskID, projectID, username) VALUES (?,?,?)";
+const getTaskAsignByTaskID = "SELECT * FROM taskAsign WHERE taskID = ?";
+const deleteTaskAsign = "DELETE FROM taskAsign WHERE taskID = ?";
+const deleteAllTaskAsign = "DELETE FROM taskAsign WHERE projectID = ?";
+
 const getUser = "SELECT * FROM user WHERE username = ?"
 const addUser = "INSERT INTO user (username, password, firstname, lastname, email, projects) VALUES (?, ?, ?, ?, ?, ?)"
 const addProcjetToUser = "UPDATE user SET projects = ?";
@@ -120,12 +130,22 @@ class Database {
     }
     async removeTask(id) {
         await connection.queryP(removeTask, id);
+        await connection.queryP(deleteTaskAsign, id);
     }
     async removeAllTasks(projectID) {
         await connection.queryP(removeAllTasks, projectID)
+        await connection.queryP(deleteAllTaskAsign, projectID);
+        await connection.queryP(deleteProjectAsign, projectID);
     }
     async editTask({ name, description, taskID }) {
         await connection.queryP(editTask, [name, description, taskID]);
+    }
+    async makeTaskAsign({taskID, projectID, username}){
+        await connection.queryP(deleteTaskAsign, taskID);
+        await connection.queryP(makeTaskAsign, [taskID, projectID, username])
+    }
+    async getTaskAsignByTaskID(taskID){
+        return await connection.queryP(getTaskAsignByTaskID, taskID);
     }
     /**Updates the tasks state with the specified id*/
     async updateState({ state, id }) {
@@ -164,6 +184,16 @@ class Database {
     /**Adds a user to a project*/
     async addUserProject({ username, projectID }) {
         await connection.queryP(addUserProject, [username, projectID, true]);
+    }
+    async getProjectAsign({ projectID, username }) {
+        return await connection.queryP(getProjectAsign, [username, projectID])
+    }
+    async makeProjectAsign({ projectID, username }) {
+        let R = Math.round(Math.random() * 255);
+        let G = Math.round(Math.random() * 255);
+        let B = Math.round(Math.random() * 255);
+        await connection.queryP(makeProjectAsign, [R, G, B, projectID, username])
+        return await this.getProjectAsign({ projectID, username });
     }
     async getUserProject({ username, projectID }) {
         return await connection.queryP(getUserProject, [username, projectID]);
@@ -305,7 +335,7 @@ class Database {
     async getAllMessageNoteFromId(id) {
         return await connection.queryP(getAllMessageNoteFromId, id);
     }
-    async getAllUserWithProjectID(projectID){
+    async getAllUserWithProjectID(projectID) {
         return await connection.queryP(getAllUserWithProjectID, projectID);
     }
 }

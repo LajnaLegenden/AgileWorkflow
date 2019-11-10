@@ -1,12 +1,10 @@
 const connection = require("../modules/mysql");
 
 async function doStuff() {
-    await connection.queryP("drop table if exists projectAsign");
+    await connection.queryP("drop table if exists taskAsign");
     await connection.queryP(`
-    CREATE TABLE projectAsign (
-        R INT,
-        G INT,
-        B INT,
+    CREATE TABLE taskAsign (
+        taskID varchar(255),
         projectID varchar(255),
         username varchar(255),
         id INT PRIMARY KEY AUTO_INCREMENT
