@@ -46,6 +46,7 @@ const deleteProject = "DELETE FROM project WHERE id = ?";
 
 const addUserProject = "INSERT INTO userProject (username, projectID, admin) VALUES (?, ?, ?)";
 const getUserProject = "SELECT * FROM userProject WHERE (username = ? AND projectID = ?)"
+const getAllUserWithProjectID = "SELECT * FROM userProject WHERE projectID = ?";
 
 const getUser = "SELECT * FROM user WHERE username = ?"
 const addUser = "INSERT INTO user (username, password, firstname, lastname, email, projects) VALUES (?, ?, ?, ?, ?, ?)"
@@ -303,6 +304,9 @@ class Database {
     }
     async getAllMessageNoteFromId(id) {
         return await connection.queryP(getAllMessageNoteFromId, id);
+    }
+    async getAllUserWithProjectID(projectID){
+        return await connection.queryP(getAllUserWithProjectID, projectID);
     }
 }
 let Storage = new Database();

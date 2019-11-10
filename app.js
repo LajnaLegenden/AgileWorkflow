@@ -1,5 +1,5 @@
 //Load env variablres
-require('dotenv').config({ path: 'env' });
+require('dotenv').config({ path: './env' });
 
 const express = require('express');
 const app = express();
@@ -11,8 +11,6 @@ const socketIO = require('./modules/socket.io');
 const router = require('./modules/router.js');
 const hbs = require('express-hbs');
 const fs = require('fs');
-console.log(process.env.SECRET);
-
 //Handlebars setup
 app.engine('hbs', hbs.express4());
 app.set('view engine', 'hbs');

@@ -44,6 +44,11 @@ $("#removeFriend").click(e => {
     $(".currentChat").remove();
     socket.emit("removeFriend", friend)
 })
+$("#asign").click(e => {
+    let projectID = $(".currentProject").attr("id");
+    $(".asignUser").remove();
+    socket.emit("asignUserInfo", projectID)
+});
 function addEventListenerToInvites() {
     $(".accept").click(function () {
         let inviteID = $(this).parent().attr("id");
@@ -139,6 +144,7 @@ socket.on("removeFriend", removeFriend);
 socket.on('addFriendToList', addFriendToList);
 socket.on("href", href);
 socket.on("updateCurrentTask", updateCurrentTask)
+socket.on("asignUserInfo", asignUserInfo)
 /**
  * Adds a task
  */
@@ -640,6 +646,12 @@ function updateInvites(data) {
     }
     addEventListenerToInvites();
 
+}
+
+function asignUserInfo(users){
+    users.forEach(user => {
+        $("#asignUsers").append(`<button class="btn btn-primary asignUser" id="${user.username}">${user.username}</button>`);
+    });
 }
 
 function yourBadges(data) {

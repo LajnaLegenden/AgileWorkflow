@@ -52,7 +52,8 @@ btn.on('click', () => {
     $.ajax({
         type: "POST",
         url: url,
-        data: data
+        data: data,
+        withCredentials:true
     }).done((res) => {
         if (res.includes("<head>")) {
             var urlParams = new URLSearchParams(window.location.search);

@@ -90,7 +90,6 @@ module.exports = (app) => {
         if (req.session.user !== undefined) {
             res.redirect('/');
         }
-        let totalNotes = 0;
         res.render('index', { title: "Log in" })
     });
     app.get("/logout", (req, res) => {
@@ -126,7 +125,9 @@ module.exports = (app) => {
         try {
             let user = req.body.user;
             if (await Storage.verifyUser(user)) {
+                console.log(user)
                 req.session.user = user.username;
+                console.log(req.session.user)
                 res.redirect("/");
             } else {
                 res.send("Wrong username or password!");
