@@ -74,7 +74,7 @@ function socketIO() {
             socket.on('getFriendNotes', getFriendNotes);
             socket.on("removeFriend", removeFriend);
             socket.on("removeProject", removeProject);
-
+            socket.on("asignUserInfo", asignUserInfo);
 
             /**
              * Adds a new task
@@ -443,6 +443,10 @@ function socketIO() {
                 io.to(data.projectID).emit("href", "/");
             }
 
+        }
+        async function asignUserInfo(projectID){
+            let users = await Storage.getAllUserWithProjectID(projectID);
+            io.to(socket.id).emit("asignUserInfo", users);
         }
     });
 

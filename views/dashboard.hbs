@@ -13,8 +13,12 @@
 </script>
 {{/contentFor}}
 <main>
-        <button type="button" data-toggle="modal" data-target="#removeProjectModal"class="btn btn-danger deleteProject">Delete Project</button>
-        <button type="button" data-toggle="modal" data-target="#addUserModal"class="btn btn-primary deleteProject">Add User</button>
+    <button type="button" data-toggle="modal" data-target="#removeProjectModal"
+        class="btn btn-danger deleteProject">Delete Project</button>
+    <button type="button" data-toggle="modal" data-target="#addUserModal" class="btn btn-primary deleteProject">Add
+        User</button>
+    <button type="button" id="asign"data-toggle="modal" data-target="#asignTaskModal" class="btn btn-primary deleteProject">Asign
+        Task</button>
     <div class="tasks">
         <div id="taskViewHeader" class="taskViewGrid">
             <p class="center">BACKLOG</p>
@@ -130,12 +134,29 @@
                 <form class="addNew">
                     <div class="form-group">
                         <label for="projectName">Project Name</label>
-                        <input type="input" class="form-control" id="projectRemove" placeholder="Enter the Project name">
+                        <input type="input" class="form-control" id="projectRemove"
+                            placeholder="Enter the Project name">
                     </div>
-                    <div class="from-group"><button class="btn btn-danger" id="removeProject">Remove Project</button></div>
+                    <div class="from-group"><button class="btn btn-danger" id="removeProject">Remove Project</button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
-    
+    <div class="modal fade" id="asignTaskModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <form class="addNew">
+                    <div id="asignUsers">
+                    <button class="btn btn-primary asignUser" id="">User</button>
+                    <button class="btn btn-primary asignUser" id="">User</button>
+                    <button class="btn btn-primary asignUser" id="">User</button>
+                    <button class="btn btn-primary asignUser" id="">User</button>
+                    </div>
+                    <div class="from-group"><button class="btn btn-success" id="asignTask">Asign task</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </main>

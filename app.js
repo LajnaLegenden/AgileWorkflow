@@ -11,8 +11,6 @@ const socketIO = require('./modules/socket.io');
 const router = require('./modules/router.js');
 const hbs = require('express-hbs');
 const fs = require('fs');
-
-
 //Handlebars setup
 app.engine('hbs', hbs.express4());
 app.set('view engine', 'hbs');
