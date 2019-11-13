@@ -454,7 +454,6 @@ function socketIO() {
             let users = await Storage.getAllUserWithProjectID(projectID);
             for(let i = 0; i < users.length; i++){
                 let projectAsign = await Storage.getProjectAsign({projectID, username:users[i].username});
-                console.log("here", projectAsign)
                 if(projectAsign.length > 0 ) users[i].color = `rgba(${projectAsign[0].R},${projectAsign[0].G},${projectAsign[0].B},0.6)`;
             }
             io.to(socket.id).emit("asignUserInfo", users);
@@ -462,6 +461,7 @@ function socketIO() {
         async function asignUser({ username, taskID, projectID }) {
             let projectAsign = (await Storage.getProjectAsign({ username, projectID })).length ? await Storage.getProjectAsign({ username, projectID }) : await Storage.makeProjectAsign({ username, projectID });
             await Storage.makeTaskAsign({taskID, projectID, username});
+            io.to(projectID).emit("goUpdate");
         }
     });
 

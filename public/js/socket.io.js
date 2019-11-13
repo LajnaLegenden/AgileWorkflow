@@ -661,8 +661,7 @@ function asignUserInfo(users){
             taskID:$(".currentTask").attr("id"),
             projectID:$(".currentProject").attr("id")
         }
-        socket.emit("asignUser", data)
-        goUpdate();
+        socket.emit("asignUser", data);
     });
 }
 
