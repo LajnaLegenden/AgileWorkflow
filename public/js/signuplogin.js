@@ -44,7 +44,7 @@ btn.on('click', () => {
         fail = true;
         inputs[2].classList.add("missing-info");
     }
-    if (/ /.test(inputs[3])) {
+    if (/ /.test($(inputs[3]).val())) {
         fail = true;
         inputs[3].classList.add("missing-info");
     }
