@@ -18,7 +18,6 @@ async function doStuff() {
         
             connection.query("SHOW TABLES", (error, result, fields) => {
                 console.log("created tables!", error, result, fields);
-                
             })
     })
     connection.end();

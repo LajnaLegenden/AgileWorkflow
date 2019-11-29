@@ -512,7 +512,7 @@ function showChat(data) {
 }
 function liveChat(data) {
     updateMessageBadge();
-    if ($(".currentChat").length > 0) {
+    if ($(".currentChat").length > 0 && $(".currentChat").attr("id") == data.fromUser) {
         console.log("got here")
         socket.emit("removeMessageNotes", $(".currentChat").attr("id"));
         let allMessages = $("#allMessages");
@@ -661,8 +661,7 @@ function asignUserInfo(users){
             taskID:$(".currentTask").attr("id"),
             projectID:$(".currentProject").attr("id")
         }
-        socket.emit("asignUser", data)
-        goUpdate();
+        socket.emit("asignUser", data);
     });
 }
 
