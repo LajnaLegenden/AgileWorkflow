@@ -50,6 +50,14 @@ $("#asign").click(e => {
     $(".asignUser").remove();
     socket.emit("asignUserInfo", projectID)
 });
+$("#addEvent").click(e => {
+    let data = {
+        start: $('#estart').val(),
+        end: $('#eend').val(),
+        title: $('#ename').val()
+    }
+    socket.emit('newEvent', data);
+})
 function addEventListenerToInvites() {
     $(".accept").click(function () {
         let inviteID = $(this).parent().attr("id");
@@ -146,6 +154,7 @@ socket.on('addFriendToList', addFriendToList);
 socket.on("href", href);
 socket.on("updateCurrentTask", updateCurrentTask)
 socket.on("asignUserInfo", asignUserInfo)
+socket.on('calendarData', calendarData)
 /**
  * Adds a task
  */
@@ -292,6 +301,17 @@ function addToBoard(obj, element) {
     }
     $('#' + obj.id + ' .taskName').html(name);
 }
+
+$('#removeEvent').click(function () {
+    let el = $(this);
+    socket.emit('removeThisEvent', $(el[0]).attr('data-target'));
+    let e = window.calendar.getEvents();
+    for (let i in e) {
+        if (e[i].id == $(el[0]).attr('data-target')) e[i].remove();
+    }
+})
+
+
 /**
  * Scrolls all the way down on a html element
  * @param {Number} elementID an id for a html element
@@ -357,20 +377,30 @@ function allTasks(data) {
  */
 function goUpdate(data) {
     let projectID = $(".currentProject").attr("id");
+    if (!projectID) {
+        setTimeout(() => {
+            goUpdate(data);
+        }, 50);
+        return;
+    }
     socket.emit('needTasks', projectID);
     socket.emit('myProjects');
     socket.emit('updateNotesList');
+    socket.emit('updateCalendar', projectID);
+    return;
 }
 /**
  * shows new info about a task and show new comments
  * @param {Object} data Both tasks and comments in a object
  */
 function infoAboutTask(data) {
+    console.log(data);
     $('#infoName').html("Name: " + data.task.name);
     $('#infoDesc').html("Description: " + data.task.description);
     $('#infoState').html("State: " + data.task.state);
     $('#infoPostdate').html("Date: " + data.task.postDate);
-    $('#infoProjectId').html("Project ID " + data.task.projectID);
+    $('#infoProjectId').html("Assiged to: <b>@" + data.assigned[0].username + "</b>");
+
     $("#allComments").empty();
     for (i in data.comments) {
         i = data.comments[i];
@@ -741,4 +771,12 @@ function addFriendToList(data) {
     console.log(data);
     $('#friends').append(`<div class="friend"><span class="input-group-text" id="${data.friend}"><i class="fas fa-at"></i>${data.friend} <span class=" badge badge-light" style="display: none;"></span><button data-toggle="modal" data-target="#removeFriendModal" type="button" class="badge choice removeFriend btn btn-outline-primary right" style="margin:0;"><i class="fas fa-ban"></i></button></span></div>`);
     addEventListenersToFriends()
+}
+
+function calendarData(data) {
+    console.log(data);
+    window.calendar.removeAllEvents();
+    for (let i in data) {
+        window.calendar.addEvent(data[i]);
+    }
 }

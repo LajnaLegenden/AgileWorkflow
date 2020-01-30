@@ -1,34 +1,6 @@
 
 let connection = require("./mysql");
 const bcryptjs = require("bcryptjs");
-// const mysql = require("mysql");
-// const util = require("util");
-// require('dotenv').config({ path: './env' });
-// let timeoutDB
-// function endDB(ms = 5000) {
-//     clearTimeout(timeoutDB)
-//     timeoutDB = setTimeout(() => {
-//         connection.end(() => {
-//             console.log("Closing database", connection.state)
-//             connection.destroy();
-//             console.log(connection)
-//         });
-//     }, ms)
-// }
-// function connectDB() {
-//     if(connection.state != "authenticated"){
-//         connection = mysql.createPool({
-//             connectionLimit :10,
-//             host: process.env.DBADDR,
-//             user: process.env.DBUSER,
-//             password: process.env.DBPASS,
-//             database: process.env.DBNAME
-//         });
-//         console.log("starting database", connection.state)
-//         connection.queryP = util.promisify(connection.query);
-//     }
-// }
-
 const addTask = "INSERT INTO task (name, description, state, postDate, id, projectID) VALUES (?, ?, ?, ?, ?, ?)";
 const getAllTasks = "SELECT * FROM task WHERE projectID = ?";
 const updateState = "UPDATE task SET state = ? WHERE id = ?";
@@ -109,6 +81,9 @@ const deleteMessageNote = "DELETE FROM messageNote WHERE id = ?";
 const getAllMessageNoteFromFriend = "SELECT * FROM messageNote WHERE (fromUser = ? AND toUser = ?)";
 const getAllMessageNoteFromId = "SELECT * FROM messageNote WHERE id = ?";
 
+const addNewEvent = "INSERT INTO events (start,end,title,id,projectID) VALUES (?,?,?,?,?)";
+const getCalendarEvents = "SELECT * FROM events WHERE projectID = ?"
+const removeEvent = "DELETE FROM events WHERE id = ?";
 
 
 class Database {
@@ -140,11 +115,11 @@ class Database {
     async editTask({ name, description, taskID }) {
         await connection.queryP(editTask, [name, description, taskID]);
     }
-    async makeTaskAsign({taskID, projectID, username}){
+    async makeTaskAsign({ taskID, projectID, username }) {
         await connection.queryP(deleteTaskAsign, taskID);
         await connection.queryP(makeTaskAsign, [taskID, projectID, username])
     }
-    async getTaskAsignByTaskID(taskID){
+    async getTaskAsignByTaskID(taskID) {
         return await connection.queryP(getTaskAsignByTaskID, taskID);
     }
     /**Updates the tasks state with the specified id*/
@@ -338,6 +313,21 @@ class Database {
     async getAllUserWithProjectID(projectID) {
         return await connection.queryP(getAllUserWithProjectID, projectID);
     }
+
+    async addNewEvent(title, start, end, pid) {
+        let id = await getNewId();
+        console.log(start, end, title);
+        return await connection.queryP(addNewEvent, [start, end, title, id, pid]);
+    }
+
+    async getCalendarEvents(pID) {
+        return connection.queryP(getCalendarEvents, pID);
+    }
+
+    async removeEvent(id) {
+        await connection.queryP(removeEvent, id);
+    }
+
 }
 let Storage = new Database();
 async function getNewId() {
