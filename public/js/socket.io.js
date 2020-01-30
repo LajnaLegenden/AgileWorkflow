@@ -650,16 +650,16 @@ function updateInvites(data) {
 
 }
 
-function asignUserInfo(users){
+function asignUserInfo(users) {
     users.forEach(user => {
         $("#asignUsers").append(`<button style="background:${user.color}; border:0;"class="btn btn-primary asignUser" id="${user.username}">${user.username}</button>`);
     });
     $(".asignUser").click(e => {
         e.preventDefault();
         let data = {
-            username:$(e.target).attr("id"),
-            taskID:$(".currentTask").attr("id"),
-            projectID:$(".currentProject").attr("id")
+            username: $(e.target).attr("id"),
+            taskID: $(".currentTask").attr("id"),
+            projectID: $(".currentProject").attr("id")
         }
         socket.emit("asignUser", data);
     });
