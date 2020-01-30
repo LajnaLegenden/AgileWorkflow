@@ -1,22 +1,73 @@
 {{!< default}}
 {{#contentFor 'head'}}
 <link rel="stylesheet" href="../public/css/dashboard.css">
+<link href='../public/fullcalendar/core/main.css' rel='stylesheet' />
+<link href='../public/fullcalendar/daygrid/main.css' rel='stylesheet' />
+
 {{/contentFor}}
 {{#contentFor 'script'}}
 <script src="../public/js/dashboardDesign.js"></script>
+
+<script src='../public/fullcalendar/core/main.js'></script>
+<script src='../public/fullcalendar/daygrid/main.min.js'></script>
+<script src='../public/fullcalendar/core/locales-all.min.js'></script>
+<script src='../public/fullcalendar/interaction/main.min.js'></script>
+
 <script>
+
     if ({{ totalNotes }} != 0) {
         document.querySelector("#dropdownMenu2 i").style.color = "red";
     } else {
         document.querySelector(".dropdown-menu").innerHTML = "<span style=padding:5px;>No notifications!</span>"
     }
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: ['dayGrid'],
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: "none"
+            },
+            defaultView: 'dayGridMonth',
+            selectable: true,
+            locale: "sv",
+            buttonIcons: true, // show the prev/next text
+            weekNumbers: true,
+            navLinks: false, // can click day/week names to navigate views
+            eventStartEditable: true,
+            eventLimit: true, // allow "more" link when too many events
+            eventRender: function (info) {
+                console.log(info)
+                // $(info.el).css("background", "red")
+            },
+            select: function () {
+                console.log("asd")
+                // Display the modal.
+                // You could fill in the start and end fields based on the parameters
+                $('.addEventModal').modal('show');
+
+            },
+        });
+
+        calendar.render();
+    });
+
 </script>
 {{/contentFor}}
 <main>
-    <button type="button" data-toggle="modal" data-target="#removeProjectModal"
-        class="btn btn-danger deleteProject">Delete Project</button>
-    <button type="button" data-toggle="modal" data-target="#addUserModal" class="btn btn-primary deleteProject">Add
-        User</button>
+    <div>
+        <button type="button" data-toggle="modal" data-target="#removeProjectModal"
+            class="btn btn-danger deleteProject">Delete
+            Project</button>
+        <button type="button" data-toggle="modal" data-target="#addUserModal" class="btn btn-primary deleteProject">Add
+            User</button>
+        <button type="button" data-toggle="modal" data-target="#showCalender" class="btn btn-primary deleteProject">Show
+            Calender</button>
+    </div>
 
     <div class="tasks">
         <div id="taskViewHeader" class="taskViewGrid">
@@ -128,6 +179,16 @@
                     <div class="from-group"><button class="btn btn-primary" id="addUser">Add User</button></div>
                 </form>
             </div>
+        </div>
+    </div>
+    <div class="modal  fade" id="showCalender" role="dialog">
+        <div class="modal-dialog cal-diaglog modal-lg">
+            <div class="modal-calendar modal-content">
+                <div id="calendar"></div>
+                <button type="button" data-toggle="modal" data-target="#addUser" class="btn btn-primary">Add
+                    Event</button>
+            </div>
+
         </div>
     </div>
     <div class="modal fade" id="removeProjectModal" role="dialog">

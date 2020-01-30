@@ -39,7 +39,7 @@ module.exports = (app) => {
             let userNotes = "";
             let allInvites = ""
             let allFriendRequests = ""
-            let totalNotes = "";
+            let totalNotes = 0;
             if (username) {
                 allInvites = await Storage.getAllProjectInvites(username);
                 allFriendRequests = await Storage.getAllFriendRequests(username);
@@ -49,6 +49,7 @@ module.exports = (app) => {
                 totalNotes = userNotes + projectAndTaskNotes.length;
                 if (userNotes == 0) userNotes = "";
             }
+
             res.render('index', { title: "Index", loggedIn: username, allProjects, userNotes, allInvites, allFriendRequests, totalNotes });
         } catch (err) {
             next(err)
@@ -114,7 +115,7 @@ module.exports = (app) => {
                 req.session.user = user.username;
                 res.redirect("/");
             } else {
-                console.log("asd");
+
                 res.send(result);
             }
         } catch (err) {
@@ -125,9 +126,9 @@ module.exports = (app) => {
         try {
             let user = req.body.user;
             if (await Storage.verifyUser(user)) {
-                console.log(user)
+
                 req.session.user = user.username;
-                console.log(req.session.user)
+
                 res.redirect("/");
             } else {
                 res.send("Wrong username or password!");
