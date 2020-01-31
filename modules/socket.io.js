@@ -50,7 +50,7 @@ function socketIO() {
 
         if (socket.user !== "{}" || socket.user != undefined) {
 
-            //io.to(socket.id).emit('goUpdate');
+            io.to(socket.id).emit('goUpdate');
             socket.on('newTask', newTask);
             socket.on("editTask", editTask);
             socket.on('needTasks', needTasks);
@@ -76,6 +76,10 @@ function socketIO() {
             socket.on("removeProject", removeProject);
             socket.on("asignUserInfo", asignUserInfo);
             socket.on("asignUser", asignUser);
+            socket.on('newEvent', newEvent);
+            socket.on('updateCalendar', updateCalendar);
+            socket.on('removeThisEvent', removeThisEvent);
+            socket.on('removeUserAssign', removeUserAssign);
 
             /**
              * Adds a new task
@@ -110,11 +114,11 @@ function socketIO() {
                 for (let i = 0; i < tasks.length; i++) {
                     tasks[i].notes = (await Storage.getAllUserNotesWithTask(socket.user, tasks[i].id)).length
                     let asignedUser = await Storage.getTaskAsignByTaskID(tasks[i].id)
-                    for(prop of asignedUser){
+                    for (prop of asignedUser) {
                         var username = prop.username;
                     }
-                    let projectAsign = await Storage.getProjectAsign({projectID, username});
-                    if(asignedUser.length > 0 ) tasks[i].asignColor = `rgba(${projectAsign[0].R},${projectAsign[0].G},${projectAsign[0].B}, 0.6)`;
+                    let projectAsign = await Storage.getProjectAsign({ projectID, username });
+                    if (asignedUser.length > 0) tasks[i].asignColor = `rgba(${projectAsign[0].R},${projectAsign[0].G},${projectAsign[0].B}, 0.6)`;
                     if (tasks[i].notes == 0) tasks[i].notes = "";
                 }
                 let logs = await Storage.getAllLogs(projectID);
@@ -128,6 +132,7 @@ function socketIO() {
              */
 
             async function currentProject(id) {
+                let project = await Storage.getProject(id);
                 let oldProject = socket.currentProject;
                 socket.currentProject = id;
                 socket.join(id);
@@ -141,6 +146,8 @@ function socketIO() {
                 }
                 io.to(id).emit('onlinePeople', online(id));
                 io.to(oldProject).emit('onlinePeople', online(oldProject));
+                io.to(socket.id).emit('areYouAdmin', await project[0].creator == socket.user)
+
             }
 
             /**
@@ -167,7 +174,8 @@ function socketIO() {
                 let task = await Storage.getTask(id);
                 Storage.deleteUserNotes(task[0].id);
                 let comments = await Storage.getAllComments(task[0].id);
-                io.to(socket.id).emit('infoAboutTask', { task: task[0], comments });
+                let assigned = await Storage.getTaskAsignByTaskID(id);
+                io.to(socket.id).emit('infoAboutTask', { task: task[0], comments, assigned });
                 updateProjects();
                 io.to(socket.id).emit("updateCurrentTask");
             }
@@ -313,8 +321,7 @@ function socketIO() {
             async function declineFriendRequest(data) {
                 let invite = (await Storage.getFriendRequest(data))[0];
                 await Storage.deleteFriendRequest(invite.id);
-                io.to(socket.id).emit('goUpdate');
-
+                io.to(socket.currentProject).emit('goUpdate');
             }
         }
         /**
@@ -330,11 +337,20 @@ function socketIO() {
                 case 'addedTask':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${socket.user}</b> created a task called "${data.name}"</div>`;
                 case 'join':
-                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> has joined the project, invited by "${data.from}"</div>`
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> has joined the project, invited by <b>@${data.name}</b></div>`
                 case 'remove':
-                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> removed the task "${data.name}"</div>`
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> removed the task <b>@"${data.name}"</b></div>`
                 case 'edit':
-                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> edited the task "${data.name}"</div>`
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> edited the task <b>@${data.name}</b></div>`
+                case 'assign':
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.from}</b> assigned a task to <b>@${data.username}</b></div>`
+                case 'newEvent':
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.from}</b> added a new event to the calendar</div>`
+                case 'removeAssign':
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.from}</b> removed an assignment on task "${data.taskName}"</div>`
+                case 'removeEvent':
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.from}</b> removed an event on the calendar"</div>`
+
             }
         }
 
@@ -439,29 +455,69 @@ function socketIO() {
             let projectName = project.name;
             let projectCreator = project.creator;
             if (projectName == data.inputProjectName && socket.user == projectCreator) {
-                await Storage.removeAllLogs(data.projectID);
-                await Storage.removeAllTasks(data.projectID);
-                await Storage.removeAllComments(data.projectID);
-                await Storage.deleteUserNotesWithProjectID(data.projectID)
-                await Storage.deleteProjectInviteByProjectID(data.projectID);
-                await Storage.deleteUserProject(data.projectID);
-                await Storage.deleteProject(data.projectID);
+                let a = Storage.removeAllLogs(data.projectID);
+                let b = Storage.removeAllTasks(data.projectID);
+                let c = Storage.removeAllComments(data.projectID);
+                let d = Storage.deleteUserNotesWithProjectID(data.projectID)
+                let e = Storage.deleteProjectInviteByProjectID(data.projectID);
+                let f = Storage.deleteUserProject(data.projectID);
+                let g = Storage.deleteProject(data.projectID);
+                await a;
+                await b;
+                await c;
+                await d;
+                await e;
+                await f;
+                await g;
                 io.to(data.projectID).emit("href", "/");
             }
 
         }
         async function asignUserInfo(projectID) {
             let users = await Storage.getAllUserWithProjectID(projectID);
-            for(let i = 0; i < users.length; i++){
-                let projectAsign = await Storage.getProjectAsign({projectID, username:users[i].username});
-                if(projectAsign.length > 0 ) users[i].color = `rgba(${projectAsign[0].R},${projectAsign[0].G},${projectAsign[0].B},0.6)`;
+            for (let i = 0; i < users.length; i++) {
+                let projectAsign = await Storage.getProjectAsign({ projectID, username: users[i].username });
+                if (projectAsign.length > 0) users[i].color = `rgba(${projectAsign[0].R},${projectAsign[0].G},${projectAsign[0].B},0.6)`;
             }
             io.to(socket.id).emit("asignUserInfo", users);
         }
         async function asignUser({ username, taskID, projectID }) {
             let projectAsign = (await Storage.getProjectAsign({ username, projectID })).length ? await Storage.getProjectAsign({ username, projectID }) : await Storage.makeProjectAsign({ username, projectID });
-            await Storage.makeTaskAsign({taskID, projectID, username});
+            await Storage.makeTaskAsign({ taskID, projectID, username });
+            let LOG = log("assign", { from: socket.user, username });
+            await Storage.addLog(LOG, projectID);
             io.to(projectID).emit("goUpdate");
+        }
+
+        async function newEvent({ title, start, end }) {
+            if (!socket.currentProject) return;
+            if (!title) return;
+            if (!start) return;
+            if (!end) return;
+            await Storage.addNewEvent(title, start.toString(), end.toString(), socket.currentProject);
+            let LOG = log("newEvent", { from: socket.user });
+            await Storage.addLog(LOG, socket.currentProject);
+            io.to(socket.currentProject).emit("goUpdate");
+        }
+
+        async function updateCalendar(pID) {
+            let data = await Storage.getCalendarEvents(pID);
+            io.to(socket.id).emit('calendarData', data);
+        }
+
+        async function removeThisEvent(id) {
+            Storage.removeEvent(id);
+            let LOG = log("removeEvent", { from: socket.user });
+            await Storage.addLog(LOG, socket.currentProject);
+            io.to(socket.currentProject).emit("goUpdate");
+        }
+
+        async function removeUserAssign(taskID) {
+            let taskInfo = await Storage.getTask(taskID);
+            await Storage.removeUserAssign(taskID);
+            let LOG = log("removeAssign", { from: socket.user, taskName: taskInfo[0].name });
+            await Storage.addLog(LOG, socket.currentProject);
+            io.to(socket.currentProject).emit("goUpdate");
         }
     });
 

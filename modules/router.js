@@ -20,7 +20,6 @@ function sanitize(string) {
     return string.replace(reg, (match) => (map[match]));
 }
 
-
 module.exports = (app) => {
 
     app.get("/favicon.ico", (req, res) => {

@@ -45,11 +45,18 @@ $("#removeFriend").click(e => {
     socket.emit("removeFriend", friend)
 })
 $("#asign").click(e => {
-    console.log("Clicked")
     let projectID = $(".currentProject").attr("id");
     $(".asignUser").remove();
     socket.emit("asignUserInfo", projectID)
 });
+$("#addEvent").click(e => {
+    let data = {
+        start: $('#estart').val(),
+        end: $('#eend').val(),
+        title: $('#ename').val()
+    }
+    socket.emit('newEvent', data);
+})
 function addEventListenerToInvites() {
     $(".accept").click(function () {
         let inviteID = $(this).parent().attr("id");
@@ -68,7 +75,7 @@ function addEventListenerToInvites() {
     });
     $(".declineFriend").click(function () {
         let inviteID = $(this).parent().attr("id");
-        console.log(inviteID)
+
         declineFriendRequest(inviteID);
         $(this).parent().remove();
     });
@@ -83,6 +90,11 @@ function addEventListenersToFriends() {
         updateMessageBadge();
     });
 }
+
+$('#removeUserAssign').click(() => {
+    let tID = $(".currentTask").attr('id');
+    socket.emit('removeUserAssign', tID);
+});
 
 addEventListenersToFriends()
 $("#addMessage").on("click", function () {
@@ -178,6 +190,8 @@ socket.on('addFriendToList', addFriendToList);
 socket.on("href", href);
 socket.on("updateCurrentTask", updateCurrentTask)
 socket.on("asignUserInfo", asignUserInfo)
+socket.on('calendarData', calendarData)
+socket.on('areYouAdmin', areYouAdmin);
 /**
  * Adds a task
  */
@@ -324,6 +338,17 @@ function addToBoard(obj, element) {
     }
     $('#' + obj.id + ' .taskName').html(name);
 }
+
+$('#removeEvent').click(function () {
+    let el = $(this);
+    socket.emit('removeThisEvent', $(el[0]).attr('data-target'));
+    let e = window.calendar.getEvents();
+    for (let i in e) {
+        if (e[i].id == $(el[0]).attr('data-target')) e[i].remove();
+    }
+})
+
+
 /**
  * Scrolls all the way down on a html element
  * @param {Number} elementID an id for a html element
@@ -389,9 +414,17 @@ function allTasks(data) {
  */
 function goUpdate(data) {
     let projectID = $(".currentProject").attr("id");
+    if (!projectID) {
+        setTimeout(() => {
+            goUpdate(data);
+        }, 50);
+        return;
+    }
     socket.emit('needTasks', projectID);
     socket.emit('myProjects');
     socket.emit('updateNotesList');
+    socket.emit('updateCalendar', projectID);
+    return;
 }
 /**
  * shows new info about a task and show new comments
@@ -402,7 +435,9 @@ function infoAboutTask(data) {
     $('#infoDesc').html("Description: " + data.task.description);
     $('#infoState').html("State: " + data.task.state);
     $('#infoPostdate').html("Date: " + data.task.postDate);
-    $('#infoProjectId').html("Project ID " + data.task.projectID);
+
+    if (data.assigned[0]) $('#infoProjectId').html("Assiged to: <b>@" + data.assigned[0].username + "</b>");
+    else $('#infoProjectId').empty();
     $("#allComments").empty();
     for (i in data.comments) {
         i = data.comments[i];
@@ -545,7 +580,6 @@ function showChat(data) {
 function liveChat(data) {
     updateMessageBadge();
     if ($(".currentChat").length > 0 && $(".currentChat").attr("id") == data.fromUser) {
-        console.log("got here")
         socket.emit("removeMessageNotes", $(".currentChat").attr("id"));
         let allMessages = $("#allMessages");
         allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
@@ -594,8 +628,18 @@ function liveChat(data) {
         }
         return testId;
     }
+}
 
-
+function areYouAdmin(data) {
+    let btn = $('#delProject');
+    if (data) {
+        //Toggle del btn
+        btn.show();
+    }
+    else {
+        //hide del btn
+        btn.hide();
+    }
 }
 function removeTask() {
     let data = {
@@ -770,11 +814,19 @@ function updateMessageBadge() {
 }
 
 function addFriendToList(data) {
-    console.log(data);
     $('#friends').append(`<div class="friend"><span class="input-group-text" id="${data.friend}"><i class="fas fa-at"></i>${data.friend} <span class=" badge badge-light" style="display: none;"></span><button data-toggle="modal" data-target="#removeFriendModal" type="button" class="badge choice removeFriend btn btn-outline-primary right" style="margin:0;"><i class="fas fa-ban"></i></button></span></div>`);
     addEventListenersToFriends()
 }
+
+
+function calendarData(data) {
+    window.calendar.removeAllEvents();
+    for (let i in data) {
+        window.calendar.addEvent(data[i]);
+    }
+
 function validateEmail(email) {
     let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
+
 }
