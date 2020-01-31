@@ -122,6 +122,32 @@ module.exports = (app) => {
             next(err)
         }
     });
+    app.post("/updateUser", async (req, res, next) => {
+        try {
+            if (!req.session.user) {
+                res.redirect('/');
+            }
+            let user = req.body;
+            if(await Storage.verifyUser({username:req.session.user, password:req.body.currentPassword})){
+                var passw = /^[A-Za-z]\w{7,14}$/;
+                if ( user["newPassword"] != user["newConfirmpassword"] ||user["newPassword"].length <= 6 || !user["newPassword"].match(passw)) {
+                    user["newPassword"] = req.body.currentPassword;
+                };
+                user["newFirstname"] = sanitize(user["newFirstname"]);
+                user["newLastname"] = sanitize(user["newLastname"]);
+                user["newEmail"] = sanitize(user["newEmail"]);
+                user["newPassword"] = sanitize(user["newPassword"]);
+                user["newConfirmpassword"] = sanitize(user["newConfirmpassword"]);
+                user["username"] = req.session.user;
+                await Storage.updateUser(user);
+                res.send("OK");
+            } else{
+                res.send(false);
+            }
+        } catch (err) {
+            next(err)
+        }
+    });
     app.post("/login", async (req, res, next) => {
         try {
             let user = req.body.user;
