@@ -135,17 +135,17 @@ $("#editPersonalDetails").click(e => {
         $("#userForm").addClass("hide");
 });
 $("#editPersonalDetailsUpdate").click(e => {
-    if (!$("#userForm").hasClass("hide")){
+    if (!$("#userForm").hasClass("hide")) {
         let data = {
-            newFirstname:$("input[name=newFirstname]").val(),
-            newLastname:$("input[name=newLastname]").val(),
-            newEmail:$("input[name=newEmail]").val(),
+            newFirstname: $("input[name=newFirstname]").val(),
+            newLastname: $("input[name=newLastname]").val(),
+            newEmail: $("input[name=newEmail]").val(),
             currentPassword: $("input[name=currentPassword]").val(),
-            newPassword:$("input[name=newPassword]").val(),
-            newConfirmpassword:$("input[name=newConfirmpassword]").val()
+            newPassword: $("input[name=newPassword]").val(),
+            newConfirmpassword: $("input[name=newConfirmpassword]").val()
         }
         let fail = false;
-        if(!data.currentPassword){
+        if (!data.currentPassword) {
             fail = true;
             $("input[name=currentPassword]").addClass("missing-info");
         }
@@ -160,9 +160,9 @@ $("#editPersonalDetailsUpdate").click(e => {
             data: data,
             withCredentials: true
         }).done(res => {
-            if(res) location.href="/user";
+            if (res) location.href = "/user";
             else $("input[name=currentPassword]").addClass("missing-info");
-        }) 
+        })
     }
 });
 
@@ -824,9 +824,8 @@ function calendarData(data) {
     for (let i in data) {
         window.calendar.addEvent(data[i]);
     }
-
+}
 function validateEmail(email) {
     let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
-
 }
