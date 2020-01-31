@@ -65,6 +65,7 @@
     box-shadow: 1px 2.5px 2px 2.5px #232;
     cursor: grab;
     overflow:hidden;
+     background: #222;
 }
 
 .taskItem:active {
