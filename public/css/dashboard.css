@@ -65,7 +65,7 @@
     box-shadow: 1px 2.5px 2px 2.5px #232;
     cursor: grab;
     overflow:hidden;
-     background: #222;
+     background: #333;
 }
 
 .taskItem:active {
@@ -75,7 +75,7 @@
 }
 
 .taskItem:hover {
-    background: lightgray;
+    background: #222;
     height: 5em;
     min-height:5em;
 }
