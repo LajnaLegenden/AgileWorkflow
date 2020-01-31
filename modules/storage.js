@@ -32,6 +32,7 @@ const deleteAllTaskAsign = "DELETE FROM taskAsign WHERE projectID = ?";
 
 const getUser = "SELECT * FROM user WHERE username = ?"
 const addUser = "INSERT INTO user (username, password, firstname, lastname, email, projects) VALUES (?, ?, ?, ?, ?, ?)"
+const updateUser = "UPDATE user SET firstname = ?, lastname = ?, email = ?, password = ? WHERE username = ?";
 const addProcjetToUser = "UPDATE user SET projects = ?";
 const deleteUserProject = "DELETE FROM userProject WHERE projectID = ?";
 
@@ -181,6 +182,9 @@ class Database {
             return "Added user";
         }
         return "Username already exists!";
+    }
+    async updateUser({newFirstname, newLastname, newEmail, newPassword, username}){
+        return await connection.queryP(updateUser, [newFirstname, newLastname, newEmail, await bcryptjs.hash(newPassword, 10), username]);
     }
     /**Gives user with the specified username*/
     async getUser(username) {

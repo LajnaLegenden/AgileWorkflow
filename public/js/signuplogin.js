@@ -44,7 +44,7 @@ btn.on('click', () => {
         fail = true;
         inputs[2].classList.add("missing-info");
     }
-    if (/\s/.test(inputs[3])) {
+    if (/ /.test($(inputs[3]).val())) {
         fail = true;
         inputs[3].classList.add("missing-info");
     }
@@ -53,7 +53,7 @@ btn.on('click', () => {
         type: "POST",
         url: url,
         data: data,
-        withCredentials:true
+        withCredentials: true
     }).done((res) => {
         if (res.includes("<head>")) {
             var urlParams = new URLSearchParams(window.location.search);

@@ -23,13 +23,14 @@
                 <p id="infoFirstName"><b>First Name:</b> {{{user.firstname}}}</p>
                 <p id="infoLastName"><b>Last Name:</b> {{{user.lastname}}}</p>
                 <p id="infoEmail"><b>Email:</b> {{{user.email}}}</p>
-                <button type="button" id="editPersonalDetails" class="btn btn-outline-dark">Edit Personal Details</button>
+                <button type="button" id="editPersonalDetails" class="btn btn-outline-dark">Edit Personal
+                    Details</button>
                 <div id="userForm" class="hide">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text">First Name</span>
                         </div>
-                        <input type="text" class="form-control" id="taskNameInput" placeholder="First Name"
+                        <input type="text" class="form-control" name="newFirstname" placeholder="First Name"
                             aria-label="First Name" aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
@@ -37,16 +38,38 @@
                             <span class="input-group-text">Last Name</span>
                         </div>
                         <input type="text" class="form-control" placeholder="Last Name" aria-label="Task Description"
-                            id="taskDescriptionInput" aria-describedby="basic-addon1">
+                            name="newLastname" aria-describedby="basic-addon1">
                     </div>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text">Email</span>
                         </div>
                         <input type="text" class="form-control" placeholder="Email" aria-label="Task Description"
-                            id="taskDescriptionInput" aria-describedby="basic-addon1">
+                            name="newEmail" aria-describedby="basic-addon1">
                     </div>
-                    <button type="button" id="edit" class="btn btn-outline-primary">Redigera uppgifter</button>
+                                   <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Current Password</span>
+                        </div>
+                        <input type="Password" class="form-control" placeholder="Current password" aria-label="Task Description"
+                            name="currentPassword" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Password</span>
+                        </div>
+                        <input type="Password" class="form-control" placeholder="Password" aria-label="Task Description"
+                            name="newPassword" aria-describedby="basic-addon1">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Confirm Password</span>
+                        </div>
+                        <input type="Password" class="form-control" placeholder="Confirm Password" aria-label="Task Description"
+                            name="newConfirmpassword" aria-describedby="basic-addon1">
+                    </div>
+
+                    <button type="button" id="editPersonalDetailsUpdate" class="btn btn-outline-primary">Redigera uppgifter</button>
                 </div>
             </div>
             <div id="friends" class="border">

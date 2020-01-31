@@ -134,6 +134,38 @@ $("#editPersonalDetails").click(e => {
     else
         $("#userForm").addClass("hide");
 });
+$("#editPersonalDetailsUpdate").click(e => {
+    if (!$("#userForm").hasClass("hide")){
+        let data = {
+            newFirstname:$("input[name=newFirstname]").val(),
+            newLastname:$("input[name=newLastname]").val(),
+            newEmail:$("input[name=newEmail]").val(),
+            currentPassword: $("input[name=currentPassword]").val(),
+            newPassword:$("input[name=newPassword]").val(),
+            newConfirmpassword:$("input[name=newConfirmpassword]").val()
+        }
+        let fail = false;
+        if(!data.currentPassword){
+            fail = true;
+            $("input[name=currentPassword]").addClass("missing-info");
+        }
+        if (!validateEmail($("input[name=newEmail]").val())) {
+            fail = true;
+            $("input[name=newEmail]").addClass("missing-info");
+        }
+        if (fail) return;
+        $.ajax({
+            type: "POST",
+            url: "/updateUser",
+            data: data,
+            withCredentials: true
+        }).done(res => {
+            if(res) location.href="/user";
+            else $("input[name=currentPassword]").addClass("missing-info");
+        }) 
+    }
+});
+
 
 //ReviceEvent
 socket.on('allTasks', allTasks)
@@ -786,9 +818,15 @@ function addFriendToList(data) {
     addEventListenersToFriends()
 }
 
+
 function calendarData(data) {
     window.calendar.removeAllEvents();
     for (let i in data) {
         window.calendar.addEvent(data[i]);
     }
+
+function validateEmail(email) {
+    let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+
 }
