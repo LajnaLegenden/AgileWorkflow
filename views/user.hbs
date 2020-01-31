@@ -16,76 +16,78 @@
 <main class="container">
 
     <div class="infoGrid" id="mainInfo">
-        <div class="infoGrid">
-            <div id="userInfo" class="border">
-                <h4>Info</h4>
-                <p id="infoName"><b>Username:</b> {{{user.username}}}</p>
-                <p id="infoFirstName"><b>First Name:</b> {{{user.firstname}}}</p>
-                <p id="infoLastName"><b>Last Name:</b> {{{user.lastname}}}</p>
-                <p id="infoEmail"><b>Email:</b> {{{user.email}}}</p>
-                <button type="button" id="editPersonalDetails" class="btn btn-outline-dark">Edit Personal
-                    Details</button>
-                <div id="userForm" class="hide">
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">First Name</span>
-                        </div>
-                        <input type="text" class="form-control" name="newFirstname" placeholder="First Name"
-                            aria-label="First Name" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Last Name</span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Last Name" aria-label="Task Description"
-                            name="newLastname" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Email</span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Email" aria-label="Task Description"
-                            name="newEmail" aria-describedby="basic-addon1">
-                    </div>
-                                   <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Current Password</span>
-                        </div>
-                        <input type="Password" class="form-control" placeholder="Current password" aria-label="Task Description"
-                            name="currentPassword" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Password</span>
-                        </div>
-                        <input type="Password" class="form-control" placeholder="Password" aria-label="Task Description"
-                            name="newPassword" aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Confirm Password</span>
-                        </div>
-                        <input type="Password" class="form-control" placeholder="Confirm Password" aria-label="Task Description"
-                            name="newConfirmpassword" aria-describedby="basic-addon1">
-                    </div>
 
-                    <button type="button" id="editPersonalDetailsUpdate" class="btn btn-outline-primary">Redigera uppgifter</button>
-                </div>
-            </div>
-            <div id="friends" class="border">
-                <h4>Friends</h4>
-                <div id="allFriends">
-                    {{#each friends}}
-                    <div class="friend">
-                        <span class="input-group-text" id="{{this.friendUsername}}"><i class="fas fa-at"></i>
-                            {{this.friendUsername}} <span class=" badge
-                                                        badge-light"></span><button data-toggle="modal"
-                                data-target="#removeFriendModal" type="button"
-                                class="badge choice removeFriend btn btn-outline-warning right" style="margin:0;"><i
-                                    class="fas fa-ban"></i></button></span>
+        <div id="userInfo" class="border">
+            <h4>Info</h4>
+            <p id="infoName"><b>Username:</b> {{{user.username}}}</p>
+            <p id="infoFirstName"><b>First Name:</b> {{{user.firstname}}}</p>
+            <p id="infoLastName"><b>Last Name:</b> {{{user.lastname}}}</p>
+            <p id="infoEmail"><b>Email:</b> {{{user.email}}}</p>
+            <button type="button" id="editPersonalDetails" class="btn btn-outline-dark">Edit Personal
+                Details</button>
+            <div id="userForm" class="hide">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">First Name</span>
                     </div>
-                    {{/each}}
+                    <input type="text" class="form-control" name="newFirstname" placeholder="First Name"
+                        aria-label="First Name" aria-describedby="basic-addon1">
                 </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Last Name</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Last Name" aria-label="Task Description"
+                        name="newLastname" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Email</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Email" aria-label="Task Description"
+                        name="newEmail" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Current Password</span>
+                    </div>
+                    <input type="Password" class="form-control" placeholder="Current password"
+                        aria-label="Task Description" name="currentPassword" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Password</span>
+                    </div>
+                    <input type="Password" class="form-control" placeholder="Password" aria-label="Task Description"
+                        name="newPassword" aria-describedby="basic-addon1">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Confirm Password</span>
+                    </div>
+                    <input type="Password" class="form-control" placeholder="Confirm Password"
+                        aria-label="Task Description" name="newConfirmpassword" aria-describedby="basic-addon1">
+                </div>
+
+                <button type="button" id="editPersonalDetailsUpdate" class="btn btn-outline-primary">Redigera
+                    uppgifter</button>
+            </div>
+
+
+        </div>
+        <div id="friends" class="border">
+            <h4>Friends</h4>
+            <div id="allFriends">
+                {{#each friends}}
+                <div class="friend">
+                    <span class="input-group-text" id="{{this.friendUsername}}"><i class="fas fa-at"></i>
+                        {{this.friendUsername}} <span class=" badge
+                                                        badge-light"></span><button data-toggle="modal"
+                            data-target="#removeFriendModal" type="button"
+                            class="badge choice removeFriend btn btn-outline-warning right" style="margin:0;"><i
+                                class="fas fa-ban"></i></button></span>
+                </div>
+                {{/each}}
             </div>
         </div>
         <div id="chat" class="border">
