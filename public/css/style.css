@@ -5,10 +5,10 @@
 body {
     overflow-x: hidden;
     background:#333;
-    color:white;
 }
 
 main {
+    color:white;
     padding-top: 3em !important;
     padding-left: 4em !important;
 }
