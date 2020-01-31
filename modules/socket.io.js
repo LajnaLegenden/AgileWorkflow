@@ -79,6 +79,7 @@ function socketIO() {
             socket.on('newEvent', newEvent);
             socket.on('updateCalendar', updateCalendar);
             socket.on('removeThisEvent', removeThisEvent);
+            socket.on('removeUserAssign', removeUserAssign);
 
             /**
              * Adds a new task
@@ -131,6 +132,7 @@ function socketIO() {
              */
 
             async function currentProject(id) {
+                let project = await Storage.getProject(id);
                 let oldProject = socket.currentProject;
                 socket.currentProject = id;
                 socket.join(id);
@@ -144,6 +146,8 @@ function socketIO() {
                 }
                 io.to(id).emit('onlinePeople', online(id));
                 io.to(oldProject).emit('onlinePeople', online(oldProject));
+                io.to(socket.id).emit('areYouAdmin', await project[0].creator == socket.user)
+
             }
 
             /**
@@ -340,6 +344,12 @@ function socketIO() {
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> edited the task <b>@${data.name}</b></div>`
                 case 'assign':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.from}</b> assigned a task to <b>@${data.username}</b></div>`
+                case 'newEvent':
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.from}</b> added a new event to the calendar</div>`
+                case 'removeAssign':
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.from}</b> removed an assignment on task "${data.taskName}"</div>`
+                case 'removeEvent':
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.from}</b> removed an event on the calendar"</div>`
 
             }
         }
@@ -485,20 +495,28 @@ function socketIO() {
             if (!start) return;
             if (!end) return;
             await Storage.addNewEvent(title, start.toString(), end.toString(), socket.currentProject);
-            /* let LOG = log("newEvent", { from: socket.user});
-            await Storage.addLog(LOG, projectID); */
+            let LOG = log("newEvent", { from: socket.user });
+            await Storage.addLog(LOG, socket.currentProject);
             io.to(socket.currentProject).emit("goUpdate");
         }
 
         async function updateCalendar(pID) {
-            console.log(pID);
             let data = await Storage.getCalendarEvents(pID);
-
             io.to(socket.id).emit('calendarData', data);
         }
 
         async function removeThisEvent(id) {
             Storage.removeEvent(id);
+            let LOG = log("removeEvent", { from: socket.user });
+            await Storage.addLog(LOG, socket.currentProject);
+            io.to(socket.currentProject).emit("goUpdate");
+        }
+
+        async function removeUserAssign(taskID) {
+            let taskInfo = await Storage.getTask(taskID);
+            await Storage.removeUserAssign(taskID);
+            let LOG = log("removeAssign", { from: socket.user, taskName: taskInfo[0].name });
+            await Storage.addLog(LOG, socket.currentProject);
             io.to(socket.currentProject).emit("goUpdate");
         }
     });

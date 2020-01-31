@@ -45,7 +45,6 @@ $("#removeFriend").click(e => {
     socket.emit("removeFriend", friend)
 })
 $("#asign").click(e => {
-    console.log("Clicked")
     let projectID = $(".currentProject").attr("id");
     $(".asignUser").remove();
     socket.emit("asignUserInfo", projectID)
@@ -76,7 +75,7 @@ function addEventListenerToInvites() {
     });
     $(".declineFriend").click(function () {
         let inviteID = $(this).parent().attr("id");
-        console.log(inviteID)
+
         declineFriendRequest(inviteID);
         $(this).parent().remove();
     });
@@ -91,6 +90,11 @@ function addEventListenersToFriends() {
         updateMessageBadge();
     });
 }
+
+$('#removeUserAssign').click(() => {
+    let tID = $(".currentTask").attr('id');
+    socket.emit('removeUserAssign', tID);
+});
 
 addEventListenersToFriends()
 $("#addMessage").on("click", function () {
@@ -155,6 +159,7 @@ socket.on("href", href);
 socket.on("updateCurrentTask", updateCurrentTask)
 socket.on("asignUserInfo", asignUserInfo)
 socket.on('calendarData', calendarData)
+socket.on('areYouAdmin', areYouAdmin);
 /**
  * Adds a task
  */
@@ -394,13 +399,13 @@ function goUpdate(data) {
  * @param {Object} data Both tasks and comments in a object
  */
 function infoAboutTask(data) {
-    console.log(data);
     $('#infoName').html("Name: " + data.task.name);
     $('#infoDesc').html("Description: " + data.task.description);
     $('#infoState').html("State: " + data.task.state);
     $('#infoPostdate').html("Date: " + data.task.postDate);
-    $('#infoProjectId').html("Assiged to: <b>@" + data.assigned[0].username + "</b>");
 
+    if (data.assigned[0]) $('#infoProjectId').html("Assiged to: <b>@" + data.assigned[0].username + "</b>");
+    else $('#infoProjectId').empty();
     $("#allComments").empty();
     for (i in data.comments) {
         i = data.comments[i];
@@ -543,7 +548,6 @@ function showChat(data) {
 function liveChat(data) {
     updateMessageBadge();
     if ($(".currentChat").length > 0 && $(".currentChat").attr("id") == data.fromUser) {
-        console.log("got here")
         socket.emit("removeMessageNotes", $(".currentChat").attr("id"));
         let allMessages = $("#allMessages");
         allMessages.append(`<div class="message sb2"><p class="toUser"><b>@${data.fromUser}:</b>${data.message}</p></div>`)
@@ -592,8 +596,18 @@ function liveChat(data) {
         }
         return testId;
     }
+}
 
-
+function areYouAdmin(data) {
+    let btn = $('#delProject');
+    if (data) {
+        //Toggle del btn
+        btn.show();
+    }
+    else {
+        //hide del btn
+        btn.hide();
+    }
 }
 function removeTask() {
     let data = {
@@ -768,13 +782,11 @@ function updateMessageBadge() {
 }
 
 function addFriendToList(data) {
-    console.log(data);
     $('#friends').append(`<div class="friend"><span class="input-group-text" id="${data.friend}"><i class="fas fa-at"></i>${data.friend} <span class=" badge badge-light" style="display: none;"></span><button data-toggle="modal" data-target="#removeFriendModal" type="button" class="badge choice removeFriend btn btn-outline-primary right" style="margin:0;"><i class="fas fa-ban"></i></button></span></div>`);
     addEventListenersToFriends()
 }
 
 function calendarData(data) {
-    console.log(data);
     window.calendar.removeAllEvents();
     for (let i in data) {
         window.calendar.addEvent(data[i]);

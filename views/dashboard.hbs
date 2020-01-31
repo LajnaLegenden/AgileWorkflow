@@ -31,13 +31,15 @@
                 center: 'title',
                 right: "none"
             },
-
+            defaultView: "dayGridMonth",
+            editable: true,
             selectable: true,
-            locale: "en",
+            locale: "sv",
             buttonIcons: true, // show the prev/next text
             weekNumbers: true,
             navLinks: false, // can click day/week names to navigate views
             eventStartEditable: true,
+            defaultDate: new Date(),
             eventLimit: false, // allow "more" link when too many events
             select: function (e) {
                 console.log(e);
@@ -49,20 +51,31 @@
                 $('#selectedEvent').html(e.event.title);
                 $('#removeEvent').attr('data-target', e.event.id);
             },
+            eventResize: function (data) {
+                console.log(data);
+            },
             events: []
         });
 
         calendar.render();
-        calendar.next();
+
+        $('#showCalender').on('shown.bs.modal', function () {
+            window.calendar.render();
+        });
+
+
+
     });
 
 </script>
 {{/contentFor}}
 <main>
-    <div>
-        <button type="button" data-toggle="modal" data-target="#removeProjectModal"
-            class="btn btn-danger deleteProject">Delete
+    <div class="topButtons">
+
+        <button type="button" data-toggle="modal" id="delProject" data-target="#removeProjectModal"
+            class="btn btn-danger">Delete
             Project</button>
+
         <button type="button" data-toggle="modal" data-target="#addUserModal" class="btn btn-primary deleteProject">Add
             User</button>
         <button type="button" data-toggle="modal" data-target="#showCalender" class="btn btn-primary deleteProject">Show
@@ -188,40 +201,44 @@
     <div class="modal-dialog cal-diaglog modal-lg">
         <div class="modal-calendar modal-content">
             <div id="calendar"></div>
-            <div class="form-group ">
-                <label for="estart">Event Start</label><input type="date" class="form-control" id="estart">
-                <label for="eend">Event End</label><input type="date" class="form-control" id="eend">
-                <label for="ename">Event Name</label><input type="text" placeholder="Event Name" class="form-control"
-                    id="ename">
-            </div>
-            <p>Selected Event:<span id="selectedEvent"></span></p>
-            <button type="button" class="btn btn-primary" id="addEvent">Add event</button>
-            <button type="button" class="btn btn-danger" data-target="" id="removeEvent">Remove selected
-                event</button>
-        </div>
-    </div>
-    <div class="modal fade" id="removeProjectModal" role="dialog">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <form class="addNew">
-                    <div class="form-group">
-                        <label for="projectName">Project Name</label>
-                        <input type="input" class="form-control" id="projectRemove"
-                            placeholder="Enter the Project name">
-                    </div>
-                    <div class="from-group"><button class="btn btn-danger" id="removeProject">Remove Project</button>
-                    </div>
-                </form>
+            <div class="calPadding">
+                <div class="form-group ">
+                    <label for="estart">Event Start</label><input type="date" class="form-control" id="estart">
+                    <label for="eend">Event End</label><input type="date" class="form-control" id="eend">
+                    <label for="ename">Event Name</label><input type="text" placeholder="Event Name"
+                        class="form-control" id="ename">
+                </div>
+
+                <p>Selected Event:<span id="selectedEvent"></span></p>
+                <button type="button" class="btn btn-primary" id="addEvent">Add event</button>
+                <button type="button" class="btn btn-danger" data-target="" id="removeEvent">Remove selected
+                    event</button>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="asignTaskModal" role="dialog">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <form class="addNew">
-                    <div id="asignUsers">
-                    </div>
-                </form>
-            </div>
+</div>
+<div class="modal fade" id="removeProjectModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form class="addNew">
+                <div class="form-group">
+                    <label for="projectName">Project Name</label>
+                    <input type="input" class="form-control" id="projectRemove" placeholder="Enter the Project name">
+                </div>
+                <div class="from-group"><button class="btn btn-danger" id="removeProject">Remove Project</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+<div class="modal fade" id="asignTaskModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form class="addNew">
+                <div id="asignUsers">
+                </div>
+                <i class="fa fa-trash" id="removeUserAssign" aria-hidden="true"></i>
+            </form>
+        </div>
+    </div>
+</div>

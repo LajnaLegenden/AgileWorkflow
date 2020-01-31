@@ -316,7 +316,7 @@ class Database {
 
     async addNewEvent(title, start, end, pid) {
         let id = await getNewId();
-        console.log(start, end, title);
+
         return await connection.queryP(addNewEvent, [start, end, title, id, pid]);
     }
 
@@ -326,6 +326,10 @@ class Database {
 
     async removeEvent(id) {
         await connection.queryP(removeEvent, id);
+    }
+
+    async removeUserAssign(tID) {
+        return await connection.queryP(deleteTaskAsign, tID);
     }
 
 }
