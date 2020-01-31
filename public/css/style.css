@@ -1,10 +1,11 @@
 * {
     box-sizing: border-box;
-    color: #214040;
 }
 
 body {
     overflow-x: hidden;
+    background:#333;
+    color:white;
 }
 
 main {
@@ -13,7 +14,7 @@ main {
 }
 
 .lightblue {
-    color: #85FFFE;
+    color: #fff;
 }
 
 #title {
@@ -29,13 +30,13 @@ main {
 /* Track */
 
 ::-webkit-scrollbar-track {
-    background: #214040;
+    background: #222;
 }
 
 /* Handle */
 
 ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #222;
 }
 
 /* Handle on hover */
@@ -49,7 +50,7 @@ main {
     background: rgba(0, 0, 0, 0.3);
 }
 ::-webkit-scrollbar-thumb:horizontal{
-    background: #888;
+    background: #222;
     border-radius: 10px;
 }
 
@@ -63,20 +64,20 @@ nav>ul {
 }
 
 .nav-link {
-    color: #63BFBF !important;
+    color: #fff !important;
     transition: 100ms ease-in-out;
 }
 
 .nav-link:hover {
-    color: #85FFFE !important;
+    color: grey !important;
 }
 
 li.active>a {
-    color: #85FFFE !important;
+    color: grey !important;
 }
 
 .navbar {
-    background: #214040 !important;
+    background: #222 !important;
     position: fixed !important;
     width: 100%;
     z-index: 3;
@@ -135,25 +136,25 @@ ul {
     position: fixed;
     width: 4em;
     height: 96vh;
-    background: #214040;
+    background: #222;
     z-index: 4;
 }
 
 .project {
-    color: #63BFBF;
+    color: #fff;
     background: grey;
-    border: 2px solid #214040 !important;
+    border: 2px solid #222 !important;
     border-radius: 100%;
     height: 3em;
     width: 3em;
     margin: 0.5em;
-    transition: all 200ms ease-in-out;
+    transition: all 150ms ease;
     overflow-y: hidden;
 }
 
 .project p {
     font-weight: bold;
-    color: #63BFBF;
+    color: #fff;
     text-align: center;
     position: relative;
     display: block;
@@ -164,11 +165,12 @@ ul {
 }
 
 #addProject {
+    color:#222;
     display: flex;
     justify-content: center;
     align-items: center;
     background: grey;
-    border: 2px solid #214040 !important;
+    border: 2px solid #222 !important;
     border-radius: 100%;
     height: 3em;
     width: 3em;
@@ -179,16 +181,25 @@ ul {
 }
 
 #addProject:hover {
-    background: #85FFFE;
+    background: rgb(183, 199, 230);
 }
 
 .project:hover {
-    border: 2px solid #85FFFE !important;
+    width:100%;
+    border-radius:0;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    
+    border: 2px solid #235 !important;
     cursor: pointer;
 }
 
 .currentProject {
-    border: 2px solid #85FFFE !important;
+    border: 4px solid #235 !important;
+    width:100%;
+    border-radius:0;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .triangle {
@@ -196,7 +207,7 @@ ul {
     width: 7em;
     height: 2em;
     transform: rotateZ(-45deg);
-    background: #214040;
+    background: #222;
     z-index: -1111;
     top: 3em;
     z-index: 2;
@@ -208,7 +219,7 @@ ul {
     width: 7em;
     height: 2em;
     transform: rotateZ(45deg);
-    background: #214040;
+    background: #222;
     z-index: -1111;
     z-index: 2;
 }
@@ -218,16 +229,16 @@ ul {
 }
 
 .notes {
-    background: #214040;
-    color: #85FFFE;
+    background: #222;
+    color: red;
     float: right;
     padding-bottom: 10px;
     font-weight: 500;
 }
 
 .taskNotes {
-    background: #214040;
-    color: #85FFFE;
+    background: #222;
+    color: red;
     float: right;
     font-weight: 500;
 }
@@ -242,8 +253,9 @@ ul {
     left: 4em;
 }
 
-#DropDownMenu2 {
+#DropDownMenu2 span {
     z-index: 5;
+    color:white !important;
 }
 
 dropdown-item {
@@ -251,7 +263,7 @@ dropdown-item {
 }
 
 .bar {
-    background: #214040;
+    background: #222;
     position: fixed;
     bottom: 0px;
     left: 0px;
@@ -262,7 +274,7 @@ dropdown-item {
 }
 
 .barItem {
-    color: #63BFBF;
+    color: #fff;
     min-width: 4em;
     margin: 0px 0.7em 0px 0.7em
 }

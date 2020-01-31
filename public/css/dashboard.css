@@ -2,6 +2,7 @@
     display: block;
 }
 .card {
+    background:#235;
     height:40vh;
 }
 .card ul{
@@ -17,6 +18,7 @@
 }
 
 #allComments {
+
     overflow-y: auto;
     height: 20vh;
 }
@@ -58,9 +60,9 @@
     min-height:3em;
     height: 3em;
     font-size: 14px;
-    border: 1px solid #214040 !important;
+    border: 1px solid #222 !important;
     border-radius: 5px !important;
-    box-shadow: 1px 2.5px 2px 2.5px #8d8d8d42;
+    box-shadow: 1px 2.5px 2px 2.5px #232;
     cursor: grab;
     overflow:hidden;
 }
@@ -86,7 +88,7 @@
 /* Track */
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: #222;
 }
 
 /* Handle */
@@ -122,7 +124,7 @@
 }
 
 .border {
-    border: 2px solid rgba(0, 0, 0, 0.125);
+    border: 2px solid rgba(0, 0, 0, 0.125) !important;
     border-radius: 0.25rem;
     padding: 0.5em;
 }
@@ -155,9 +157,15 @@
 }
 
 #log {
+    border:2px solid #222 !important;
+    background:#235;
     height: 23vh;
     overflow-y: scroll;
     font-family: monospace;
+}
+#log span{
+    color :grey!important;
+    background:black !important;
 }
 #remove, #edit{
     transition: all ease-in-out 100ms;
@@ -165,6 +173,9 @@
 }
 #remove:hover{
     color:red;
+}
+.userNotes {
+    color:#222 !important;
 }
 #edit:hover{
     color:#63BFBF;
@@ -186,4 +197,9 @@
     margin:2em;
     margin-top: 1em;
 }
-
+#comments{
+    background:#235;
+}
+#taskDesc{
+    background:#235;
+}
