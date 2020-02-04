@@ -339,7 +339,7 @@ function socketIO() {
                 case 'join':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> has joined the project, invited by <b>@${data.name}</b></div>`
                 case 'remove':
-                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> removed the task <b>@"${data.name}"</b></div>`
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> removed the task "${data.name}"</div>`
                 case 'edit':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.user}</b> edited the task <b>@${data.name}</b></div>`
                 case 'assign':
