@@ -1,16 +1,18 @@
 .desc {
     display: block;
 }
+
 .card {
-    background:#235;
-    height:40vh;
+    background: #235;
+    height: 40vh;
 }
-.card ul{
+
+.card ul {
     overflow: hidden;
 }
 
 .hidden {
-    display:none;
+    display: none;
 }
 
 .currentTask {
@@ -18,7 +20,6 @@
 }
 
 #allComments {
-
     overflow-y: auto;
     height: 20vh;
 }
@@ -49,23 +50,21 @@
     width: 90%;
     margin: auto;
     padding-left: 2em;
-
     padding-right: 2em;
-
     padding-bottom: 2em;
 }
 
 .taskItem {
     transition: 100ms ease-in-out;
-    min-height:3em;
+    min-height: 3em;
     height: 3em;
     font-size: 14px;
     border: 1px solid #222 !important;
     border-radius: 5px !important;
     box-shadow: 1px 2.5px 2px 2.5px #232;
     cursor: grab;
-    overflow:hidden;
-     background: #333;
+    overflow: hidden;
+    background: #333;
 }
 
 .taskItem:active {
@@ -77,7 +76,7 @@
 .taskItem:hover {
     background: #222;
     height: 5em;
-    min-height:5em;
+    min-height: 5em;
 }
 
 /* width */
@@ -116,8 +115,9 @@
     width: 90%;
     padding: 2em;
 }
-#taskDesc{
-    overflow-x:scroll;
+
+#taskDesc {
+    overflow-x: scroll;
 }
 
 .comment {
@@ -158,32 +158,38 @@
 }
 
 #log {
-    border:2px solid #222 !important;
-    background:#235;
+    border: 2px solid #222 !important;
+    background: #235;
     height: 23vh;
     overflow-y: scroll;
     font-family: monospace;
 }
-#log span{
-    color :grey!important;
-    background:black !important;
+
+#log span {
+    color: grey!important;
+    background: black !important;
 }
-#remove, #edit{
+
+#remove, #edit {
     transition: all ease-in-out 100ms;
-    cursor:pointer;
+    cursor: pointer;
 }
-#remove:hover{
-    color:red;
+
+#remove:hover {
+    color: red;
 }
+
 .userNotes {
-    color:#222 !important;
+    color: #222 !important;
 }
-#edit:hover{
-    color:#63BFBF;
+
+#edit:hover {
+    color: #63BFBF;
 }
-.asignUser{
-    margin:5px;
-    width:90%;
+
+.asignUser {
+    margin: 5px;
+    width: 90%;
 }
 
 #calendar {
@@ -195,12 +201,18 @@
 }
 
 .topButtons {
-    margin:2em;
+    margin: 2em;
     margin-top: 1em;
 }
-#comments{
-    background:#235;
+
+#comments {
+    background: #235;
 }
-#taskDesc{
-    background:#235;
+
+#taskDesc {
+    background: #235;
+}
+
+.webhooks {
+    padding: 2em;
 }

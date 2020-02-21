@@ -2,6 +2,7 @@ const sIO = require('socket.io');
 const Storage = require("./storage.js");
 const cookie = require('cookie');
 const sharedsession = require("express-socket.io-session");
+let wh = require('./webhook')
 
 function sanitize(string) {
     const map = {
@@ -80,6 +81,9 @@ function socketIO() {
             socket.on('updateCalendar', updateCalendar);
             socket.on('removeThisEvent', removeThisEvent);
             socket.on('removeUserAssign', removeUserAssign);
+            socket.on('newWebhook', newWebhook);
+            socket.on('getWebhooks', getWebhooks);
+            socket.on('removeWebhook', removeWebhook);
 
             /**
              * Adds a new task
@@ -331,6 +335,7 @@ function socketIO() {
          */
         function log(action, data) {
             let time = newTime();
+            wh({ data, action, id: socket.currentProject, user: socket.user });
             switch (action) {
                 case 'move':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${socket.user}</b> moved ${data.name} to ${data.state}</div>`;
@@ -350,6 +355,10 @@ function socketIO() {
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.from}</b> removed an assignment on task "${data.taskName}"</div>`
                 case 'removeEvent':
                     return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.from}</b> removed an event on the calendar"</div>`
+                case 'newWebhook':
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.from}</b> added a webhook"</div>`
+                case 'removeWebhook':
+                    return `<div><span style="background-color:lightgrey; border-radius:2px;">[${time.hours}.${time.minutes}.${time.seconds}]</span> <b>@${data.from}</b> removed an webhook"</div>`
 
             }
         }
@@ -519,6 +528,23 @@ function socketIO() {
             await Storage.addLog(LOG, socket.currentProject);
             io.to(socket.currentProject).emit("goUpdate");
         }
+
+        async function getWebhooks(id) {
+
+            let wh = await Storage.getAllWebhooksForProject(id);
+            io.to(socket.id).emit('webhooks', wh);
+        }
+        async function newWebhook({ url, projectID }) {
+            Storage.addWebhook(url, projectID);
+            let LOG = log("newWebhook", { from: socket.user });
+            await Storage.addLog(LOG, socket.currentProject);
+        }
+
+        async function removeWebhook(id) {
+            Storage.removeWebhook(id);
+            let LOG = log("removewebhook", { from: socket.user });
+            await Storage.addLog(LOG, socket.currentProject);
+        }
     });
 
     function removeSocket(socket) {
@@ -549,6 +575,9 @@ function socketIO() {
             }
         }
     }
+
+
+
 
 
     /**

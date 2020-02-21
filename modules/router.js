@@ -23,7 +23,7 @@ function sanitize(string) {
 module.exports = (app) => {
 
     app.get("/favicon.ico", (req, res) => {
-        res.sendStatus(404);
+        res.redirect('/public/img/favicon.png');
     })
 
     app.get('/login', (req, res) => {
@@ -127,9 +127,9 @@ module.exports = (app) => {
                 res.redirect('/');
             }
             let user = req.body;
-            if(await Storage.verifyUser({username:req.session.user, password:req.body.currentPassword})){
+            if (await Storage.verifyUser({ username: req.session.user, password: req.body.currentPassword })) {
                 var passw = /^[A-Za-z]\w{7,14}$/;
-                if ( user["newPassword"] != user["newConfirmpassword"] ||user["newPassword"].length <= 6 || !user["newPassword"].match(passw)) {
+                if (user["newPassword"] != user["newConfirmpassword"] || user["newPassword"].length <= 6 || !user["newPassword"].match(passw)) {
                     user["newPassword"] = req.body.currentPassword;
                 };
                 user["newFirstname"] = sanitize(user["newFirstname"]);
@@ -140,7 +140,7 @@ module.exports = (app) => {
                 user["username"] = req.session.user;
                 await Storage.updateUser(user);
                 res.send("OK");
-            } else{
+            } else {
                 res.send(false);
             }
         } catch (err) {

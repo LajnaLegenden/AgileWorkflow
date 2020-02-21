@@ -73,13 +73,14 @@
     <div class="topButtons">
 
         <button type="button" data-toggle="modal" id="delProject" data-target="#removeProjectModal"
-            class="btn btn-danger">Delete
-            Project</button>
-
+            class="btn btn-danger">Delete Project</button>
         <button type="button" data-toggle="modal" data-target="#addUserModal" class="btn btn-primary deleteProject">Add
             User</button>
         <button type="button" data-toggle="modal" data-target="#showCalender" class="btn btn-primary deleteProject">Show
             Calender</button>
+        <button type="button" data-toggle="modal" data-target="#webhookModal"
+            class="btn btn-primary deleteProject">Manage
+            Webhooks</button>
     </div>
 
     <div class="tasks">
@@ -239,6 +240,23 @@
                 </div>
                 <i class="fa fa-trash" id="removeUserAssign" aria-hidden="true"></i>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="webhookModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="container webhooks">
+                <div class="currentWebhooks">
+
+                </div>
+                <div class="form-group">
+                    <label for="newUrl">Webhook URL</label>
+                    <input type="url" class="form-control" id="newUrl" placeholder="Paste webhook url">
+                </div>
+                <button type="button" class="btn btn-primary" data-target="" id="addWebhook">Add new webhook</button>
+            </div>
         </div>
     </div>
 </div>

@@ -1,5 +1,6 @@
 
 let connection = require("./mysql");
+
 const bcryptjs = require("bcryptjs");
 const addTask = "INSERT INTO task (name, description, state, postDate, id, projectID) VALUES (?, ?, ?, ?, ?, ?)";
 const getAllTasks = "SELECT * FROM task WHERE projectID = ?";
@@ -86,6 +87,9 @@ const addNewEvent = "INSERT INTO events (start,end,title,id,projectID) VALUES (?
 const getCalendarEvents = "SELECT * FROM events WHERE projectID = ?"
 const removeEvent = "DELETE FROM events WHERE id = ?";
 
+const addWebhook = "INSERT INTO webhook (url,projectID) VALUES (?,?)"
+const getAllWebhooksForProject = "SELECT * FROM webhook WHERE projectID = ?"
+const removeWebhook = "DELETE FROM webhook WHERE id = ?"
 
 class Database {
     /**Adds a task*/
@@ -183,7 +187,7 @@ class Database {
         }
         return "Username already exists!";
     }
-    async updateUser({newFirstname, newLastname, newEmail, newPassword, username}){
+    async updateUser({ newFirstname, newLastname, newEmail, newPassword, username }) {
         return await connection.queryP(updateUser, [newFirstname, newLastname, newEmail, await bcryptjs.hash(newPassword, 10), username]);
     }
     /**Gives user with the specified username*/
@@ -334,6 +338,19 @@ class Database {
 
     async removeUserAssign(tID) {
         return await connection.queryP(deleteTaskAsign, tID);
+    }
+
+    async addWebhook(url, projectID) {
+        return await connection.queryP(addWebhook, [url, projectID]);
+    }
+
+    async getAllWebhooksForProject(id) {
+        return await connection.queryP(getAllWebhooksForProject, id);
+    }
+
+    async removeWebhook(id) {
+        console.log(id);
+        connection.queryP(removeWebhook, id);
     }
 
 }

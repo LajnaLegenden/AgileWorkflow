@@ -167,6 +167,27 @@ $("#editPersonalDetailsUpdate").click(e => {
 });
 
 
+$('#addWebhook').click(e => {
+    let url = $('#newUrl').val();
+    $('#newUrl').removeClass('is-invalid');
+    var expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+    var regex = new RegExp(expression);
+
+    if (!url.match(regex)) {
+        $('#newUrl').addClass('is-invalid');
+        setTimeout(() => {
+            $('#newUrl').removeClass('is-invalid');
+        }, 5000)
+        return;
+    }
+
+    socket.emit('newWebhook', { url, projectID: $(".currentProject").attr("id") })
+})
+
+$('#webhookModal').on('shown.bs.modal', function () {
+    socket.emit('getWebhooks', $(".currentProject").attr("id"));
+})
+
 //ReviceEvent
 socket.on('allTasks', allTasks)
 socket.on('goUpdate', goUpdate);
@@ -192,6 +213,7 @@ socket.on("updateCurrentTask", updateCurrentTask)
 socket.on("asignUserInfo", asignUserInfo)
 socket.on('calendarData', calendarData)
 socket.on('areYouAdmin', areYouAdmin);
+socket.on('webhooks', webHooks);
 /**
  * Adds a task
  */
@@ -801,6 +823,17 @@ function measureText(pText, pFontSize, pStyle) {
     lDiv = null;
 
     return lResult;
+}
+
+function webHooks(wh) {
+    let parrent = $('.currentWebhooks');
+    parrent.html('');
+    for (let i in wh) {
+        parrent.append(`<button style="border:0;"class="btn btn-primary webhookItem" data-toggle="tooltip" title="${wh[i].url}" id="wh${wh[i].id}">${wh[i].id}</button>`)
+        $('#wh' + wh[i].id).click(e => {
+            socket.emit('removeWebhook', wh[i].id);
+        })
+    }
 }
 
 function updateMessageBadge() {
