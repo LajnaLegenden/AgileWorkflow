@@ -25,11 +25,11 @@ module.exports = async function (data) {
         case 'removeAssign':
             text = `[${time.hours}.${time.minutes}.${time.seconds}] @${data.data.from} removed an assignment on task "${data.data.taskName}"`; break;
         case 'removeEvent':
-            text = `[${time.hours}.${time.minutes}.${time.seconds}] @${data.data.from} removed an event on the calendar"`; break;
+            text = `[${time.hours}.${time.minutes}.${time.seconds}] @${data.data.from} removed an event on the calendar`; break;
         case 'removewebhook':
-            text = `[${time.hours}.${time.minutes}.${time.seconds}] @${data.data.from} removed a webhook"`; break;
+            text = `[${time.hours}.${time.minutes}.${time.seconds}] @${data.data.from} removed a webhook`; break;
         case 'newWebhook':
-            text = `[${time.hours}.${time.minutes}.${time.seconds}] @${data.data.from} added a new Webhook"`; break;
+            text = `[${time.hours}.${time.minutes}.${time.seconds}] @${data.data.from} added a new Webhook`; break;
 
     }
 
