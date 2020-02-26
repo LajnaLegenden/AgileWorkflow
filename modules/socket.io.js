@@ -652,6 +652,8 @@ function socketIO() {
 			io.to(socket.id).emit('webhooks', wh);
 		}
 		async function newWebhook({ url, projectID }) {
+			let project = (await Storage.getProject(projectID))[0];
+			if (socket.user !== project.creator) return;
 			Storage.addWebhook(url, projectID);
 			let LOG = log('newWebhook', { from: socket.user });
 			await Storage.addLog(LOG, socket.currentProject);
