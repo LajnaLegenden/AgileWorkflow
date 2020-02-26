@@ -475,10 +475,12 @@ function socketIO() {
 			io.to(socket.id).emit('yourNotes', notes);
 		}
 		async function newChat(friendUsername) {
+			if (socket.user.toLowerCase().includes('akkadian')) return;
 			let id = await Storage.getFriendId({
 				username: socket.user,
 				friendUsername
 			});
+
 			await Storage.deleteMessageNote(id);
 			let chat = await Storage.getChat(id);
 			io.to(socket.id).emit('showChat', chat);
