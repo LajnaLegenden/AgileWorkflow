@@ -654,13 +654,14 @@ function liveChat(data) {
 
 function areYouAdmin(data) {
     let btn = $('#delProject');
+    let btn2 = $('#webhookBtn');
     if (data) {
         //Toggle del btn
-        btn.show();
+        btn.show(); btn2.show();
     }
     else {
         //hide del btn
-        btn.hide();
+        btn.hide(); btn2.hide();
     }
 }
 function removeTask() {
