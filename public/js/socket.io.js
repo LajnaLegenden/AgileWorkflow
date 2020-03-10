@@ -712,12 +712,16 @@ function liveChat(data) {
 }
 
 function areYouAdmin(data) {
-	let btn = $('.adminBtn');
-
-	for (let i in btn) {
-		if (data) $(btn[i]).show();
-		else $(btn[i]).hide();
-	}
+    let btn = $('#delProject');
+    let btn2 = $('#webhookBtn');
+    if (data) {
+        //Toggle del btn
+        btn.show(); btn2.show();
+    }
+    else {
+        //hide del btn
+        btn.hide(); btn2.hide();
+    }
 }
 function removeTask() {
 	let data = {
