@@ -18,7 +18,7 @@ let INPROGRESS = $('#INPROGRESS');
 let TOVERIFY = $('#TOVERIFY');
 let DONE = $('#DONE');
 let IMPEDIMENTS = $('#IMPEDIMENTS');
-$(document).ready(function() {});
+$(document).ready(function () { });
 isEditing = false;
 //Eventlistners
 $('#submitTask').on('click', addTask);
@@ -56,7 +56,7 @@ $('#addEvent').click(e => {
 	socket.emit('newEvent', data);
 });
 function addEventListenerToInvites() {
-	$('.accept').click(function() {
+	$('.accept').click(function () {
 		let inviteID = $(this)
 			.parent()
 			.attr('id');
@@ -65,7 +65,7 @@ function addEventListenerToInvites() {
 			.parent()
 			.remove();
 	});
-	$('.decline').click(function() {
+	$('.decline').click(function () {
 		let inviteID = $(this)
 			.parent()
 			.attr('id');
@@ -74,7 +74,7 @@ function addEventListenerToInvites() {
 			.parent()
 			.remove();
 	});
-	$('.acceptFriend').click(function() {
+	$('.acceptFriend').click(function () {
 		let inviteID = $(this)
 			.parent()
 			.attr('id');
@@ -83,7 +83,7 @@ function addEventListenerToInvites() {
 			.parent()
 			.remove();
 	});
-	$('.declineFriend').click(function() {
+	$('.declineFriend').click(function () {
 		let inviteID = $(this)
 			.parent()
 			.attr('id');
@@ -96,7 +96,7 @@ function addEventListenerToInvites() {
 }
 addEventListenerToInvites();
 function addEventListenersToFriends() {
-	$('.friend').click(function() {
+	$('.friend').click(function () {
 		$('.inputAndBtnChatHide').removeClass('inputAndBtnChatHide');
 		$('.currentChat').removeClass('currentChat');
 		$(this)
@@ -118,7 +118,7 @@ $('#removeUserAssign').click(() => {
 });
 
 addEventListenersToFriends();
-$('#addMessage').on('click', function() {
+$('#addMessage').on('click', function () {
 	let data = {
 		message: sanitize($('#Message').val()),
 		toUser: $('.currentChat').attr('id')
@@ -187,7 +187,7 @@ $('#editPersonalDetailsUpdate').click(e => {
 	}
 });
 
-$('#addWebhook').click(e => {
+/* $('#addWebhook').click(e => {
 	let url = $('#newUrl').val();
 	$('#newUrl').removeClass('is-invalid');
 	var expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
@@ -206,10 +206,10 @@ $('#addWebhook').click(e => {
 		projectID: $('.currentProject').attr('id')
 	});
 });
-
-$('#webhookModal').on('shown.bs.modal', function() {
+ */
+/* $('#webhookModal').on('shown.bs.modal', function () {
 	socket.emit('getWebhooks', $('.currentProject').attr('id'));
-});
+}); */
 
 //ReviceEvent
 socket.on('allTasks', allTasks);
@@ -236,7 +236,7 @@ socket.on('updateCurrentTask', updateCurrentTask);
 socket.on('asignUserInfo', asignUserInfo);
 socket.on('calendarData', calendarData);
 socket.on('areYouAdmin', areYouAdmin);
-socket.on('webhooks', webHooks);
+//socket.on('webhooks', webHooks);
 /**
  * Adds a task
  */
@@ -336,7 +336,7 @@ function appendThisProject(obj) {
 	let displayName = obj.name.substring(0, 2).toUpperCase();
 	projects.append(` <div class="project" id="${
 		obj.id
-	}" class="btn btn-secondary" data-toggle="tooltip" data-placement="right"
+		}" class="btn btn-secondary" data-toggle="tooltip" data-placement="right"
                 title="${obj.name}">
                 <p>${obj.name.substring(0, 2).toUpperCase()}</p>
                 <span class="badge notes">${obj.notes}</span>
@@ -393,7 +393,7 @@ function addToBoard(obj, element) {
 	$('#' + obj.id + ' .taskName').html(name);
 }
 
-$('#removeEvent').click(function() {
+$('#removeEvent').click(function () {
 	let el = $(this);
 	socket.emit('removeThisEvent', $(el[0]).attr('data-target'));
 	let e = window.calendar.getEvents();
@@ -841,7 +841,7 @@ function asignUserInfo(users) {
 
 function yourBadges(data) {
 	let friends = $('.friend span:nth-child(2)');
-	friends.each(function(i) {
+	friends.each(function (i) {
 		if (data[i].notes == 0) {
 			$(this).hide();
 		} else {
@@ -901,7 +901,7 @@ function measureText(pText, pFontSize, pStyle) {
 }
 
 function webHooks(wh) {
-	let parrent = $('.currentWebhooks');
+	/* let parrent = $('.currentWebhooks');
 	parrent.html('');
 	for (let i in wh) {
 		parrent.append(
@@ -910,13 +910,13 @@ function webHooks(wh) {
 		$('#wh' + wh[i].id).click(e => {
 			socket.emit('removeWebhook', wh[i].id);
 		});
-	}
+	} */
 }
 
 function updateMessageBadge() {
 	let friends = $('.friend span:nth-child(1)');
 	let data = [];
-	friends.each(function() {
+	friends.each(function () {
 		let friend = $(this).attr('id');
 		data.push(friend);
 	});
