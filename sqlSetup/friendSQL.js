@@ -13,10 +13,7 @@ async function doStuff() {
             process.exit(-1);
         }
 
-        connection.query("SHOW TABLES", (error, result, fields) => {
-            console.log("created tables!", error, result, fields);
 
-        })
     })
     connection.end();
     process.exit(0);
