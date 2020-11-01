@@ -10,17 +10,18 @@ async function doStuff() {
         projectName varchar(255),
         id varchar(255)
     );`, (error, results, fields) => {
-        if(error) {
+        if (error) {
             console.log("error creating table topics ", error);
             process.exit(-1);
         }
-        
-            connection.query("SHOW TABLES", (error, result, fields) => {
-                console.log("created tables!", error, result, fields);
-                
-            })
+
+        connection.query("SHOW TABLES", (error, result, fields) => {
+            console.log("created tables!", error, result, fields);
+
+        })
     })
     connection.end();
+    process.exit(0);
 }
 
 doStuff();

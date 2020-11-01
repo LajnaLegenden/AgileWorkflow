@@ -19,6 +19,7 @@ async function doStuff() {
         })
     })
     connection.end();
+    process.exit(0);
 }
 
 doStuff();

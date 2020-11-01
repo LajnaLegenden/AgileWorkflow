@@ -1,11 +1,12 @@
 const mysql = require("mysql");
 const util = require("util");
-require('dotenv').config({ path: './env' });
+require('dotenv').config({ path: './../env' });
 console.log(process.env.DBADDR)
 let connection;
+
 function connectDB() {
     connection = mysql.createPool({
-        connectionLimit :100,
+        connectionLimit: 100,
         host: process.env.DBADDR,
         user: process.env.DBUSER,
         password: process.env.DBPASS,
