@@ -13,6 +13,7 @@ async function doStuff() {
             console.log("error creating table topics ", error);
             process.exit(-1);
         }
+        process.exit(0);
 
 
     })
