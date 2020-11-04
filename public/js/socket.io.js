@@ -43,10 +43,10 @@ $('#removeFriend').click(e => {
     $('.currentChat').remove();
     socket.emit('removeFriend', friend);
 });
-$('#asign').click(e => {
+$('#assign').click(e => {
     let projectID = $('.currentProject').attr('id');
-    $('.asignUser').remove();
-    socket.emit('asignUserInfo', projectID);
+    $('.assignUser').remove();
+    socket.emit('assignUserInfo', projectID);
 });
 $('#addEvent').click(e => {
     let data = {
@@ -236,7 +236,7 @@ socket.on('removeFriend', removeFriend);
 socket.on('addFriendToList', addFriendToList);
 socket.on('href', href);
 socket.on('updateCurrentTask', updateCurrentTask);
-socket.on('asignUserInfo', asignUserInfo);
+socket.on('assignUserInfo', assignUserInfo);
 socket.on('calendarData', calendarData);
 socket.on('areYouAdmin', areYouAdmin);
 socket.on('webhooks', webHooks);
@@ -355,7 +355,7 @@ function appendThisProject(obj) {
  * @param {element} element a html element
  */
 function addToBoard(obj, element) {
-    let color = obj.asignColor ? 'background:' + obj.asignColor : '';
+    let color = obj.assignColor ? 'background:' + obj.assignColor : '';
     $(element).append(
         `<li style="${color}"id="${obj.id}" draggable="true" ondragstart="drag(event)" class="list-group-item taskItem border"><span class="taskName" id="${obj.name}">${obj.name}</span><span class="badge taskNotes">${obj.notes}</span><p  draggable="false" name="${obj.description}"class="hidden desc"></p></li>`
     );
@@ -843,20 +843,20 @@ function updateInvites(data) {
     addEventListenerToInvites();
 }
 
-function asignUserInfo(users) {
+function assignUserInfo(users) {
     users.forEach(user => {
-        $('#asignUsers').append(
-            `<button style="background:${user.color}; border:0;"class="btn btn-primary asignUser" id="${user.username}">${user.username}</button>`
+        $('#assignUsers').append(
+            `<button style="background:${user.color}; border:0;"class="btn btn-primary assignUser" id="${user.username}">${user.username}</button>`
         );
     });
-    $('.asignUser').click(e => {
+    $('.assignUser').click(e => {
         e.preventDefault();
         let data = {
             username: $(e.target).attr('id'),
             taskID: $('.currentTask').attr('id'),
             projectID: $('.currentProject').attr('id')
         };
-        socket.emit('asignUser', data);
+        socket.emit('assignUser', data);
     });
 }
 
