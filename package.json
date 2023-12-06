@@ -7,7 +7,7 @@
         "@fullcalendar/core": "^4.4.2",
         "@fullcalendar/daygrid": "^4.4.2",
         "@fullcalendar/interaction": "^4.4.2",
-        "@pm2/io": "^4.3.5",
+        "@pm2/io": "^5.0.0",
         "axios": "^0.21.1",
         "bcryptjs": "^2.4.3",
         "buffer": "^5.6.0",
@@ -22,7 +22,7 @@
         "keygrip": "^1.1.0",
         "mysql": "^2.18.1",
         "mysql2": "^2.2.5",
-        "socket.io": "^2.4.0",
+        "socket.io": "^3.0.5",
         "util": "^0.12.3"
     },
     "devDependencies": {},
