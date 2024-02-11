@@ -7,7 +7,7 @@
         "@fullcalendar/core": "^4.4.2",
         "@fullcalendar/daygrid": "^4.4.2",
         "@fullcalendar/interaction": "^4.4.2",
-        "@pm2/io": "^4.3.5",
+        "@pm2/io": "^5.0.0",
         "axios": "^0.21.1",
         "bcryptjs": "^2.4.3",
         "buffer": "^5.6.0",
